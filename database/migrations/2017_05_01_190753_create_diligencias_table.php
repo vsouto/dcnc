@@ -17,17 +17,18 @@ class CreateDiligenciasTable extends Migration
             $table->increments('id');
             $table->string('titulo');
             $table->text('descricao');
-            $table->string('num_integracao');
+            $table->string('num_integracao')->nullable();
             $table->dateTime('prazo');
-            $table->unsignedInteger('tipo_id'); // Audiencia?
+            $table->unsignedInteger('tipo_id')->default('1'); // (A)udiencia, (D)iligência
+            $table->unsignedInteger('status_id')->default(1); // current status
             $table->unsignedInteger('advogado_id'); // autor
-            $table->unsignedInteger('solicitante_id'); // solicitante
-            $table->unsignedInteger('correspondente_id'); //
+            $table->string('solicitante'); // advogado solicitante
+            $table->unsignedInteger('correspondente_id')->nullable(); //
             $table->text('reu'); // infos do reu
             $table->string('num_processo'); //
             $table->string('orgao'); //
-            $table->string('local_orgao'); //
-            $table->string('vara'); //
+            $table->string('local_orgao')->nullable(); //
+            $table->string('vara')->nullable(); //
             $table->text('orientacoes'); //
             $table->timestamps();
         });
@@ -46,6 +47,13 @@ class CreateDiligenciasTable extends Migration
             $table->boolean('enviado');
             $table->timestamps();
         });
+
+        Schema::create('diligencia_servico', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('diligencia_id');
+            $table->unsignedInteger('servico_id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -58,5 +66,6 @@ class CreateDiligenciasTable extends Migration
         Schema::dropIfExists('diligencias');
         Schema::dropIfExists('diligencia_file');
         Schema::dropIfExists('diligencia_email');
+        Schema::dropIfExists('diligencia_servico');
     }
 }

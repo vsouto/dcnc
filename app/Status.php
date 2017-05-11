@@ -24,4 +24,17 @@ class Status extends Model
     }
 
     //
+
+    /**
+     * Get the entity
+     */
+    public function diligencias()
+    {
+        return $this->hasMany('App\Diligencia');
+    }
+
+    public static function getList()
+    {
+        return Status::pluck('status','id')->toArray();
+    }
 }

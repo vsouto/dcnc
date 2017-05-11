@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
+use App\Http\Requests\UploadRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class FilesController extends Controller
 {
@@ -81,4 +84,22 @@ class FilesController extends Controller
     {
         //
     }
+
+    public function uploadSubmit(UploadRequest $request)
+    {
+        //$product = File::create($request->all());
+        $diligencia_id = Input::only('diligencia_id');
+
+        foreach ($request->photos as $file) {
+
+            $filename = $file->store('files');
+
+            File::create([
+                'titulo' => $filename,
+                'descricao' => $filename
+            ]);
+        }
+        return 'Upload successful!';
+    }
+
 }

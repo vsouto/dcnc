@@ -460,7 +460,17 @@ header {
     header .logo a {
       display: block; }
       header .logo a img {
-        max-width: 132px; }
+        max-width: 148px;
+        max-height: 180px;
+          padding-top: 10px;
+          padding-right: 18px;
+          padding-bottom: 18px;
+          padding-left: 18px;
+        border: 1px solid #021a40;
+        background-color: rgb(255, 255, 255);
+          border-radius: 7px;
+      }
+
 
 @media (max-width: 767px) {
   header .logo {
@@ -3568,3 +3578,87 @@ a.list-group-item-primary {
 
 .progress-bar-danger {
   background-color: #d66061; }
+
+.status-btn{
+    cursor: pointer;
+}
+.sondagem{
+  background: rgba(144, 144, 144, 0.82);
+    color: white;
+}
+.aguardando-confirmacao{
+    background: #474a49;
+    color: white;
+}
+.aguardando-conclusao{
+    background: #ff9ce0;
+}
+.sem-checkin{
+    background: #563563;
+    color: white;
+}
+.em-negociacao{
+     background: #ff974d ;
+}
+.atrasada{
+    background-color: #fff083 ;
+
+}
+.pagamento-autorizado{
+    background-color: #30732c  ;
+    color: white;
+}
+.efetivada{
+    background-color: #003e5f ;
+    color: white;
+}.efetivada:hover {
+     background: #00304a !important; }
+
+.status-block{
+    padding: 8px;
+}
+
+.pin {
+    background: url('img/icon_plus.png') no-repeat;
+    width: 9px;
+    height: 5px;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: none;
+}
+.pin .pin_content {
+    background: url("img/icon_plus.png") repeat scroll 0 0 transparent;
+    border-radius: 5px 5px 5px 5px;
+    bottom: 50px;
+    height: 50px;
+    position: relative;
+    right: 15px;
+    width: 100px;
+}
+.pin .pin_content div {
+    float: left;
+    height: 30px;
+    width: 35px;
+    padding: 10px 5px;
+    text-align: center;
+}
+.pin .pin_content div span {
+    color: #EA4E41;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 18px;
+}
+.pin .pin_content div span.small {
+    font-size: 12px;
+}
+.pin .pin_content .thumb {
+    width: 45px;
+}
+.pin .pin_content .thumb img {
+    max-width: 45px;
+    max-height: 30px;
+}
+
+td .invoice_info_header_td{
+    max-width: 12%;
+}

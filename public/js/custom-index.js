@@ -76,8 +76,8 @@ $(document).ready(function () {
 //Jquery vector map
 $(function(){
 	var cityAreaData = [
-		230.20,
-		750.90,
+		0.20,
+		10.90,
 		440.28,
 		180.15,
 		69.35,
@@ -86,51 +86,54 @@ $(function(){
 		99.60,
 		135.50
 	]
+
+    $('#us-map').vectorMap({
+        map: 'brazil_br',
+        onRegionClick: function (element, code, region) {
+            var message = 'You clicked "'
+                + region
+                + '" which has the code: '
+                + code.toUpperCase();
+            alert(message);
+        },
+        backgroundColor: "#f9fbfc" ,
+        background: '#6789ae',
+        normalizeFunction: 'polynomial',
+        scaleColors: ['$yellow', '$danger'],
+        regionStyle: {
+            initial: {
+                fill: 'rgb(143, 165, 189)'
+            }
+        },
+        normalizeFunction: 'polynomial',
+        hoverOpacity: 0.2,
+        pinMode: 'content',
+        enableZoom: true,
+        scaleColors: ['$yellow', '$danger'],
+        series: {
+            markers: [{
+                attribute: 'r',
+                scale: [3, 7],
+                values: cityAreaData
+            }]
+        },
+        markerStyle: {
+            initial: {
+                fill: '#F8E23B',
+                stroke: '#383f47'
+            }
+        },
+        pins: {
+            "ro": "\u003ca href=\"http://google.com\"\u003epin_ru\u003c/a\u003e",
+            "es": "\u003ca href=\"http://google.com\"\u003epin_ru\u003c/a\u003e",
+        },
+        scale: 3
+    });
+    /*
 	$('#us-map').vectorMap({
-		map: 'us_aea_en',
+		map: 'brazil_br',
 		scaleColors: ['$yellow', '$danger'],
 		normalizeFunction: 'polynomial',
-		focusOn:{
-			x: 1,
-			y: 0,
-			scale: 1
-		},
-		zoomOnScroll:false,
-		zoomMin: 1.6,
-		hoverColor: true,
-		regionStyle:{
-			initial: {
-				fill: '#8FA5BD',
-				"fill-opacity": 0.9,
-				"stroke-width": 0,
-				"stroke-opacity": 0
-			},
-			hover: {
-				"fill-opacity": 0.7
-			},
-			selected: {
-				fill: $yellow,
-			},
-		},
-		markerStyle: {
-			initial: {
-				fill: $yellow,
-				stroke: $yellow,
-				"fill-opacity": 1,
-				"stroke-width": 10,
-				"stroke-opacity": 0.5,
-				r: 3
-			},
-			hover: {
-				stroke: 'black',
-				"stroke-width": 3
-			},
-			selected: {
-				fill: $yellow
-			},
-			selectedHover: {
-			}
-		},
 		backgroundColor: "#f9fbfc" ,
 		 markers :[
 			{latLng: [32.90, -97.03], name: 'Dallas/FW,TX : 332005'},
@@ -170,6 +173,8 @@ $(function(){
 			}]
 		},
 	});
+	*/
+
 });
 
 //Datepicker

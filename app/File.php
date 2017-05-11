@@ -11,5 +11,21 @@ class File extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['titulo','descricao','filename','user_id'];
+
+    /**
+     * Get the entity
+     */
+    public function diligencias()
+    {
+        return $this->belongsToMany('App\Diligencia');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

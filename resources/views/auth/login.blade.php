@@ -9,7 +9,7 @@
             <div class="login-wrapper animated flipInY">
                 <div id="login" class="show">
                     <div class="login-header">
-                        <h4>Sign In To Your Account</h4>
+                        <h4>DCNC Advogados - LogIn</h4>
                     </div>
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
@@ -36,9 +36,9 @@
                         <input type="submit" value="Login" class="btn btn-danger btn-lg btn-block">
                     </form>
                     <a class="underline text-info" href="{{ route('password.request') }}">
-                        Forgot Your Password?
+                        Esqueceu sua senha?
                     </a>
-                    <a href="#register">Don't have an account? <span class="text-danger">Sign Up</span></a>
+                    <a href="#register">Não tem uma conta? <span class="text-danger">Cadastre!</span></a>
                 </div>
 
                 <div id="register" class="form-action hide">

@@ -16,9 +16,10 @@ class CreateCorrespondentesTable extends Migration
         Schema::create('correspondentes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
+            $table->string('email');
             $table->string('slug');
             $table->unsignedInteger('comarca_id');
-            $table->smallInteger('rating');
+            $table->smallInteger('rating')->default(3);
             $table->timestamps();
         });
 
@@ -48,6 +49,6 @@ class CreateCorrespondentesTable extends Migration
     {
         Schema::dropIfExists('correspondentes');
         Schema::dropIfExists('correspondente_sondagem');
-        Schema::dropIfExists('correspondentes_servico');
+        Schema::dropIfExists('correspondente_servico');
     }
 }

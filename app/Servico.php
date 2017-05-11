@@ -12,4 +12,12 @@ class Servico extends Model
      * @var array
      */
     protected $fillable = [];
+
+    /**
+     * Get the entity
+     */
+    public function diligencias()
+    {
+        return $this->belongsToMany('App\Diligencia');
+    }
 }

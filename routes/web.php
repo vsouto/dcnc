@@ -13,22 +13,36 @@
 
 
 Route::get('/',['as' => 'home', 'uses' => 'PagesController@home']);
+Route::get('dashboard_correspondente',['as' => 'dashboard_correspondente', 'uses' => 'PagesController@dashboard_correspondente']);
+Route::get('dashboard_cliente',['as' => 'dashboard_cliente', 'uses' => 'PagesController@dashboard_cliente']);
 Route::get('dashboard',['as' => 'pages.dashboard', 'uses' => 'PagesController@dashboard']);
-Route::get('financeiro',['as' => 'pages.financeiro', 'uses' => 'PagesController@financeiro']);
+Route::get('financeiro',['as' => 'pages.financeiro', 'uses' => 'PagamentosController@index']);
+Route::get('advogados',['as' => 'advogados.index', 'uses' => 'UsersController@advogados']);
 
 Route::resource('users','UsersController');
-Route::resource('advogados','UsersController');
-Route::resource('clientes','UsersController');
-Route::resource('comarcas','UsersController');
-Route::resource('correspondentes','UsersController');
-Route::resource('diligencias','UsersController');
-Route::resource('emails','UsersController');
-Route::resource('files','UsersController');
-Route::resource('pagamentos','UsersController');
-Route::resource('servicos','UsersController');
-Route::resource('sondagens','UsersController');
-Route::resource('statuses','UsersController');
-Route::resource('tipos','UsersController');
+Route::resource('clientes','ClientesController');
+Route::resource('comarcas','ComarcasController');
+Route::resource('correspondentes','CorrespondentesController');
+Route::resource('diligencias','DiligenciasController');
+Route::resource('emails','EmailsController');
+Route::resource('files','FilesController');
+Route::resource('pagamentos','PagamentosController');
+Route::resource('servicos','ServicosController');
+Route::resource('sondagens','SondagensController');
+Route::resource('statuses','StatusesController');
+Route::resource('tipos','TiposController');
+
+// File upload
+Route::get('/upload', 'FilesController@uploadForm');
+Route::post('/upload', 'FilesController@uploadSubmit');
+
+// Acoes
+Route::get('diligencias/aceitar/{id}',['as' => 'diligencias.aceitar', 'uses' => 'DiligenciasController@aceitar']);
+Route::get('diligencias/checkin/{id}',['as' => 'diligencias.checkin', 'uses' => 'DiligenciasController@checkin']);
+Route::get('diligencias/concluir/{id}',['as' => 'diligencias.concluir', 'uses' => 'DiligenciasController@concluir']);
+Route::get('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' => 'DiligenciasController@resolver']);
+Route::get('diligencias/aprovar/{id}',['as' => 'diligencias.aprovar', 'uses' => 'DiligenciasController@aprovar']);
+Route::get('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' => 'DiligenciasController@devolver']);
 
 Auth::routes();
 

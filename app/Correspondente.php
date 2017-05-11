@@ -29,4 +29,38 @@ class Correspondente extends Model
      * @var array
      */
     protected $fillable = [];
+
+
+    /**
+     * Get the entity
+     */
+    public function comarca()
+    {
+        return $this->belongsTo('App\Comarca');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function diligencias()
+    {
+        return $this->hasMany('App\Diligencia');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function servicos()
+    {
+        return $this->belongsToMany('App\Servico')->withPivot('valor','max');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function user()
+    {
+        return $this->hasOne('App\User');
+    }
+
 }

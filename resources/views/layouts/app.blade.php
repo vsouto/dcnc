@@ -73,7 +73,7 @@
                     </li>
                     <li>
                         <div class="user-pic">
-                            <img src="img/user4.jpg" alt="User">
+                            <img src="{{ asset('img/user4.jpg') }}" alt="User">
                         </div>
                         <div class="details">
                             <strong class="text-danger">Wilson</strong>
@@ -86,7 +86,7 @@
                     </li>
                     <li>
                         <div class="user-pic">
-                            <img src="img/user1.jpg" alt="User">
+                            <img src="{{ asset('img/user1.jpg') }}" alt="User">
                         </div>
                         <div class="details">
                             <strong class="text-danger">Adams</strong>
@@ -99,7 +99,7 @@
                     </li>
                     <li>
                         <div class="user-pic">
-                            <img src="img/user3.jpg" alt="User">
+                            <img src="{{ asset('img/user3.jpg') }}" alt="User">
                         </div>
                         <div class="details">
                             <strong class="text-info">Sam</strong>
@@ -112,7 +112,7 @@
                     </li>
                     <li>
                         <div class="user-pic">
-                            <img src="img/user5.jpg" alt="User">
+                            <img src="{{ asset('img/user5.jpg') }}" alt="User">
                         </div>
                         <div class="details">
                             <strong class="text-info">Jennifer</strong>
@@ -127,7 +127,7 @@
             </li>
             <li class="list-box user-profile hidden-xs">
                 <a href="login.html" class="user-avtar animated rubberBand">
-                    <img src="img/user4.jpg" alt="user avatar">
+                    <img src="{{ asset('img/user4.jpg') }}" alt="user avatar">
                 </a>
             </li>
         </ul>
@@ -146,7 +146,7 @@
             <img src="{{ asset('img/users/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->nome }}">
             <span class="busy"></span>
         </div>
-        <div class="user-name">Welcome {{ Auth::user()->nome }}</div>
+        <div class="user-name">Olá {{ Auth::user()->nome }}</div>
         <ul class="user-links">
             <li>
                 <a href="profile.html">
@@ -172,104 +172,8 @@
     </div>
     <!-- Current User Ends -->
 
-    <!-- Menu start -->
-    <div id='menu'>
-        <ul>
-            <li class="highlight">
-                <a href='{{ route('pages.dashboard') }}'>
-                    <i class="fa fa-desktop"></i>
-                    <span>Dashboard</span>
-                    <span class="current-page"></span>
-                </a>
-            </li>
-            <li class="">
-                <a href='{{ route('diligencias.index') }}'>
-                    <i class="fa fa-folder-open-o"></i>
-                    <span>Diligências</span>
-                    <span class=""></span>
-                </a>
-            </li>
-            <li class="">
-                <a href='{{ route('pages.financeiro') }}'>
-                    <i class="fa fa-money"></i>
-                    <span>Financeiro</span>
-                    <span class=""></span>
-                </a>
-            </li>
-            <li class='has-sub'>
-                <a href='#'>
-                    <i class="fa fa-flask"></i>
-                    <span>Gestão</span>
-                </a>
-                <ul>
-                    <li class="">
-                        <a href='{{ route('advogados.index') }}'>
-                            <i class="fa fa-graduation-cap"></i>
-                            <span>Advogados</span>
-                            <span class=""></span>
-                        </a>
-                    </li>
+    @include('elements.menu')
 
-                    <li class="">
-                        <a href='{{ route('clientes.index') }}'>
-                            <i class="fa fa-institution"></i>
-                            <span>Clientes</span>
-                            <span class=""></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href='{{ route('correspondentes.index') }}'>
-                            <i class="fa fa-group"></i>
-                            <span>Correspondentes</span>
-                            <span class=""></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href='{{ route('users.index') }}'>
-                            <i class="fa fa-user"></i>
-                            <span>Usuários</span>
-                            <span class=""></span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-        </ul>
-    </div>
-    <!-- Menu End -->
-
-    <!-- Freebies Starts -->
-    <div class="freebies">
-
-        <!-- Sidebar Extras -->
-        <div class="sidebar-addons">
-            <ul class="views">
-                <li>
-                    <i class="fa fa-circle-o text-success"></i>
-                    <div class="details">
-                        <p>Signups</p>
-                    </div>
-                    <span class="label label-success">8</span>
-                </li>
-                <li>
-                    <i class="fa fa-circle-o text-info"></i>
-                    <div class="details">
-                        <p>Users Online</p>
-                    </div>
-                    <span class="label label-info">7</span>
-                </li>
-                <li>
-                    <i class="fa fa-circle-o text-danger"></i>
-                    <div class="details">
-                        <p>Images Uploaded</p>
-                    </div>
-                    <span class="label label-danger">4</span>
-                </li>
-            </ul>
-        </div>
-
-    </div>
-    <!-- Freebies Starts -->
 
 </aside>
 <!-- Left sidebar ends -->
@@ -316,13 +220,10 @@
 <script src="{{ asset('js/flot/jquery.flot.orderBar.min.js') }}"></script>
 <script src="{{ asset('js/flot/jquery.flot.pie.min.js') }}"></script>
 
-<!-- JVector Map -->
-<script src="{{ asset('js/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-<script src="{{ asset('js/jvectormap/jquery-jvectormap-usa.js') }}"></script>
-
 <!-- Custom Index -->
 <script src="{{ asset('js/custom.js') }}"></script>
-<script src="{{ asset('js/custom-index.js') }}"></script>
+<script src="{{ asset('js/custom-components.js') }}"></script>
+
 
 <!-- Logout Form -->
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>

@@ -19,7 +19,8 @@ class CreateClientesTable extends Migration
             $table->string('slug');
             $table->string('email');
             $table->string('endereco');
-            $table->string('telefone');
+            $table->string('phone');
+            $table->unsignedInteger('user_id'); // owner
 
             $table->timestamps();
         });

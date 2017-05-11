@@ -13,47 +13,54 @@ class StatusesTableSeeder extends Seeder
     {
         //
         \App\Status::create([
-            'status' => 'Sondagem'
+            'status' => 'Sondagem',
+            'class' => 'sondagem',
         ]);
         \App\Status::create([
-            'status' => 'Aguardando Confirmação'
+            'status' => 'Aguardando Confirmação',
+            'class' => 'aguardando-confirmacao',
         ]);
-
         \App\Status::create([
-            'status' => 'Aguardando Checkin'
+            'status' => 'Aguardando Checkin',
+            'class' => 'info-bg',
         ]);
-
         \App\Status::create([
-            'status' => 'Aguardando Conclusão'
+            'status' => 'Aguardando Conclusão',
+            'class' => 'aguardando-conclusao',
         ]);
-
         \App\Status::create([
-            'status' => 'Sem Checkin'
+            'status' => 'Sem Checkin',
+            'class' => 'sem-checkin',
         ]);
-
         \App\Status::create([
-            'status' => 'Em Negociação'
+            'status' => 'Em Negociação',
+            'class' => 'em-negociacao',
         ]);
-
         \App\Status::create([
-            'status' => 'Atrasada'
-        ]);
-
-        \App\Status::create([
-            'status' => 'Em Revisão'
+            'status' => 'Atrasada',
+            'class' => 'atrasada',
         ]);
 
         \App\Status::create([
-            'status' => 'Devolvida'
+            'status' => 'Em Revisão',
+            'class' => 'success-bg',
+        ]);
+
+        \App\Status::create([
+            'status' => 'Devolvida',
+            'class' => 'brown-bg',
         ]);
         \App\Status::create([
-            'status' => 'Pagamento Autorizado'
+            'status' => 'Pagamento Autorizado',
+            'class' => 'pagamento-autorizado',
         ]);
         \App\Status::create([
-            'status' => 'Efetivada'
+            'status' => 'Efetivada',
+            'class' => 'efetivada',
         ]);
         \App\Status::create([
-            'status' => 'Cancelada'
+            'status' => 'Cancelada',
+            'class' => 'danger-bg',
         ]);
 
 

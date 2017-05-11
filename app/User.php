@@ -26,4 +26,31 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    /**
+     * Get the entity
+     */
+    public function cliente()
+    {
+        return $this->belongsTo('App\Cliente');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function files()
+    {
+        return $this->hasMany('App\File');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function correspondente()
+    {
+        return $this->belongsTo('App\Correspondente');
+    }
+
+
 }

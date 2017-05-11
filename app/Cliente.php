@@ -29,4 +29,12 @@ class Cliente extends Model
      * @var array
      */
     protected $fillable = [];
+
+    /**
+     * Get the entity
+     */
+    public function advogados()
+    {
+        return $this->hasMany('App\User');
+    }
 }

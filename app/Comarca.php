@@ -12,4 +12,13 @@ class Comarca extends Model
      * @var array
      */
     protected $fillable = [];
+
+
+    /**
+     * Get the entity
+     */
+    public function correspondentes()
+    {
+        return $this->hasMany('App\Correspondente');
+    }
 }
