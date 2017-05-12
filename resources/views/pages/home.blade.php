@@ -157,7 +157,7 @@
                                                     <span class="text-primary">{{ $diligencia->total }}</span>
                                                 </td>
                                                 <td class=" ">
-                                                    <span class="btn btn-sm btn-info btn-rounded btn-transparent">
+                                                    <span class="btn btn-sm btn-info btn-rounded btn-transparent view-diligencia" data-ref="{{ route('diligencias.show',['id' => $diligencia->id]) }}">
                                                         <i class="fa fa-eye"></i></span>
                                                 </td>
                                             </tr>
@@ -370,4 +370,13 @@
     <script src="{{ asset('js/flot/custom/stacked-dashboard.js') }}"></script>
 
     <script src="{{ asset('js/custom-index.js') }}"></script>
+
+    <script>
+        $('.view-diligencia').click(function(){
+
+            var ref = $(this).data('ref');
+
+            location.href = ref;
+        });
+    </script>
 @endsection
