@@ -8,7 +8,7 @@
                 <span class="{{ isActive('home', 'current-page') }}"></span>
             </a>
         </li>
-        @if (Auth::user()->level >= 2)
+        @if (Auth::user()->level >= 3)
         <li class="{{ isActive('diligencias.index', 'highlight') }}">
             <a href='{{ getUserRoute('diligencias') }}'>
                 <i class="fa fa-folder-open-o"></i>

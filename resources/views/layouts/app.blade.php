@@ -224,7 +224,6 @@
 <script src="{{ asset('js/custom.js') }}"></script>
 <script src="{{ asset('js/custom-components.js') }}"></script>
 
-
 <!-- Logout Form -->
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
 

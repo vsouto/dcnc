@@ -117,6 +117,9 @@ function getUserRoute($menu){
             if ($user_level == 1)
                 return route('dashboard_correspondente');
 
+            if ($user_level == 2)
+                return route('dashboard_cliente');
+
             break;
         case 'diligencias':
             if ($user_level >= 3)

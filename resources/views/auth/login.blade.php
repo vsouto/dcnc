@@ -38,7 +38,7 @@
                     <a class="underline text-info" href="{{ route('password.request') }}">
                         Esqueceu sua senha?
                     </a>
-                    <a href="#register">Não tem uma conta? <span class="text-danger">Cadastre!</span></a>
+                    <a href="#register">NÃ£o tem uma conta? <span class="text-danger">Cadastre!</span></a>
                 </div>
 
                 <div id="register" class="form-action hide">

@@ -115,7 +115,7 @@
                                                         <label class="col-lg-6 control-label">Prazo</label>
                                                         <div class="col-lg-6">
                                                             {{ Form::text('prazo', null, [
-                                                                'class' => 'form-control',
+                                                                'class' => 'form-control datepicker',
                                                                 'id'    => 'prazo'
                                                                 ]) }}
                                                         </div>
@@ -270,15 +270,18 @@
 
 @section('footer')
 
-    <script src="{{ asset('js/datetimepicker.min.js') }}"></script>
+
+    <link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" media="screen">
 
     <script>
         $('#new').click(function(){
             location.href = '{{ route('diligencias.create') }}';
         });
 
-        $(function () {
-            $('#prazo').datetimepicker();
+        $( "#prazo" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
         });
 
     </script>

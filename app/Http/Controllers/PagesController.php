@@ -342,7 +342,7 @@ class PagesController extends Controller
      */
     public function dashboard_cliente()
     {
-        if (!Auth::user()->advogado_id || empty(Auth::user()->advogado_id))
+        if (!Auth::user()->cliente_id || empty(Auth::user()->cliente_id))
             return abort(403, 'Existe um erro em sua conta');
 
         # Some params may be predefined, other can be controlled using grid components
@@ -350,8 +350,7 @@ class PagesController extends Controller
             ->with('servicos')
             ->with('correspondente')
             ->with('advogado')
-            ->whereNotNull('cliente_id')
-            ->where('cliente_id',Auth::user()->correspondente_id)
+            ->where('advogado_id',Auth::user()->id)
             ->newQuery();
 
         # Instantiate & Configure Grid
