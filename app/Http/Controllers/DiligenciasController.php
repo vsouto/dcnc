@@ -212,7 +212,7 @@ class DiligenciasController extends Controller
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
 
-                            if (!$row->getSrc()->advogado)
+                            if (!$row->getSrc()->advogado || !$row->getSrc()->advogado->cliente)
                                 return '';
 
                             return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.$row->getSrc()->advogado->cliente->nome .'</span>';
