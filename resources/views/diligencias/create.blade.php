@@ -59,18 +59,16 @@
                                         <div class="blog-body">
                                             <fieldset>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Cliente</label>
+                                                    <label class="col-lg-6 control-label">Cliente / Advogado</label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
                                                             {{ Form::hidden('advogado_id', Auth::user()->id, [
                                                                     'class' => 'form-control',
-                                                                    'id'    => 'cliente_id'
+                                                                    'id'    => 'advogado_id'
                                                                     ]) }}
-                                                            {{ Form::text('cliente', Auth::user()->nome, [
+                                                            {{ Form::select('advogados', $advogados, null, [
                                                                 'class' => 'form-control',
-                                                                'id'    => 'cliente',
-                                                                'disabled' => 'disabled'
-                                                                ]) }}
+                                                                'id' => 'advogados-select']) }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -238,9 +236,6 @@
                                 </div>
                                 <!-- Widget ends -->
                             </div>
-
-
-
                             <div class="form-group">
                                 <div class="col-lg-6 col-lg-offset-6">
                                     <div class="col-md-12">
@@ -274,6 +269,11 @@
     <link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" media="screen">
 
     <script>
+
+        $('#advogados-select').change(function(){
+            $('#advogado_id').val( $(this).val());
+        });
+
         $('#new').click(function(){
             location.href = '{{ route('diligencias.create') }}';
         });

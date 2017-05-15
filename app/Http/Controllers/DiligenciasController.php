@@ -331,13 +331,13 @@ class DiligenciasController extends Controller
 
         $statuses = Status::pluck('status','id');
 
-        //$advogados = Advogado::pluck('nome','id');
+        $advogados = User::getAdvogadosList();
 
         $users = User::pluck('nome','id');
 
         $tipos = Tipo::getList();
 
-        return view('diligencias.create',compact('users', 'statuses','tipos'));
+        return view('diligencias.create',compact('users', 'statuses','tipos','advogados'));
     }
 
     /**
@@ -369,6 +369,7 @@ class DiligenciasController extends Controller
             'prazo.required' => 'Você precisa digitar um Prazo.',
             'solicitante.required' => 'Você precisa digitar um Solicitante.',
             'orientacoes.required' => 'Você precisa digitar um mínimo de Orientações.',
+            'advogado_id.required' => 'Você precisa selecionar um advogado cliente.',
         ]);
 
         $data = Input::only(

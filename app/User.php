@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -52,5 +53,34 @@ class User extends Authenticatable
         return $this->belongsTo('App\Correspondente');
     }
 
+    /**
+     * Scope a query
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAdvogado($query)
+    {
+        return $query->whereNotNull('cliente_id');
+    }
 
+    public static function getAdvogadosList()
+    {
+        $advogados = User::advogado()
+            ->join('clientes', 'clientes.id', '=', 'users.cliente_id')
+            ->select('users.id','clientes.nome as empresa','users.nome as nome')
+            ->get();
+
+        $list = [];
+
+        foreach ($advogados as $advogado) {
+            $list[$advogado['id']] = $advogado['empresa'] . ' - ' . $advogado['nome'];
+        }
+
+        $default_option = [null => 'Selecione uma opção'];
+
+        $list = $default_option + $list;
+
+        return $list;
+    }
 }
