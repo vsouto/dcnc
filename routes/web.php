@@ -17,7 +17,9 @@ Route::get('dashboard_correspondente',['as' => 'dashboard_correspondente', 'uses
 Route::get('dashboard_cliente',['as' => 'dashboard_cliente', 'uses' => 'PagesController@dashboard_cliente']);
 Route::get('dashboard',['as' => 'pages.dashboard', 'uses' => 'PagesController@dashboard']);
 Route::get('financeiro',['as' => 'pages.financeiro', 'uses' => 'PagamentosController@index']);
-Route::get('advogados',['as' => 'advogados.index', 'uses' => 'UsersController@advogados']);
+
+// get correspondentes map
+Route::get('correspondentes/get',['as' => 'correspondentes.get', 'uses' => 'CorrespondentesController@get']);
 
 Route::resource('users','UsersController');
 Route::resource('clientes','ClientesController');
@@ -31,6 +33,7 @@ Route::resource('servicos','ServicosController');
 Route::resource('sondagens','SondagensController');
 Route::resource('statuses','StatusesController');
 Route::resource('tipos','TiposController');
+Route::resource('advogados','AdvogadosController');
 
 // File upload
 Route::get('/upload', 'FilesController@uploadForm');

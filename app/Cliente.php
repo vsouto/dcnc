@@ -28,7 +28,7 @@ class Cliente extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['nome','slug','email','endereco','phone','user_id'];
 
     /**
      * Get the entity
@@ -36,5 +36,13 @@ class Cliente extends Model
     public function advogados()
     {
         return $this->hasMany('App\User');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function admin()
+    {
+        return $this->belongsTo('App\User','user_id');
     }
 }

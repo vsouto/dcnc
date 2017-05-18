@@ -13,8 +13,8 @@ class Diligencia extends Model
      * @var array
      */
     protected $fillable = [
-        'titulo','descricao','advogado_id','orgao','local_orgao','vara','num_integracao','num_processo',
-        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes'
+        'comarca_id','titulo','descricao','advogado_id','orgao','local_orgao','vara','num_integracao','num_processo',
+        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id'
     ];
 
     protected $dates = ['created_at','updated_at','prazo'];

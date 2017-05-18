@@ -66,7 +66,7 @@
                         <div class="blog-body">
                             <div class="row">
                                 <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-                                    <div id="us-map" class="chart-height-lg"></div>
+                                    <div id="map" class="chart-height-lg"></div>
                                 </div>
                                 <div class="visitors-total">
                                     <h3>{{ $correspondentes_count }}</h3>
@@ -120,16 +120,11 @@
                                 <table class="table table-condensed table-striped table-hover table-bordered pull-left dataTable" id="data-table" aria-describedby="data-table_info">
                                     <thead>
                                     <tr role="row">
-                                        <th style="width: 23px;" class="sorting_asc" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-sort="ascending" aria-label="
-															: activate to sort column descending">
-                                            <input type="checkbox">
-                                        </th>
                                         <th style="width: 149px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending">Prazo</th>
                                         <th style="width: 191px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Inv. No: activate to sort column ascending">Proc. Nº</th>
                                         <th style="width: 539px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Client Details: activate to sort column ascending">Cliente</th>
                                         <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Status</th>
                                         <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Urgência</th>
-                                        <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Serviços
                                         <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Ações
                                         </th>
                                     </tr>
@@ -137,9 +132,6 @@
                                     <tbody role="alert" aria-live="polite" aria-relevant="all">
                                         @foreach($diligencias_destaque as $diligencia)
                                             <tr class="gradeX odd">
-                                                <td class="  sorting_1">
-                                                    <input type="checkbox">
-                                                </td>
                                                 <td class=" ">{{ $diligencia->prazo->diffForHumans() }}</td>
                                                 <td class=" ">{{ $diligencia->num_processo }}</td>
                                                 <td class=" ">
@@ -148,13 +140,10 @@
                                                     </a>
                                                 </td>
                                                 <td class=" ">
-                                                    <span class="label label-info {{$diligencia->status->class }}">{{ $diligencia->status->status or ''}}</span>
+                                                    <span class="badge {{$diligencia->status->class }}">{{ $diligencia->status->status or ''}}</span>
                                                 </td>
                                                 <td class=" ">
                                                     <span class="label label-info">{{ $diligencia->urgencia }}</span>
-                                                </td>
-                                                <td class=" ">
-                                                    <span class="text-primary">{{ $diligencia->total }}</span>
                                                 </td>
                                                 <td class=" ">
                                                     <span class="btn btn-sm btn-info btn-rounded btn-transparent view-diligencia" data-ref="{{ route('diligencias.show',['id' => $diligencia->id]) }}">
@@ -240,136 +229,23 @@
 <!-- Right sidebar starts -->
 <div class="right-sidebar">
 
-    <!-- Addons starts -->
-    <div class="add-on clearfix">
-        <div class="add-on-wrapper">
-            <h5>Tasks</h5>
-            <section class="todo">
-                <fieldset class="todo-list">
-                    <label class="todo-list-item info">
-                        <input type="checkbox" class="todo-list-cb">
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">Attend seminar</span>
-                    </label>
-                    <label class="todo-list-item danger">
-                        <input type="checkbox" class="todo-list-cb">
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">UX workshop</span>
-                    </label>
-                    <label class="todo-list-item success">
-                        <input type="checkbox" class="todo-list-cb" checked>
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">Pickup kids @4pm</span>
-                    </label>
-                    <label class="todo-list-item danger">
-                        <input type="checkbox" class="todo-list-cb" checked>
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">Send wishes</span>
-                    </label>
-                    <label class="todo-list-item success">
-                        <input type="checkbox" class="todo-list-cb">
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">Redesign Application</span>
-                    </label>
-                    <label class="todo-list-item info">
-                        <input type="checkbox" class="todo-list-cb" checked>
-                        <span class="todo-list-mark"></span>
-                        <span class="todo-list-desc">Send an email</span>
-                    </label>
-                </fieldset>
-            </section>
-        </div>
-    </div>
-    <!-- Addons ends -->
-
-    <!-- Addons starts -->
-    <div class="add-on clearfix">
-        <div class="add-on-wrapper clearfix">
-            <h5>Notifications</h5>
-            <a href="#" class="btn btn-xs btn-success" id="success">Success</a>
-            <a href="#" class="btn btn-xs btn-danger" id="error">Error</a>
-            <a href="#" class="btn btn-xs btn-info" id="custom">Custom</a>
-            <a href="#" class="btn btn-xs btn-warning" id="notification">Standard</a>
-            <a href="#" class="btn btn-xs btn-fb" id="forever">Persistent</a>
-            <a href="#" class="btn btn-xs btn-linkedin" id="delay">Hide in 10 secs</a>
-        </div>
-    </div>
-    <!-- Addons ends -->
-
-    <!-- Addons starts -->
-    <div class="add-on clearfix">
-        <h5>Usage</h5>
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="light-grey-bg">
-                    <div class="spacer-xs">
-                        <p class="center-align-text text-primary no-margin">MEMORY</p>
-                        <p class="center-align-text text-primary">10 GB</p>
-                        <ul class="cpu-memory">
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                            <li class="cpu">&nbsp;</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="light-grey-bg">
-                    <div class="spacer-xs">
-                        <p class="center-align-text text-black no-margin">CPU</p>
-                        <p class="center-align-text text-black">59.5%</p>
-                        <ul class="cpu-memory">
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                            <li class="memory">&nbsp;</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Addons ends -->
 
 </div>
 <!-- Right sidebar ends -->
+    @include('elements.scripts')
+
 @endsection
 
 @section('footer')
 
-    <!-- JVector Map -->
-    <script src="{{ asset('js/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-    <script src="{{ asset('js/jvectormap/jquery-jvectormap-usa.js') }}"></script>
-
-    <script src="{{ asset('js/jvectormap/maps/brazil.js') }}"></script>
-
     <!-- chart -->
     <script src="{{ asset('js/flot/custom/stacked-dashboard.js') }}"></script>
 
-    <script src="{{ asset('js/custom-index.js') }}"></script>
+    <script src="{{ asset('js/maps/brazil.js') }}"></script>
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{ Config::get('constants.MAPS_KEY') }}&callback=initMap">
+    </script>
 
     <script>
         $('.view-diligencia').click(function(){

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Support\Facades\DB;
 
 class Correspondente extends Model
 {
@@ -28,7 +29,7 @@ class Correspondente extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['nome','rating','comarca_id','slug'];
 
 
     /**
@@ -52,7 +53,7 @@ class Correspondente extends Model
      */
     public function servicos()
     {
-        return $this->belongsToMany('App\Servico')->withPivot('valor','max');
+        return $this->belongsToMany('App\Servico')->withPivot('valor');
     }
 
     /**
@@ -63,4 +64,21 @@ class Correspondente extends Model
         return $this->hasOne('App\User');
     }
 
+    /**
+     * Get Best Correspondente For Diligencia
+     *
+     * @param $comarca_id
+     * @return mixed
+     */
+    public static function getBestCorrespondenteForDiligencia($comarca_id,$servico_id)
+    {
+        // Busca o correspondente desta comarca, de maior rating e de menor valor do serviço
+        $correspondente = Correspondente::where('comarca_id',$comarca_id)
+            ->with('servicos')
+            ->has('servicos',$servico_id)
+            ->orderBy('rating','DESC')
+            ->first();
+
+        return $correspondente;
+    }
 }

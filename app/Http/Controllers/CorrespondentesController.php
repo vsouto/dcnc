@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Comarca;
 use App\Correspondente;
+use App\Servico;
+use App\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
 use Nayjest\Grids\Components\FiltersRow;
@@ -37,6 +41,8 @@ class CorrespondentesController extends Controller
         # Some params may be predefined, other can be controlled using grid components
         $query = (new Correspondente())
             ->with('servicos')
+            ->with('user')
+            ->has('user')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -63,9 +69,16 @@ class CorrespondentesController extends Controller
                         ->setSortable(true)
                     ,
                     (new FieldConfig)
-                        ->setName('email')
+                        ->setName('user')
                         ->setLabel('Email')
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val->email)
+                                return '';
+
+                            return $val->email;
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('comarca_id')
@@ -83,7 +96,7 @@ class CorrespondentesController extends Controller
                     ,
                     (new FieldConfig)
                         ->setName('servicos')
-                        ->setLabel('Servicos')
+                        ->setLabel('Serviços')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
                             if (!$val)
@@ -106,7 +119,7 @@ class CorrespondentesController extends Controller
 
                             $servicos = '';
                             foreach ($val as $servico) {
-                                $servicos .= 'R$ ' . $servico->ideal . '<br>';
+                                $servicos .= 'R$ ' . $servico->pivot->valor . '<br>';
                             }
                             return $servicos;
                         })
@@ -145,14 +158,12 @@ class CorrespondentesController extends Controller
                                     ,
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
-                                    (new HtmlTag())
+                                    (new HtmlTag)
+                                        ->setContent('<span class="glyphicon glyphicon-refresh" id="filter-btn"></span> Filter ')
                                         ->setTagName('button')
                                         ->setAttributes([
-                                            'type' => 'submit',
-                                            # Some bootstrap classes
-                                            'class' => 'btn btn-primary'
-                                        ])
-                                        ->setContent('Filter')
+                                            'class' => 'btn btn-success btn-sm btn-grid'
+                                        ]),
                                 ])
                                 # Components may have some placeholders for rendering children there.
                                 ->setRenderSection(THead::SECTION_BEGIN)
@@ -183,6 +194,11 @@ class CorrespondentesController extends Controller
     public function create()
     {
         //
+        $comarcas = Comarca::pluck('comarca','id');
+
+        $servicos = Servico::get();
+
+        return view('correspondentes.create',compact('comarcas','servicos'));
     }
 
     /**
@@ -194,6 +210,45 @@ class CorrespondentesController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'comarca_id' => 'required',
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+            'senha' => 'required|min:4',
+        ]);
+
+        $data = Input::all();
+
+        $correspondente = Correspondente::create([
+            'nome' => $data['nome'],
+            'comarca_id' => $data['comarca_id']
+        ]);
+
+        if ($correspondente) {
+            foreach ($data['servico'] as $key => $servico) {
+                if (!$servico['valor'] || empty($servico['valor']))
+                    continue;
+
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor']]);
+            }
+        }
+        $user = User::create([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['senha']),
+            'phone' => $data['phone'],
+            'endereco' => $data['endereco'],
+            'level' => '1',
+            'correspondente_id' => $correspondente->id
+        ]);
+
+        if ($user)
+            $message = 'Sucesso';
+        else
+            $message = 'Fail!';
+
+        return redirect()->action('CorrespondentesController@index')
+                ->with('message',$message);
     }
 
     /**
@@ -239,5 +294,11 @@ class CorrespondentesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function get()
+    {
+
+        
     }
 }

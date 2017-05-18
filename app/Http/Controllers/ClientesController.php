@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
 use Nayjest\Grids\Components\FiltersRow;
@@ -35,6 +38,8 @@ class ClientesController extends Controller
         //
         # Some params may be predefined, other can be controlled using grid components
         $query = (new Cliente())
+            ->with('admin')
+            ->has('admin')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -76,8 +81,8 @@ class ClientesController extends Controller
                         ->setSortable(true)
                     ,
                     (new FieldConfig)
-                        ->setName('advogado')
-                        ->setLabel('Admin')
+                        ->setName('admin')
+                        ->setLabel('Responsável')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
                             if (!$val)
@@ -120,14 +125,12 @@ class ClientesController extends Controller
                                     ,
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
-                                    (new HtmlTag())
+                                    (new HtmlTag)
+                                        ->setContent('<span class="glyphicon glyphicon-refresh" id="filter-btn"></span> Filter ')
                                         ->setTagName('button')
                                         ->setAttributes([
-                                            'type' => 'submit',
-                                            # Some bootstrap classes
-                                            'class' => 'btn btn-primary'
-                                        ])
-                                        ->setContent('Filter')
+                                            'class' => 'btn btn-success btn-sm btn-grid'
+                                        ]),
                                 ])
                                 # Components may have some placeholders for rendering children there.
                                 ->setRenderSection(THead::SECTION_BEGIN)
@@ -141,7 +144,7 @@ class ClientesController extends Controller
                         # and renders results as table row.
                         # By default there is a sum.
                             new TotalsRow([
-                                'diligencias',
+                                'clientes',
                             ])
                         )
                 ])
@@ -158,6 +161,9 @@ class ClientesController extends Controller
     public function create()
     {
         //
+        $users = User::whereNull('cliente_id')->pluck('nome','id');
+
+        return view('clientes.create',compact('users'));
     }
 
     /**
@@ -169,6 +175,40 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'user_id' => 'required',
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+            'senha' => 'required|min:4',
+        ]);
+
+        $data = Input::all();
+
+        $cliente = Cliente::create([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'endereco' => $data['endereco'],
+            'phone' => $data['phone'],
+            'user_id' => $data['user_id'],
+        ]);
+
+        $user = User::create([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['senha']),
+            'phone' => $data['phone'],
+            'endereco' => $data['endereco'],
+            'level' => '2',
+            'cliente_id' => $cliente->id
+        ]);
+
+        if ($user)
+            $message = 'Sucesso';
+        else
+            $message = 'Fail!';
+
+        return redirect()->action('AdvogadosController@index')
+            ->with('message',$message);
     }
 
     /**

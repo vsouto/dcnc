@@ -12,5 +12,6 @@ return [
     'PAGE_TITLE' => 'DCNC Advogados',
     'PAGE_DESCRIPTION' => 'Bem vindo ao sistema da DCNC Advogados.',
 
+    'MAPS_KEY' => 'AIzaSyAr6ZaQjQwJg-eLOOVGHqxotPK_9GRD8ak',
 
 ];

@@ -16,7 +16,7 @@ class CreateCorrespondentesTable extends Migration
         Schema::create('correspondentes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
-            $table->string('email');
+            //$table->string('email'); // email é do user
             $table->string('slug');
             $table->unsignedInteger('comarca_id');
             $table->smallInteger('rating')->default(3);
@@ -35,7 +35,6 @@ class CreateCorrespondentesTable extends Migration
             $table->unsignedInteger('servico_id');
             $table->unsignedInteger('correspondente_id');
             $table->double('valor');
-            $table->double('max'); // valor maximo
             $table->timestamps();
         });
     }

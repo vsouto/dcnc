@@ -60,7 +60,7 @@
                         </div>
                     @endif
                     <div class="col-md-12 col-sm-12 col-sx-12">
-                        <div class="panel no-margin">
+                        <div class="panel no-margin"  id="printable">
                             <div class="panel-heading">
                                 <h4 class="panel-title">Diligência <span class="text-danger">#{{ $diligencia->id }}</span>
                                 </h4>
@@ -75,7 +75,7 @@
                                     </div>
                                     <div class="col-md-6 col-sm-12 col-sx-12">
                                         <div class="pull-right">
-                                            <button type="button" class="btn btn-info"><i class="fa fa-print"></i> <span class="hidden-xs">Print</span></button>
+                                            <button type="button" class="btn btn-info" id="print"><i class="fa fa-print"></i> <span class="hidden-xs">Print</span></button>
                                             <button type="button" class="btn btn-success"><i class="fa fa-save"></i> <span class="hidden-xs">Save</span></button>
                                             <button type="button" class="btn btn-danger"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></button>
                                         </div>
@@ -139,10 +139,8 @@
                                             <td id="invoice_vessel_imo">{{ $diligencia->prazo }}</td>
                                         </tr>
                                         <tr>
-                                            <td class="invoice_info_header_td info"><strong>Tipo</strong></td>
-                                            <td id="invoice_vessel">{{ $diligencia->tipo->tipo }}</td>
                                             <td class="invoice_info_header_td info"><strong>Solicitante</strong></td>
-                                            <td id="invoice_vessel_imo">{{ $diligencia->solicitante }}</td>
+                                            <td id="invoice_vessel_imo" colspan="3">{{ $diligencia->solicitante }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Réu</strong></td>
@@ -160,58 +158,86 @@
                                             <td class="invoice_info_header_td info"><strong>Orientações</strong></td>
                                             <td id="invoice_vessel" colspan="3">{{ $diligencia->orientacoes }}</td>
                                         </tr>
+                                        <tr>
+                                            <td class="invoice_info_header_td info"><strong>Status</strong></td>
+                                            <td id="invoice_vessel" colspan="3"><span class='badge {{ $diligencia->status->class}} edit-status'>{{ $diligencia->status->status}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="invoice_info_header_td info"><strong>Correspondente</strong></td>
+                                            <td id="invoice_vessel" colspan="3">
+                                                @if ($diligencia->correspondente)
+                                                    {{ $diligencia->correspondente->nome }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                     <br>
                                     <br>
 
                                     <h4><strong>Serviços</strong></h4>
-                                    <table class="table table-striped table-bordered table-hover no-margin">
-                                        <thead>
-                                        <tr>
-                                            <th style="width:10%">#</th>
-                                            <th style="width:20%">Serviço</th>
-                                            <th style="width:40%">Descrição</th>
-                                            <th style="width:10%">Valor</th>
-                                            <th style="width:10%">Total</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @if ($diligencia->servicos)
-                                            @foreach ($diligencia->servicos as $servico)
-                                                <tr>
-                                                    <td>{{ $servico->id }}</td>
-                                                    <td>{{ $servico->servico }}</td>
-                                                    <td>
-                                                        <span class="text-info">{{ $servico->descricao }}</span>
-                                                    </td>
-                                                    <td>R$ </td>
-                                                    <td>00$</td>
-                                                </tr>
-                                            @endforeach
-                                        @else
+                                    @if ($diligencia->servicos->count() > 0 && $diligencia->correspondente)
+                                        <table class="table table-striped table-bordered table-hover no-margin">
+                                            <thead>
                                             <tr>
-                                                <td colspan="4">Sem serviços incluídos.</td>
+                                                <th style="width:10%">#</th>
+                                                <th style="width:20%">Serviço</th>
+                                                <th style="width:40%">Descrição</th>
+                                                <th style="width:10%">Valor</th>
+                                                <th style="width:10%">Total</th>
                                             </tr>
-                                        @endif
-                                        <tr>
-                                            <td class="total" colspan="4">Subtotal</td>
-                                            <td>00$</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="total" colspan="4">Tax (0%)</td>
-                                            <td>00$</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="total" colspan="4">Discount</td>
-                                            <td>0%</td>
-                                        </tr>
-                                        <tr class="warning">
-                                            <td class="total text-warning" colspan="4"><h5>Total</h5></td>
-                                            <td class="hidden-phone text-info"><h4>00$</h4></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                            <?php $total = 0; ?>
+                                            @foreach ($diligencia->servicos as $servico)
+                                                <?php $servico_correspondente = $diligencia->correspondente->servicos()->where('servico_id',$servico->id)->first(); ?>
+                                                @if (!$servico_correspondente)
+                                                    <tr>
+                                                        <td>{{ $servico->id }}</td>
+                                                        <td>{{ $servico->servico }}</td>
+                                                        <td>
+                                                            <span class="text-danger">Alerta: O correspondente não tem este serviço!</span>
+                                                        </td>
+                                                        <td>R$ </td>
+                                                        <td></td>
+                                                    </tr>
+                                                @else
+                                                    <?php $valor = $diligencia->correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor; ?>
+                                                    <?php $total += $valor ?>
+                                                    <tr>
+                                                        <td>{{ $servico->id }}</td>
+                                                        <td>{{ $servico->servico }}</td>
+                                                        <td>
+                                                            <span class="text-info">{{ $servico->descricao }}</span>
+                                                        </td>
+                                                        <td>R$ {{ $valor }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                            <tr>
+                                                <td class="total" colspan="4">Subtotal</td>
+                                                <td>R$ {{ $total }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="total" colspan="4">Taxas</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr class="warning">
+                                                <td class="total text-warning" colspan="4"><h5>Total</h5></td>
+                                                <td class="hidden-phone text-info"><h4>R$ {{ $total }}</h4></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    @else
+                                        <div class="alert alert-danger alert-white rounded">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                                            <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
+                                            <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência.
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -299,40 +325,47 @@
                                 <br>
                                 <br>
                                 @if ($diligencia->status_id == 6 && Auth::user()->level >= 5)
-                                    Selecione manualmente um correspondente para esta diligência.
-                                    <br>
                                     <h4>Correspondentes Recomendados</h4>
-                                    <table class="table table-hover no-margin">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Nome</th>
-                                            <th>Comarca</th>
-                                            <th>Telefone</th>
-                                            <th>Email</th>
-                                            <th>Endereço</th>
-                                            <th>Avaliação</th>
-                                            <th>Valor</th>
-                                            <th>Selecionar</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach ($correspondentes_recomendados as $correspondente)
-                                            <?php if (!$correspondente->user) { continue; } ?>
+                                    @if(!$correspondentes_recomendados)
+                                        <div class="alert alert-danger alert-white rounded">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                                            <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
+                                            <strong>Alerta:</strong> Não foram encontrados correspondentes ou existem erros nesta Diligência!
+                                        </div>
+                                    @else
+                                        <table class="table table-hover no-margin">
+                                            <thead>
                                             <tr>
-                                                <td class="danger">{{ $correspondente->id }}</td>
-                                                <td class="warning">{{ $correspondente->nome }}</td>
-                                                <td class="info">{{ $correspondente->comarca->comarca }}</td>
-                                                <td class="success">{{ $correspondente->user->phone }}</td>
-                                                <td class="success">{{ $correspondente->user->email }}</td>
-                                                <td class="success">{{ $correspondente->user->endereco }}</td>
-                                                <td class="success">{{ $correspondente->rating }}</td>
-                                                <td class="success">{{ $correspondente->valor }}</td>
-                                                <td class="success"><button type="button" class="btn btn-info btn-rounded btn-transparent">Selecionar</button></td>
+                                                <th>#</th>
+                                                <th>Nome</th>
+                                                <th>Comarca</th>
+                                                <th>Telefone</th>
+                                                <th>Email</th>
+                                                <th>Endereço</th>
+                                                <th>Avaliação</th>
+                                                <th>Valor</th>
+                                                <th>Selecionar</th>
                                             </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                            @foreach ($correspondentes_recomendados as $correspondente)
+                                                <?php if (!$correspondente->user) { continue; } ?>
+                                                <tr>
+                                                    <td class="danger">{{ $correspondente->id }}</td>
+                                                    <td class="warning">{{ $correspondente->nome }}</td>
+                                                    <td class="info">{{ $correspondente->comarca->comarca }}</td>
+                                                    <td class="success">{{ $correspondente->user->phone }}</td>
+                                                    <td class="success">{{ $correspondente->user->email }}</td>
+                                                    <td class="success">{{ $correspondente->user->endereco }}</td>
+                                                    <td class="success">{{ $correspondente->rating }}</td>
+                                                    <td class="success">{{ $correspondente->valor }}</td>
+                                                    <td class="success"><button type="button" class="btn btn-info btn-rounded btn-transparent">Selecionar</button></td>
+                                                </tr>
+                                            @endforeach
+
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 @endif
                             </div>
                         </div>
@@ -379,6 +412,12 @@
 
             location.href = '{{ route('diligencias.concluir', ['id' => $diligencia->id]) }}';
         });
+
+        $('#print').click(function(){
+
+            PrintElem( $('#printable'));
+        });
+
 
     </script>
 @endsection

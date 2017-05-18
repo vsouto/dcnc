@@ -19,11 +19,12 @@ class CreateDiligenciasTable extends Migration
             $table->text('descricao');
             $table->string('num_integracao')->nullable();
             $table->dateTime('prazo');
-            $table->unsignedInteger('tipo_id')->default('1'); // (A)udiencia, (D)iligência
+            //$table->unsignedInteger('tipo_id')->default('1'); // (A)udiencia, (D)iligência
             $table->unsignedInteger('status_id')->default(1); // current status
             $table->unsignedInteger('advogado_id'); // autor
             $table->string('solicitante'); // advogado solicitante
             $table->unsignedInteger('correspondente_id')->nullable(); //
+            $table->unsignedInteger('comarca_id')->nullable(); //
             $table->text('reu'); // infos do reu
             $table->string('num_processo'); //
             $table->string('orgao'); //

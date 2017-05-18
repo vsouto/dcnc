@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'level', 'phone'
+        'nome', 'email', 'password', 'level', 'phone','correspondente_id','endereco','avatar','cliente_id'
     ];
 
     /**
@@ -77,7 +77,7 @@ class User extends Authenticatable
             $list[$advogado['id']] = $advogado['empresa'] . ' - ' . $advogado['nome'];
         }
 
-        $default_option = [null => 'Selecione uma opção'];
+        $default_option = ['0' => 'Selecione uma opção'];
 
         $list = $default_option + $list;
 

@@ -61,3 +61,11 @@
     </div>
 @endsection
 
+@section('footer')
+    <script>
+
+        $('#new').click(function(){
+            location.href = '{{ route('correspondentes.create') }}';
+        });
+    </script>
+@endsection

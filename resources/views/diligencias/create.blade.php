@@ -59,7 +59,17 @@
                                         <div class="blog-body">
                                             <fieldset>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Cliente / Advogado</label>
+                                                    <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-select-grouper">
+                                                            {{ Form::select('comarca_id', $comarcas, null, [
+                                                                'class' => 'form-control',
+                                                                'id' => 'comarcas-select']) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Cliente / Advogado <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
                                                             {{ Form::hidden('advogado_id', Auth::user()->id, [
@@ -110,7 +120,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-lg-6 control-label">Prazo</label>
+                                                        <label class="col-lg-6 control-label">Prazo <span class="text text-danger"> *</span></label>
                                                         <div class="col-lg-6">
                                                             {{ Form::text('prazo', null, [
                                                                 'class' => 'form-control datepicker',
@@ -118,18 +128,9 @@
                                                                 ]) }}
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label class="col-lg-6 control-label">Tipo</label>
-                                                        <div class="col-lg-6">
-                                                            {{ Form::select('tipo_id', $tipos, null, [
-                                                                'class' => 'form-control',
-                                                                'id'    => 'tipo'
-                                                                ]) }}
-                                                        </div>
-                                                    </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Solicitante</label>
+                                                    <label class="col-lg-6 control-label">Solicitante <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
                                                             {{ Form::text('solicitante', null, [
@@ -209,6 +210,39 @@
 
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <!-- Widget starts -->
+                                <div class="blog blog-info">
+                                    <div class="blog-header">
+                                        <h5 class="blog-title">Serviços</h5>
+                                    </div>
+                                    <div class="blog-body">
+                                        <div class="form-select-grouper">
+                                            <table class="table table-striped no-margin">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Serviço</th>
+                                                    <th>Selecione</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($servicos as $servico)
+                                                    <tr>
+                                                        <td>{{ $servico->id }}</td>
+                                                        <td>{{ $servico->servico }}</td>
+                                                        <td><input type="radio" name="servico_id" class="form-control" value="{{ $servico->id }}"> </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Widget ends -->
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <!-- Widget starts -->
                                 <div class="blog blog-danger">
                                     <div class="blog-header">
                                         <h5 class="blog-title">Documentos</h5>
@@ -224,18 +258,6 @@
                                 <!-- Widget ends -->
                             </div>
 
-                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 disabled">
-                                <!-- Widget starts -->
-                                <div class="blog blog-info disabled">
-                                    <div class="blog-header">
-                                        <h5 class="blog-title">Histórico</h5>
-                                    </div>
-                                    <div class="blog-body">
-                                        <img src="{{ asset('img/historico.PNG') }}" style="opacity: 0.4;">
-                                    </div>
-                                </div>
-                                <!-- Widget ends -->
-                            </div>
                             <div class="form-group">
                                 <div class="col-lg-6 col-lg-offset-6">
                                     <div class="col-md-12">
@@ -274,9 +296,6 @@
             $('#advogado_id').val( $(this).val());
         });
 
-        $('#new').click(function(){
-            location.href = '{{ route('diligencias.create') }}';
-        });
 
         $( "#prazo" ).datepicker({
             dateFormat: 'dd/mm/yy',

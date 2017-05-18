@@ -92,9 +92,8 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '5',
-            'tipo_id' => '5',
         ]);
-        $diligencia = \App\Diligencia::create([
+        $diligencia6 = \App\Diligencia::create([
             'titulo' => 'Notificação do Consumidor',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
@@ -109,7 +108,6 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '6',
-            'tipo_id' => '2',
         ]);
         $diligencia7 = \App\Diligencia::create([
             'titulo' => 'Notificação ao Produtor',
@@ -126,7 +124,6 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '7',
-            'tipo_id' => '3',
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
@@ -143,7 +140,6 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '9',
-            'tipo_id' => '4',
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
@@ -160,7 +156,6 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '10',
-            'tipo_id' => '4',
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
@@ -177,7 +172,6 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '12',
-            'tipo_id' => '2',
         ]);
 
 
@@ -196,5 +190,8 @@ class DiligenciasTableSeeder extends Seeder
         $diligencia5->servicos()->attach(4);
 
         $diligencia7->servicos()->attach(4);
+
+        $diligencia6->servicos()->attach(4);
+
     }
 }

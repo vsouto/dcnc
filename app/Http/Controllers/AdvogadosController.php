@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Advogado;
+use App\Cliente;
+use App\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
 use Nayjest\Grids\Components\FiltersRow;
@@ -33,8 +36,12 @@ class AdvogadosController extends Controller
     public function index()
     {
         //
+        //
         # Some params may be predefined, other can be controlled using grid components
-        $query = (new Advogado())
+        $query = (new User())
+            ->whereNotNull('cliente_id')
+            ->with('cliente')
+            ->has('cliente')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -82,7 +89,7 @@ class AdvogadosController extends Controller
                         ->setSortable(true)
                     ,
                     (new FieldConfig)
-                        ->setName('telefone')
+                        ->setName('phone')
                         ->setLabel('Telefone')
                         ->setSortable(true)
                     ,
@@ -120,14 +127,12 @@ class AdvogadosController extends Controller
                                     ,
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
-                                    (new HtmlTag())
+                                    (new HtmlTag)
+                                        ->setContent('<span class="glyphicon glyphicon-refresh" id="filter-btn"></span> Filter ')
                                         ->setTagName('button')
                                         ->setAttributes([
-                                            'type' => 'submit',
-                                            # Some bootstrap classes
-                                            'class' => 'btn btn-primary'
-                                        ])
-                                        ->setContent('Filter')
+                                            'class' => 'btn btn-success btn-sm btn-grid'
+                                        ]),
                                 ])
                                 # Components may have some placeholders for rendering children there.
                                 ->setRenderSection(THead::SECTION_BEGIN)
@@ -157,7 +162,11 @@ class AdvogadosController extends Controller
      */
     public function create()
     {
+
         //
+        $clientes = Cliente::pluck('nome','id');
+
+        return view('advogados.create',compact('clientes'));
     }
 
     /**
@@ -169,6 +178,32 @@ class AdvogadosController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'cliente_id' => 'required',
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+            'senha' => 'required|min:4',
+        ]);
+
+        $data = Input::all();
+
+        $user = User::create([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['senha']),
+            'phone' => $data['phone'],
+            'endereco' => $data['endereco'],
+            'level' => '2',
+            'cliente_id' => $data['cliente_id']
+        ]);
+
+        if ($user)
+            $message = 'Sucesso';
+        else
+            $message = 'Fail!';
+
+        return redirect()->action('AdvogadosController@index')
+            ->with('message',$message);
     }
 
     /**

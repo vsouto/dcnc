@@ -7,12 +7,14 @@ use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
 use App\File;
+use App\Servico;
 use App\Status;
 use App\Tipo;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
 use Nayjest\Grids\Components\ColumnHeadersRow;
@@ -253,6 +255,7 @@ class DiligenciasController extends Controller
                                     data-toggle="tooltip" data-placement="bottom"
                                      data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
                             }
+
                             return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
                         })
                     ,
@@ -327,17 +330,13 @@ class DiligenciasController extends Controller
      */
     public function create()
     {
-        //
-
-        $statuses = Status::pluck('status','id');
-
         $advogados = User::getAdvogadosList();
 
-        $users = User::pluck('nome','id');
+        $comarcas = Comarca::pluck('comarca','id')->prepend('Selecione uma opção', '0');
 
-        $tipos = Tipo::getList();
+        $servicos = Servico::get();
 
-        return view('diligencias.create',compact('users', 'statuses','tipos','advogados'));
+        return view('diligencias.create',compact('tipos','advogados','comarcas','servicos'));
     }
 
     /**
@@ -349,47 +348,49 @@ class DiligenciasController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'comarca_id' => 'required|not_in:0',
             'titulo' => 'required|min:3|max:65',
             'descricao' => 'required|min:3',
             'num_processo' => 'required',
-            'tipo_id' => 'required',
             'reu' => 'required',
-            'advogado_id' => 'required', // cliente
+            'advogado_id' => 'required|not_in:0', // cliente
             'orgao' => 'required',
             'prazo' => 'required|date',
             'solicitante' => 'required',
             'orientacoes' => 'required|min:5',
+            'servico_id' => 'required',
         ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
             'titulo.required' => 'Você precisa digitar um Título.',
             'descricao.required' => 'Você precisa digitar uma Descrição.',
             'num_processo.required' => 'Você precisa digitar um Número de Processo válido.',
-            'tipo_id.required' => 'Você precisa selecionar um Tipo.',
             'reu.required' => 'Você precisa digitar um Réu.',
             'orgao.required' => 'Você precisa digitar um Órgão.',
             'prazo.required' => 'Você precisa digitar um Prazo.',
             'solicitante.required' => 'Você precisa digitar um Solicitante.',
             'orientacoes.required' => 'Você precisa digitar um mínimo de Orientações.',
-            'advogado_id.required' => 'Você precisa selecionar um advogado cliente.',
+            'advogado_id.required' => 'Você precisa selecionar um Advogado cliente.',
+            'advogado_id.not_in' => 'Você precisa selecionar um Advogado cliente.',
+            'servico_id.required' => 'Você precisa selecionar ao menos um Serviço.',
         ]);
 
         $data = Input::only(
+            'comarca_id',
             'titulo',
             'descricao',
             'num_integracao',
             'num_processo',
             'prazo',
-            'tipo_id',
             'advogado_id',
             'solicitante',
             'reu',
             'orgao',
             'local_orgao',
             'vara',
-            'orientacoes'
+            'orientacoes',
+            'servico_id'
         );
-
-        // Set status
-        $data['status_id'] = Status::where('slug','sondagem')->first()->id;
 
         // Treat File Uploads
         if ($request->hasFile('files')) {
@@ -408,7 +409,6 @@ class DiligenciasController extends Controller
                     'user_id' => Auth::user()->id
                 ]);
 
-                // TODO attach file do diligencia
                 $files_ids[] = $new_file->id;
             }
         }
@@ -418,17 +418,42 @@ class DiligenciasController extends Controller
             $data['prazo'] = Carbon::createFromFormat('d/m/Y',$data['prazo']);
         }
 
+        // Select the best Correspondente for this
+        $correspondente = Correspondente::getBestCorrespondenteForDiligencia($data['comarca_id'], $data['servico_id']);
+
+        // Se não encontrou correspondente
+        if (!$correspondente) {
+
+            // A diligencia entrará como Em Negociação
+            $data['status_id'] = Status::where('slug','em-negociacao')->first()->id;
+        }
+        else {
+            // Set status Sondagem
+            $data['status_id'] = Status::where('slug','sondagem')->first()->id;
+
+            $data['correspondente_id'] = $correspondente->id;
+        }
+
         // Create
         $save = Diligencia::create($data);
 
         if ($save) {
 
+            // Attach files
             if (!empty($files_ids)) {
                 // Attach files to this Diligencia
                 foreach ($files_ids as $file) {
                     $save->files()->attach($file);
                 }
             }
+
+            // Attach servicos
+            if (!empty($data['servicos'])) {
+                foreach($data['servicos'] as $servico) {
+                    $save->servicos()->attach($servico);
+                }
+            }
+
 
             return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
         }
@@ -453,23 +478,32 @@ class DiligenciasController extends Controller
             ->with('servicos')
             ->with('correspondente')
             ->with('advogado','advogado.cliente')
-            ->first();
-
+            ->firstOrFail();
+/*
+        // Se tem correspondente selecionado, pega os valores dos serviços
+        if ($diligencia->correspondente_id && $diligencia->servicos()->count() > 0) {
+            foreach ($diligencia->servicos() as $servico)
+        }*/
         $correspondentes_recomendados = [];
 
         // Em negociacao?
         if ($diligencia->status_id == 6) {
-            // Todo automatizar definição da comarca na diligencia
-            $correspondentes_recomendados = Correspondente::where('comarca_id',1)
-                ->with('servicos')
-                /*->with(array('servicos' => function($query) use ($diligencia)
-                {
-                    $query->whereIn('servicos.id', $diligencia->servicos);
-                }))*/
-                ->with('user')
-                ->take(5)
-                ->get();
+
+            // No servicos?
+            if ($diligencia->servicos()->count() <= 0) {
+                $correspondentes_recomendados = false;
+            }
+            else {
+                // Busca correspondentes recomendados
+                $correspondentes_recomendados = Correspondente::where('comarca_id',$diligencia->comarca_id)
+                    ->with('servicos')
+                    ->has('servicos',$diligencia->servicos()->first()->id)
+                    ->with('user')
+                    ->take(5)
+                    ->get();
+            }
         }
+
         return view('diligencias.show',compact('diligencia', 'correspondentes_recomendados'));
     }
 

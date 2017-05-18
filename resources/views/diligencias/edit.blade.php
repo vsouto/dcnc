@@ -247,21 +247,10 @@
 
                     <div class="form-group">
                         <div class="col-lg-6 col-lg-offset-6">
-                            <div class="col-md-12">
-
-                                <span class="text text-danger"> * Campos Obrigatórios</span>
-                                <br>
-                                <label class="control-label">Criar outra Diligência ?</label>
-                                <input type="checkbox" name="create_another">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-lg-6 col-lg-offset-6">
                             <button type="button" class="btn btn-danger" title="" id="btn-cancel">
                                 <i class="fa fa-close"></i> Cancel
                             </button>
-                            <button type="submit" class="btn btn-success" id="btn-submit">Create</button>
+                            <button type="submit" class="btn btn-success" id="btn-submit">Edit</button>
                         </div>
                     </div>
 

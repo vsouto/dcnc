@@ -61,3 +61,12 @@
     </div>
 @endsection
 
+
+@section('footer')
+    <script>
+
+        $('#new').click(function(){
+            location.href = '{{ route('advogados.create') }}';
+        });
+    </script>
+@endsection
