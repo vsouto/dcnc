@@ -448,10 +448,9 @@ class DiligenciasController extends Controller
             }
 
             // Attach servicos
-            if (!empty($data['servicos'])) {
-                foreach($data['servicos'] as $servico) {
-                    $save->servicos()->attach($servico);
-                }
+            if (!empty($data['servico_id'])) {
+
+                $save->servicos()->attach($data['servico_id']);
             }
 
 
@@ -460,8 +459,6 @@ class DiligenciasController extends Controller
         else {
             return redirect()->back()->with('message','Algo aconteceu de errado.');
         }
-
-
     }
 
     /**
@@ -536,6 +533,118 @@ class DiligenciasController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'comarca_id' => 'required|not_in:0',
+            'titulo' => 'required|min:3|max:65',
+            'descricao' => 'required|min:3',
+            'num_processo' => 'required',
+            'reu' => 'required',
+            'advogado_id' => 'required|not_in:0', // cliente
+            'orgao' => 'required',
+            'prazo' => 'required|date',
+            'solicitante' => 'required',
+            'orientacoes' => 'required|min:5',
+            'servico_id' => 'required',
+        ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
+            'titulo.required' => 'Você precisa digitar um Título.',
+            'descricao.required' => 'Você precisa digitar uma Descrição.',
+            'num_processo.required' => 'Você precisa digitar um Número de Processo válido.',
+            'reu.required' => 'Você precisa digitar um Réu.',
+            'orgao.required' => 'Você precisa digitar um Órgão.',
+            'prazo.required' => 'Você precisa digitar um Prazo.',
+            'solicitante.required' => 'Você precisa digitar um Solicitante.',
+            'orientacoes.required' => 'Você precisa digitar um mínimo de Orientações.',
+            'advogado_id.required' => 'Você precisa selecionar um Advogado cliente.',
+            'advogado_id.not_in' => 'Você precisa selecionar um Advogado cliente.',
+            'servico_id.required' => 'Você precisa selecionar ao menos um Serviço.',
+        ]);
+
+        $data = Input::only(
+            'comarca_id',
+            'titulo',
+            'descricao',
+            'num_integracao',
+            'num_processo',
+            'prazo',
+            'advogado_id',
+            'solicitante',
+            'reu',
+            'orgao',
+            'local_orgao',
+            'vara',
+            'orientacoes',
+            'servico_id'
+        );
+
+        // Treat File Uploads
+        if ($request->hasFile('files')) {
+
+            $files = Input::file('files');
+            $files_ids = [];
+
+            foreach ($files as $file) {
+
+                $filename = $file->store('files');
+
+                $new_file = File::create([
+                    'titulo' => $filename,
+                    'descricao' => $filename,
+                    'filename' => $filename,
+                    'user_id' => Auth::user()->id
+                ]);
+
+                $files_ids[] = $new_file->id;
+            }
+        }
+
+        // Prazo to pattern
+        if (!empty($data['prazo'])) {
+            $data['prazo'] = Carbon::createFromFormat('d/m/Y',$data['prazo']);
+        }
+
+        // Select the best Correspondente for this
+        $correspondente = Correspondente::getBestCorrespondenteForDiligencia($data['comarca_id'], $data['servico_id']);
+
+        // Se não encontrou correspondente
+        if (!$correspondente) {
+
+            // A diligencia entrará como Em Negociação
+            $data['status_id'] = Status::where('slug','em-negociacao')->first()->id;
+        }
+        else {
+            // Set status Sondagem
+            $data['status_id'] = Status::where('slug','sondagem')->first()->id;
+
+            $data['correspondente_id'] = $correspondente->id;
+        }
+
+        // Create
+        $save = Diligencia::where('id',$id)->update($data);
+
+        if ($save) {
+
+            // Attach files
+            if (!empty($files_ids)) {
+                // Attach files to this Diligencia
+                foreach ($files_ids as $file) {
+                    $save->files()->attach($file);
+                }
+            }
+
+            // Attach servicos
+            if (!empty($data['servico_id'])) {
+
+                $save->servicos()->attach($data['servico_id']);
+            }
+
+
+            return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
+        }
+        else {
+            return redirect()->back()->with('message','Algo aconteceu de errado.');
+        }
     }
 
     /**

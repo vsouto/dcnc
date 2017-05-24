@@ -32,4 +32,15 @@
 
         return true;
     }
+
+    // Populate Statuses
+    function populateStatusFields(data) {
+
+        var statuses = JSON.parse(data);
+
+        for( key in statuses ) {
+            // Populate the field
+            $('.' + key  + '-content').html(statuses[key].toFixed(0) + '%');
+        }
+    }
 </script>

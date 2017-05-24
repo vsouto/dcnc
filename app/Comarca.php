@@ -11,7 +11,7 @@ class Comarca extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['comarca'];
 
 
     /**

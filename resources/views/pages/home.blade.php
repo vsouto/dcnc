@@ -36,7 +36,7 @@
     <div class="container-fluid">
 
         <!-- Current Stats Start -->
-        <div class="current-stats">
+        <div class="current-stats" id="statuses">
             <div class="row">
                 @foreach($statuses as $status)
                     <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 status-block">
@@ -44,7 +44,7 @@
                             <div class="spacer-xs">
                                 <i class="fa fa-github fa-2x"></i>
                                 <small class="text-white">{{ $status->status }}</small>
-                                <h3 class="no-margin no-padding">9%</h3>
+                                <h3 class="no-margin no-padding {{ $status->slug  }}-content"></h3>
                             </div>
                         </div>
                     </div>
@@ -253,6 +253,20 @@
             var ref = $(this).data('ref');
 
             location.href = ref;
+        });
+
+
+        // Dashboard status
+        $('#statuses').html(function(){
+
+            $.ajax({
+                url: "{{ route('status.getStatusesPercentages') }}",
+                dataType: "html",
+                type: "GET"
+            }).done(function(data) {
+
+                populateStatusFields(data);
+            });
         });
     </script>
 @endsection

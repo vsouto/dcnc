@@ -187,6 +187,7 @@ return [
         // Helpers
         'App\Providers\HelperServiceProvider',
 
+        'Maatwebsite\Excel\ExcelServiceProvider',
     ],
 
     /*
@@ -242,6 +243,8 @@ return [
         'Html' => 'Collective\Html\HtmlFacade',
 
         'Grids'     => 'Nayjest\Grids\Grids',
+
+        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
     ],
 

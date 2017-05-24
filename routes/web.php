@@ -47,6 +47,8 @@ Route::get('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' =
 Route::get('diligencias/aprovar/{id}',['as' => 'diligencias.aprovar', 'uses' => 'DiligenciasController@aprovar']);
 Route::get('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' => 'DiligenciasController@devolver']);
 
+Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
+
 Auth::routes();
 
 

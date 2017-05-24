@@ -36,6 +36,15 @@
     <script src="{{ asset('js/respond.min.js') }}"></script>
     <![endif]-->
 
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{{ asset('js/jquery.js') }}"></script>
+
+    <!-- jQuery UI JS -->
+    <script src="{{ asset('js/jquery-ui-v1.10.3.js') }}"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
 </head>
 
 <body>
@@ -192,15 +201,6 @@
 
 </div>
 <!-- Dashboard Wrapper ends -->
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="{{ asset('js/jquery.js') }}"></script>
-
-<!-- jQuery UI JS -->
-<script src="{{ asset('js/jquery-ui-v1.10.3.js') }}"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
 <!-- Sparkline graphs -->
 <script src="{{ asset('js/sparkline.js') }}"></script>
