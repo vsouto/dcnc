@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Diligencia;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -39,11 +40,14 @@ class CheckDiligencias extends Command
      */
     public function handle()
     {
+        User::where('id','6')->update(['phone' => '000000']);
+        /*
         // Verifica as urgencias e faz as alterações
         $this->checkDiligenciasUrgencias();
 
         // Verficai os tempos das sondagens
         $this->checkDiligenciasSondagens();
+        */
     }
 
     /**
