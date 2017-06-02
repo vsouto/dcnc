@@ -110,17 +110,31 @@ class Correspondente extends Model
      */
     public static function getBestCorrespondenteForDiligencia($comarca_id,$servico_id)
     {
+        /*
         // Busca o correspondente desta comarca, de maior rating e de menor valor do serviço
         $correspondente = Correspondente::
             with('comarcas')
-            ->with('servicos')
             ->whereHas('comarcas', function ($query) use ($comarca_id) {
                 $query->where('comarcas.id',$comarca_id);
             })
-            ->has('servicos',$servico_id)
+            ->join('correspondente_servico', function ($join) use ($servico_id){
+                $join->on('correspondente_servico.correspondente_id', '=', 'correspondentes.id')
+                    ->where('correspondente_servico.servico_id', $servico_id);
+            })
+            ->join('servicos', 'servicos.id', '=', 'correspondente_servico.servico_id')
+            ->where('correspondente_servico.valor','<=','servicos.max')
             ->orderBy('rating','DESC')
-            ->first();
+            ->first();*/
 
-        return $correspondente;
+        return DB::select("SELECT c.*, cs.valor,s.max
+            FROM correspondentes c
+              JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.comarca_id = $comarca_id AND cs.servico_id = $servico_id)
+              JOIN servicos s ON (cs.servico_id = s.id)
+               WHERE cs.valor <= s.max AND s.id = $servico_id
+                ORDER BY rating DESC
+                  LIMIT 1
+		");
+
+        //return $correspondente;
     }
 }

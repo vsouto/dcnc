@@ -170,13 +170,15 @@
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Correspondente</strong></td>
-                                            <td id="invoice_vessel" colspan="3">
+                                            <td id="invoice_vessel">
                                                 @if ($diligencia->correspondente)
                                                     {{ $diligencia->correspondente->nome }}
                                                 @else
                                                     -
                                                 @endif
                                             </td>
+                                            <td id="" colspan="2">
+                                                <button type="button" class="btn btn-danger">Cancelar Correspondente</button></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -241,7 +243,7 @@
                                         <div class="alert alert-danger alert-white rounded">
                                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                                             <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-                                            <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência.
+                                            <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência ou não existe um correspondente vinculado.
                                         </div>
                                     @endif
                                 </div>
@@ -338,13 +340,14 @@
                                             <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
                                             <strong>Alerta:</strong> Não foram encontrados correspondentes nesta comarca ou existem erros nesta Diligência!
                                         </div>
+                                        <br><button type="button" class="btn btn-info btn-rounded" id="criar-correspondente">Criar Correspondente</button>
                                     @else
                                         <table class="table table-hover no-margin">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Nome</th>
                                                 <th>Comarca</th>
+                                                <th>Nome</th>
                                                 <th>Telefone</th>
                                                 <th>Email</th>
                                                 <th>Endereço</th>
@@ -358,14 +361,22 @@
                                                 <?php if (!$correspondente->user) { continue; } ?>
                                                 <tr>
                                                     <td class="danger">{{ $correspondente->id }}</td>
+                                                    <td class="info">{{ $diligencia->comarca->comarca}}</td>
                                                     <td class="warning">{{ $correspondente->nome }}</td>
-                                                    <td class="info">{{ $correspondente->comarca->comarca }}</td>
-                                                    <td class="success">{{ $correspondente->user->phone }}</td>
-                                                    <td class="success">{{ $correspondente->user->email }}</td>
-                                                    <td class="success">{{ $correspondente->user->endereco }}</td>
-                                                    <td class="success">{{ $correspondente->rating }}</td>
-                                                    <td class="success">{{ $correspondente->valor }}</td>
-                                                    <td class="success"><button type="button" class="btn btn-info btn-rounded btn-transparent">Selecionar</button></td>
+                                                    <td class="success">{{ $correspondente->user->email or '' }}</td>
+                                                    <td class="success">{{ $correspondente->user->phone or '' }}</td>
+                                                    <td class="success">{{ $correspondente->user->endereco or '' }}</td>
+                                                    <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
+                                                    <td class="success">
+                                                        @foreach($diligencia->servicos as $servico)
+                                                            {{ 'R$ ' . $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor }}
+                                                        @endforeach
+                                                    </td>
+                                                    <td class="success">
+                                                        <button type="button"
+                                                                class="btn btn-info btn-rounded btn-transparent"
+                                                                id="select-correspondente"
+                                                                data-ref="{{ $correspondente->id }}">Selecionar</button></td>
                                                 </tr>
                                             @endforeach
 
@@ -428,7 +439,18 @@
 
             location.href = '{{ route('diligencias.edit',['id' => $diligencia->id]) }}';
         });
+        $('#criar-correspondente').click(function(){
 
+            location.href = '{{ route('correspondentes.create') }}';
+        });
+
+        $('#select-correspondente').click(function(){
+
+            var id = $(this).data('ref');
+            var diligencia_id = '{{ $diligencia->id }}';
+
+            location.href = '{{ route('diligencias.selecionarCorrespondente') }}/' + id + '/' + diligencia_id;
+        });
 
     </script>
 @endsection

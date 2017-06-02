@@ -46,6 +46,7 @@ Route::get('diligencias/concluir/{id}',['as' => 'diligencias.concluir', 'uses' =
 Route::get('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' => 'DiligenciasController@resolver']);
 Route::get('diligencias/aprovar/{id}',['as' => 'diligencias.aprovar', 'uses' => 'DiligenciasController@aprovar']);
 Route::get('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' => 'DiligenciasController@devolver']);
+Route::get('diligencias/selecionarCorrespondente/{c_id?}/{d_id?}',['as' => 'diligencias.selecionarCorrespondente', 'uses' => 'DiligenciasController@selecionarCorrespondente']);
 
 Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
 

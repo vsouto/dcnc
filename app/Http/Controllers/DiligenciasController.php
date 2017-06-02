@@ -448,7 +448,9 @@ class DiligenciasController extends Controller
             // Set status Aguardando Confirmação
             $data['status_id'] = Status::where('slug','aguardando-confirmacao')->first()->id;
 
-            $data['correspondente_id'] = $correspondente->id;
+            $correspondente_id = $correspondente[0]->id;
+
+            $data['correspondente_id'] = $correspondente_id;
         }
 
         // Salva o servico
@@ -781,6 +783,24 @@ class DiligenciasController extends Controller
         return redirect()->back()->with('message', 'Diligência devolvida. O correspondente será acionado para revisar o trabalho.');
     }
 
+
+    /**
+     * Revisar e devolver uma diligencia
+     *
+     * @param $id
+     */
+    public function selecionarCorrespondente($correspondente_id,$diligencia_id)
+    {
+        if (!$correspondente_id || !$diligencia_id)
+            abort(403,'Erro');
+
+        $diligencia = Diligencia::where('id',$diligencia_id)->update([
+            'correspondente_id' => $correspondente_id,
+            'status_id' => '2'
+        ]);
+
+        return redirect()->back()->with('message', 'Correspondente Selecionado com sucesso. O correspondente será notificado por email e deverá aceitar o trabalho.');
+    }
 
     /**
      * get dates for daterange picker on grid
