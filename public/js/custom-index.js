@@ -88,8 +88,8 @@ $( "ul.appointments li" ).click(function() {
 $(function () {
 	var data, chartOptions;
 	data = [
-		{ label: "", data: Math.floor (Math.random() * 100 + 80) }, 
-		{ label: "", data: Math.floor (Math.random() * 100 + 60) }, 
+		{ label: "", data: $('#correspondentes_overprice').html() },
+		{ label: "", data: $('#total_correspondentes').html() },
 	];
 	chartOptions = {
 		series: {
@@ -127,8 +127,8 @@ $(function () {
 $(function () {
 	var data, chartOptions;
 	data = [
-		{ label: "", data: Math.floor (Math.random() * 100 + 40) }, 
-		{ label: "", data: Math.floor (Math.random() * 100 + 690) }, 
+		{ label: "", data: $('#correspondentes_rating_avg').html() },
+		{ label: "", data: '5' },
 	];
 	chartOptions = {        
 		series: {
@@ -166,8 +166,8 @@ $(function () {
 $(function () {
 	var data, chartOptions;
 	data = [
-		{ label: "", data: Math.floor (Math.random() * 100 + 130) }, 
-		{ label: "", data: Math.floor (Math.random() * 100 + 460) }, 
+		{ label: "", data: $('#correspondentes_uso').html() },
+		{ label: "", data: $('#total_correspondentes').html() },
 	];
 	chartOptions = {        
 		series: {

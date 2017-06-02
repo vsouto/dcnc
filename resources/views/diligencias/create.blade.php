@@ -140,6 +140,17 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Autor <span class="text text-danger"> *</span></label>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-select-grouper">
+                                                            {{ Form::text('autor', null, [
+                                                                'class' => 'form-control',
+                                                                'id'    => 'autor'
+                                                                ]) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </fieldset>
                                         </div>
                                     </div>

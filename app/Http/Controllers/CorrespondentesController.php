@@ -81,17 +81,18 @@ class CorrespondentesController extends Controller
                         })
                     ,
                     (new FieldConfig)
-                        ->setName('comarca_id')
+                        ->setName('comarcas')
                         ->setLabel('Comarca')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
                             if (!$val)
                                 return '';
 
-                            $comarca = Comarca::where('id', $val)->first();
-
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.
-                                $comarca->comarca .'</span>';
+                            $comarcas = '';
+                            foreach ($val as $comarca) {
+                                $comarcas .= $comarca->comarca . '<br>';
+                            }
+                            return $comarcas;
                         })
                     ,
                     (new FieldConfig)

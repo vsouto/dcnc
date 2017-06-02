@@ -76,7 +76,7 @@
                                     <div class="col-md-6 col-sm-12 col-sx-12">
                                         <div class="pull-right">
                                             <button type="button" class="btn btn-info" id="print"><i class="fa fa-print"></i> <span class="hidden-xs">Print</span></button>
-                                            <button type="button" class="btn btn-success"><i class="fa fa-save"></i> <span class="hidden-xs">Save</span></button>
+                                            <button type="button" class="btn btn-success" id="edit_diligencia"><i class="fa fa-pencil"></i> <span class="hidden-xs">Editar</span></button>
                                             <button type="button" class="btn btn-danger"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></button>
                                         </div>
                                     </div>
@@ -122,45 +122,51 @@
                                         <tbody>
                                         <tr>
                                             <td class="invoice_info_header_td info" width="12%"><strong>Título</strong></td>
-                                            <td id="invoice_gss" width="25%">{{ $diligencia->titulo }}</td>
+                                            <td id="" width="25%">{{ $diligencia->titulo }}</td>
                                             <td class="invoice_info_header_td info"  width="12%"><strong>ID</strong></td>
-                                            <td id="invoice_customer">{{ $diligencia->id }}</td>
+                                            <td id="">{{ $diligencia->id }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Descrição</strong></td>
-                                            <td id="invoice_vessel">{{ $diligencia->descricao }}</td>
+                                            <td id="">{{ $diligencia->descricao }}</td>
                                             <td class="invoice_info_header_td info"><strong>Núm Processo</strong></td>
-                                            <td id="invoice_vessel_imo">{{ $diligencia->num_processo }}</td>
+                                            <td id="">{{ $diligencia->num_processo }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Núm Integração</strong></td>
-                                            <td id="invoice_vessel">{{ $diligencia->num_integracao }}</td>
+                                            <td id="">{{ $diligencia->num_integracao }}</td>
                                             <td class="invoice_info_header_td info"><strong>Prazo</strong></td>
-                                            <td id="invoice_vessel_imo">{{ $diligencia->prazo }}</td>
+                                            <td id="">{{ $diligencia->prazo->diffForHumans() }} ({{ $diligencia->prazo->format('d/m/Y h:i') }})</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Solicitante</strong></td>
-                                            <td id="invoice_vessel_imo" colspan="3">{{ $diligencia->solicitante }}</td>
+                                            <td id="">{{ $diligencia->solicitante }}</td>
+                                            <td class="invoice_info_header_td info"><strong>Urgência</strong></td>
+                                            <td id="">{!! getUrgenciaClass($diligencia->urgencia) !!}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Réu</strong></td>
-                                            <td id="invoice_vessel">{{ $diligencia->reu }}</td>
+                                            <td id="">{{ $diligencia->reu }}</td>
                                             <td class="invoice_info_header_td info"><strong>Órgão</strong></td>
-                                            <td id="invoice_vessel_imo">{{ $diligencia->orgao }}</td>
+                                            <td id="">{{ $diligencia->orgao }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="invoice_info_header_td info"><strong>Comarca</strong></td>
+                                            <td id="">{{ $diligencia->comarca->comarca }}</td>
+                                            <td class="invoice_info_header_td info"><strong>Vara</strong></td>
+                                            <td id="">{{ $diligencia->vara }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Local</strong></td>
-                                            <td id="invoice_vessel">{{ $diligencia->local_orgao }}</td>
-                                            <td class="invoice_info_header_td info"><strong>Vara</strong></td>
-                                            <td id="invoice_vessel_imo">{{ $diligencia->vara }}</td>
+                                            <td id="" colspan="3">{{ $diligencia->local_orgao }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Orientações</strong></td>
-                                            <td id="invoice_vessel" colspan="3">{{ $diligencia->orientacoes }}</td>
+                                            <td id="" colspan="3">{{ $diligencia->orientacoes }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Status</strong></td>
-                                            <td id="invoice_vessel" colspan="3"><span class='badge {{ $diligencia->status->class}} edit-status'>{{ $diligencia->status->status}}</span></td>
+                                            <td id="" colspan="3"><span class='badge {{ $diligencia->status->class}} edit-status'>{{ $diligencia->status->status}}</span></td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Correspondente</strong></td>
@@ -275,7 +281,7 @@
                                     @else
                                         @foreach ($diligencia->files as $file)
                                             <li class="client clearfix">
-                                                <i class="fa {{ getFileClass($file->filename) }} pull-left fa-lg fa-3x text-info"></i>
+                                                <i class="fa {{ getFileClass($file->filename) }} pull-left fa-lg fa-3x"></i>
                                                 <div class="client-details">
                                                     <p>
                                                         <span class="name">{{ $file->titulo }}</span>
@@ -288,7 +294,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="{{ asset($file->filename) }}" data-toggle="tooltip" data-placement="left" title="" data-original-title="Download">
+                                                            <a href="{{ Storage::url($file->filename) }}" data-toggle="tooltip" data-placement="left" title="" data-original-title="Download">
                                                                 <i class="fa fa-download"></i>
                                                             </a>
                                                         </li>
@@ -326,11 +332,11 @@
                                 <br>
                                 @if ($diligencia->status_id == 6 && Auth::user()->level >= 5)
                                     <h4>Correspondentes Recomendados</h4>
-                                    @if(!$correspondentes_recomendados)
+                                    @if(!$correspondentes_recomendados || $correspondentes_recomendados->count() <= 0)
                                         <div class="alert alert-danger alert-white rounded">
                                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                                             <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-                                            <strong>Alerta:</strong> Não foram encontrados correspondentes ou existem erros nesta Diligência!
+                                            <strong>Alerta:</strong> Não foram encontrados correspondentes nesta comarca ou existem erros nesta Diligência!
                                         </div>
                                     @else
                                         <table class="table table-hover no-margin">
@@ -416,6 +422,11 @@
         $('#print').click(function(){
 
             PrintElem( $('#printable'));
+        });
+
+        $('#edit_diligencia').click(function(){
+
+            location.href = '{{ route('diligencias.edit',['id' => $diligencia->id]) }}';
         });
 
 

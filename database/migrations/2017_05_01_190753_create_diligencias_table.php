@@ -23,6 +23,7 @@ class CreateDiligenciasTable extends Migration
             $table->unsignedInteger('status_id')->default(1); // current status
             $table->unsignedInteger('advogado_id'); // autor
             $table->string('solicitante'); // advogado solicitante
+            $table->string('autor');
             $table->unsignedInteger('correspondente_id')->nullable(); //
             $table->unsignedInteger('comarca_id')->nullable(); //
             $table->text('reu'); // infos do reu
@@ -31,6 +32,7 @@ class CreateDiligenciasTable extends Migration
             $table->string('local_orgao')->nullable(); //
             $table->string('vara')->nullable(); //
             $table->text('orientacoes'); //
+            $table->string('urgencia')->default('Normal'); //
             $table->timestamps();
         });
 

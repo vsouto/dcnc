@@ -18,7 +18,7 @@ class CreateCorrespondentesTable extends Migration
             $table->string('nome');
             //$table->string('email'); // email é do user
             $table->string('slug');
-            $table->unsignedInteger('comarca_id');
+            $table->smallInteger('atrasos')->default(0);
             $table->smallInteger('rating')->default(3);
             $table->timestamps();
         });
@@ -34,7 +34,15 @@ class CreateCorrespondentesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('servico_id');
             $table->unsignedInteger('correspondente_id');
+            $table->unsignedInteger('comarca_id');
             $table->double('valor');
+            $table->timestamps();
+        });
+
+        Schema::create('comarca_correspondente', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('comarca_id');
+            $table->unsignedInteger('correspondente_id');
             $table->timestamps();
         });
     }
@@ -49,5 +57,6 @@ class CreateCorrespondentesTable extends Migration
         Schema::dropIfExists('correspondentes');
         Schema::dropIfExists('correspondente_sondagem');
         Schema::dropIfExists('correspondente_servico');
+        Schema::dropIfExists('comarca_correspondente');
     }
 }

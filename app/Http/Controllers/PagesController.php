@@ -51,14 +51,30 @@ class PagesController extends Controller
 
         $correspondentes_count = Correspondente::count();
 
-        $diligencias_destaque = Diligencia::all();
+        $correspondentes_overprice = Correspondente::overprice()->get()->count();
+
+        //$correspondentes_not_overprice = sizeof(Correspondente::overprice(true));
+        $correspondentes_rating_avg = Correspondente::avg('rating');
+
+        $correspondentes_em_uso = Correspondente::has('diligencias')->count();
+
+        $correspondentes_mais_atrasos = Correspondente::orderBy('atrasos','DESC')
+            ->with('user')->has('user')->take(8)->get();
+
+        $diligencias_destaque = Diligencia::whereIn('urgencia',['Crítica','Urgente'])
+            ->take(10)
+            ->get();
 
         $statuses = Status::all();
 
         $correspondentes_menos_ocupados = Correspondente::take(6)->get();
 
         return view('pages.home', compact(
-            'correspondentes_count','diligencias_destaque', 'statuses', 'correspondentes_menos_ocupados'));
+            'correspondentes_count','diligencias_destaque', 'statuses',
+            'correspondentes_menos_ocupados',
+            'correspondentes_overprice', 'correspondentes_not_overprice','correspondentes_em_uso',
+            'correspondentes_rating_avg',
+            'correspondentes_mais_atrasos'));
     }
 
     /**

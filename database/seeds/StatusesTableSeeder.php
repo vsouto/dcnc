@@ -22,7 +22,7 @@ class StatusesTableSeeder extends Seeder
         ]);
         \App\Status::create([
             'status' => 'Aguardando Checkin',
-            'class' => 'info-bg',
+            'class' => 'aguardando-checkin',
         ]);
         \App\Status::create([
             'status' => 'Aguardando Conclusão',
@@ -43,12 +43,12 @@ class StatusesTableSeeder extends Seeder
 
         \App\Status::create([
             'status' => 'Em Revisão',
-            'class' => 'success-bg',
+            'class' => 'em-revisao',
         ]);
 
         \App\Status::create([
             'status' => 'Devolvida',
-            'class' => 'brown-bg',
+            'class' => 'devolvida',
         ]);
         \App\Status::create([
             'status' => 'Pagamento Autorizado',
@@ -60,7 +60,7 @@ class StatusesTableSeeder extends Seeder
         ]);
         \App\Status::create([
             'status' => 'Cancelada',
-            'class' => 'danger-bg',
+            'class' => 'cancelada',
         ]);
 
 

@@ -19,7 +19,7 @@ class DiligenciasTableSeeder extends Seeder
             'titulo' => 'Teste 1',
             'descricao' => 'Entregar a poapeamwea aewaqe',
             'num_integracao' => '332',
-            'prazo' => \Carbon\Carbon::now()->addDays(7),
+            'prazo' => \Carbon\Carbon::now(),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'reu' => $faker->name,
@@ -28,12 +28,14 @@ class DiligenciasTableSeeder extends Seeder
             'local_orgao' => $faker->address,
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
+            'comarca_id' => '1',
+            'autor' => 'Pedro'
         ]);
         $diligencia2 = \App\Diligencia::create([
             'titulo' => 'Diligência 2',
             'descricao' => 'Entregar a poapeamwea aewaqe',
             'num_integracao' => '332',
-            'prazo' => \Carbon\Carbon::now()->addDays(3),
+            'prazo' => \Carbon\Carbon::now()->addHours(1),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '3',
@@ -44,12 +46,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '2',
+            'comarca_id' => '2',
+            'autor' => 'Pedro'
         ]);
         $diligencia3 = \App\Diligencia::create([
             'titulo' => 'Contestar Carga',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(12),
+            'prazo' => \Carbon\Carbon::now()->addHours(8),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '2',
@@ -60,12 +64,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '3',
+            'comarca_id' => '2',
+            'autor' => 'Pedro'
         ]);
         $diligencia4 = \App\Diligencia::create([
             'titulo' => 'Contestar Carga',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(9),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '4',
@@ -76,12 +82,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '4',
+            'comarca_id' => '3',
+            'autor' => 'Pedro'
         ]);
         $diligencia5 = \App\Diligencia::create([
             'titulo' => 'Contestar Entrega',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(13),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '4',
@@ -92,12 +100,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '5',
+            'comarca_id' => '4',
+            'autor' => 'Pedro'
         ]);
         $diligencia6 = \App\Diligencia::create([
             'titulo' => 'Notificação do Consumidor',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(19),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '2',
@@ -108,12 +118,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '6',
+            'comarca_id' => '5',
+            'autor' => 'Pedro'
         ]);
         $diligencia7 = \App\Diligencia::create([
             'titulo' => 'Notificação ao Produtor',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(23),
             'advogado_id' => '1',
             'solicitante' => $faker->name,
             'correspondente_id' => '1',
@@ -124,12 +136,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '7',
+            'comarca_id' => '5',
+            'autor' => 'Pedro'
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(25),
             'advogado_id' => '2',
             'solicitante' => $faker->name,
             'correspondente_id' => '2',
@@ -140,12 +154,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '9',
+            'comarca_id' => '6',
+            'autor' => 'Pedro'
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(32),
             'advogado_id' => '2',
             'solicitante' => $faker->name,
             'correspondente_id' => '2',
@@ -156,12 +172,14 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '10',
+            'comarca_id' => '7',
+            'autor' => 'Pedro'
         ]);
         $diligencia = \App\Diligencia::create([
             'titulo' => 'Notificação de Despejo',
             'descricao' => $faker->text(90),
             'num_integracao' => $faker->numberBetween(1,999),
-            'prazo' => \Carbon\Carbon::now()->addDays(5),
+            'prazo' => \Carbon\Carbon::now()->addHours(5),
             'advogado_id' => '2',
             'solicitante' => $faker->name,
             'correspondente_id' => '1',
@@ -172,6 +190,7 @@ class DiligenciasTableSeeder extends Seeder
             'vara' => $faker->company,
             'orientacoes' => $faker->text(230),
             'status_id' => '12',
+            'autor' => 'Pedro'
         ]);
 
 

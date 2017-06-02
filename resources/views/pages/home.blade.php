@@ -43,7 +43,7 @@
                         <div class="{{ $status->class }} status-btn center-align-text">
                             <div class="spacer-xs">
                                 <i class="fa fa-github fa-2x"></i>
-                                <small class="text-white">{{ $status->status }}</small>
+                                <small class="text">{{ $status->status }}</small>
                                 <h3 class="no-margin no-padding {{ $status->slug  }}-content"></h3>
                             </div>
                         </div>
@@ -61,15 +61,15 @@
                     <!-- Widget starts -->
                     <div class="blog">
                         <div class="blog-header">
-                            <h5 class="blog-title">Network</h5>
+                            <h5 class="blog-title">Rede</h5>
                         </div>
                         <div class="blog-body">
                             <div class="row">
-                                <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12">
                                     <div id="map" class="chart-height-lg"></div>
                                 </div>
                                 <div class="visitors-total">
-                                    <h3>{{ $correspondentes_count }}</h3>
+                                    <h3 id="total_correspondentes">{{ $correspondentes_count }}</h3>
                                     <p>Total Correspondentes</p>
                                 </div>
                                 <div class="visit-stats">
@@ -77,25 +77,25 @@
                                         <li>
                                             <div class="donut animated rubberBand">
                                                 <div id="donut-chart-1" style="width:48px; height: 48px;"></div>
-                                                <span>65%</span>
+                                                <span id="correspondentes_overprice">{{ $correspondentes_overprice }}</span>
                                             </div>
-                                            <h2 class="text-danger">7235</h2>
-                                            <p>Overprice</p>
+                                            <h2 class="text-danger">{{ $correspondentes_overprice }}</h2>
+                                            <p>Overprices</p>
                                         </li>
                                         <li>
                                             <div class="donut animated rubberBand">
                                                 <div id="donut-chart-2" style="width:48px; height: 48px;"></div>
-                                                <span>17%</span>
+                                                <span id="">{{ calculateRatingPercentage($correspondentes_rating_avg) }}%</span>
                                             </div>
-                                            <h2 class="text-info">3269</h2>
-                                            <p>Ok</p>
+                                            <h2 class="text-info" id="correspondentes_rating_avg">{{ number_format($correspondentes_rating_avg,0,'','.') }}</h2>
+                                            <p>Rating Médio</p>
                                         </li>
                                         <li>
                                             <div class="donut animated rubberBand">
                                                 <div id="donut-chart-3" style="width:48px; height: 48px;"></div>
-                                                <span>32%</span>
+                                                <span>{{ getCorrespondentesUsoPercentage($correspondentes_em_uso, $correspondentes_count) }}%</span>
                                             </div>
-                                            <h2 class="text-success">5972</h2>
+                                            <h2 class="text-success" id="correspondentes_uso">{{ $correspondentes_em_uso }}</h2>
                                             <p>Em Uso</p>
                                         </li>
                                     </ul>
@@ -120,11 +120,11 @@
                                 <table class="table table-condensed table-striped table-hover table-bordered pull-left dataTable" id="data-table" aria-describedby="data-table_info">
                                     <thead>
                                     <tr role="row">
-                                        <th style="width: 149px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending">Prazo</th>
+                                        <th style="width: 149px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="">Urgência</th>
+                                        <th style="width: 149px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="">Prazo</th>
                                         <th style="width: 191px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Inv. No: activate to sort column ascending">Proc. Nº</th>
                                         <th style="width: 539px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Client Details: activate to sort column ascending">Cliente</th>
                                         <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Status</th>
-                                        <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Urgência</th>
                                         <th style="width: 190px;" class="sorting" role="columnheader" tabindex="0" aria-controls="data-table" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Ações
                                         </th>
                                     </tr>
@@ -132,6 +132,7 @@
                                     <tbody role="alert" aria-live="polite" aria-relevant="all">
                                         @foreach($diligencias_destaque as $diligencia)
                                             <tr class="gradeX odd">
+                                                <td class=" ">{!! getUrgenciaClass($diligencia->urgencia)!!}</td>
                                                 <td class=" ">{{ $diligencia->prazo->diffForHumans() }}</td>
                                                 <td class=" ">{{ $diligencia->num_processo }}</td>
                                                 <td class=" ">
@@ -141,9 +142,6 @@
                                                 </td>
                                                 <td class=" ">
                                                     <span class="badge {{$diligencia->status->class }}">{{ $diligencia->status->status or ''}}</span>
-                                                </td>
-                                                <td class=" ">
-                                                    <span class="label label-info">{{ $diligencia->urgencia }}</span>
                                                 </td>
                                                 <td class=" ">
                                                     <span class="btn btn-sm btn-info btn-rounded btn-transparent view-diligencia" data-ref="{{ route('diligencias.show',['id' => $diligencia->id]) }}">
@@ -167,11 +165,11 @@
                     <!-- Widget starts -->
                     <div class="blog blog-danger">
                         <div class="blog-header">
-                            <h5 class="blog-title">Correspondentes Menos Ocupados</h5>
+                            <h5 class="blog-title">Correspondentes Com Mais Atrasos</h5>
                         </div>
                         <div class="blog-body">
                             <ul class="clients-list">
-                                @foreach ($correspondentes_menos_ocupados as $correspondente)
+                                @foreach ($correspondentes_mais_atrasos as $correspondente)
                                     <li class="client clearfix">
                                         <img src="img/user4.jpg" class="avatar" alt="Client">
                                         <div class="client-details">
@@ -181,17 +179,15 @@
                                             </p>
                                             <ul class="icons-nav">
                                                 <li>
-                                                    <a href="#" data-toggle="tooltip" data-placement="left" title="Delete">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </a>
+                                                    {{ $correspondente->atrasos }}
                                                 </li>
                                                 <li>
-                                                    <a href="#" data-toggle="tooltip" data-placement="left" title="Email">
+                                                    <a href="mailto:{{ $correspondente->user->email }}" data-toggle="tooltip" data-placement="left" title="Email">
                                                         <i class="fa fa-envelope-o"></i>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" data-toggle="tooltip" data-placement="left" title="Contact">
+                                                    <a href="tel:{{ $correspondente->user->phone }}" data-toggle="tooltip" data-placement="left" title="Contact">
                                                         <i class="fa fa-phone"></i>
                                                     </a>
                                                 </li>
@@ -240,6 +236,7 @@
 
     <!-- chart -->
     <script src="{{ asset('js/flot/custom/stacked-dashboard.js') }}"></script>
+    <script src="{{ asset('js/custom-index.js') }}"></script>
 
     <script src="{{ asset('js/maps/brazil.js') }}"></script>
 

@@ -60,7 +60,7 @@ class DiligenciasController extends Controller
                 # See all supported data providers in sources
                 ->setDataProvider(new EloquentDataProvider($query))
                 # Setup caching, value in minutes, turned off in debug mode
-                //->setCachingTime(5)
+                //->setCachingTime(0)
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
@@ -101,14 +101,24 @@ class DiligenciasController extends Controller
                         })
                         ->setSortable(true)
                     ,
+
+                    (new FieldConfig())
+                        ->setName('prazo')
+                        ->setLabel('Prazo')
+                        ->setSortable(true)
+                        ->setCallback(function (Carbon $val, \Nayjest\Grids\EloquentDataRow $row) {
+                            return $val->diffForHumans();
+                        })
+                    ,
                     (new FieldConfig)
                         ->setName('urgencia')
                         ->setLabel('Urgência')
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
                             if (!$val)
                                 return '';
 
-                            return "<span class='label label-info'>Normal</span>";
+                            return getUrgenciaClass($val);
                         })
                         ->setSortable(true)
                     ,
@@ -132,18 +142,11 @@ class DiligenciasController extends Controller
                         ->setName('comarca')
                         ->setLabel('Comarca')
                         ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$row->getSrc()->correspondente_id)
+                        ->setCallback(function ($val) {
+                            if (!$val)
                                 return '';
 
-                            $correspondente = Correspondente::where('id',$row->getSrc()->correspondente_id)
-                                    ->with('comarca')->first();
-
-                            if (!$correspondente || !$correspondente->comarca)
-                                return '';
-
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.
-                                $correspondente->comarca->comarca .'</span>';
+                            return $val->comarca;
                         })
                     ,
                     (new FieldConfig)
@@ -359,6 +362,7 @@ class DiligenciasController extends Controller
             'solicitante' => 'required',
             'orientacoes' => 'required|min:5',
             'servico_id' => 'required',
+            'autor' => 'required',
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
             'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
@@ -373,6 +377,7 @@ class DiligenciasController extends Controller
             'advogado_id.required' => 'Você precisa selecionar um Advogado cliente.',
             'advogado_id.not_in' => 'Você precisa selecionar um Advogado cliente.',
             'servico_id.required' => 'Você precisa selecionar ao menos um Serviço.',
+            'autor.required' => 'Você precisa digitar o autor.',
         ]);
 
         $data = Input::only(
@@ -428,10 +433,16 @@ class DiligenciasController extends Controller
             $data['status_id'] = Status::where('slug','em-negociacao')->first()->id;
         }
         else {
-            // Set status Sondagem
-            $data['status_id'] = Status::where('slug','sondagem')->first()->id;
+            // Set status Aguardando Confirmação
+            $data['status_id'] = Status::where('slug','aguardando-confirmacao')->first()->id;
 
             $data['correspondente_id'] = $correspondente->id;
+        }
+
+        // Salva o servico
+        if (!empty($data['servico_id'])) {
+            $servico_id = $data['servico_id'];
+            unset($data['servico_id']);
         }
 
         // Create
@@ -448,11 +459,10 @@ class DiligenciasController extends Controller
             }
 
             // Attach servicos
-            if (!empty($data['servico_id'])) {
+            if (!empty($servico_id)) {
 
-                $save->servicos()->attach($data['servico_id']);
+                $save->servicos()->attach($servico_id);
             }
-
 
             return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
         }
@@ -491,9 +501,15 @@ class DiligenciasController extends Controller
                 $correspondentes_recomendados = false;
             }
             else {
+                $comarca_id = $diligencia->comarca_id;
+
                 // Busca correspondentes recomendados
-                $correspondentes_recomendados = Correspondente::where('comarca_id',$diligencia->comarca_id)
+                $correspondentes_recomendados = Correspondente::
+                    with('comarcas')
                     ->with('servicos')
+                    ->whereHas('comarcas', function ($query) use ($comarca_id) {
+                        $query->where('comarcas.id',$comarca_id);
+                    })
                     ->has('servicos',$diligencia->servicos()->first()->id)
                     ->with('user')
                     ->take(5)

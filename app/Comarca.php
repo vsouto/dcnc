@@ -19,6 +19,14 @@ class Comarca extends Model
      */
     public function correspondentes()
     {
-        return $this->hasMany('App\Correspondente');
+        return $this->belongsToMany('App\Correspondente');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function diligencias()
+    {
+        return $this->hasMany('App\Diligencia');
     }
 }

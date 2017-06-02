@@ -83,20 +83,20 @@ function getFileClass($filename)
             case 'jpeg':
             case 'png':
             case 'png':
-                return 'fa-image';
+                return 'fa-image text-info ';
                 break;
             case 'doc':
             case 'docx':
-                return 'fa-file-word-o';
+                return 'fa-file-word-o text-info ';
                 break;
             case 'pdf':
-                return 'fa-pdf-o';
+                return 'fa-file-pdf-o text-danger ';
                 break;
             case 'xls':
-                return 'fa-excel-o';
+                return 'fa-excel-o text-info ';
                 break;
             default:
-                return 'fa-file';
+                return 'fa-file text-info ';
                 break;
         }
     }
@@ -163,4 +163,41 @@ function getUserGroup($nivel = false, $style = false) {
     }
 
     return $label;
+}
+
+function getUrgenciaClass($val) {
+
+    switch ($val) {
+        case 'Crítica':
+            return "<span class='label label-critica'>$val</span>";
+            break;
+        case 'Urgente':
+            return "<span class='label label-urgente'>$val</span>";
+            break;
+        case 'Alta':
+            return "<span class='label label-alta'>$val</span>";
+            break;
+        case 'Média':
+            return "<span class='label label-media'>$val</span>";
+            break;
+        case 'Normal':
+            return "<span class='label label-info'>$val</span>";
+            break;
+    }
+
+    return $val;
+}
+
+function calculateRatingPercentage($avg) {
+
+    $avg = number_format($avg, 0, ',', '.');
+
+    $calculo = $avg * 100 / 5;
+
+    return number_format($calculo, 0, ',', '.');;
+}
+
+function getCorrespondentesUsoPercentage($qtd, $total) {
+
+    return number_format(($qtd * 100) / $total,0,'','.');
 }

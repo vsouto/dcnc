@@ -14,7 +14,7 @@ class Diligencia extends Model
      */
     protected $fillable = [
         'comarca_id','titulo','descricao','advogado_id','orgao','local_orgao','vara','num_integracao','num_processo',
-        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id'
+        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id','urgencia','autor'
     ];
 
     protected $dates = ['created_at','updated_at','prazo'];
@@ -25,6 +25,14 @@ class Diligencia extends Model
     public function advogado()
     {
         return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Get the entity
+     */
+    public function comarca()
+    {
+        return $this->belongsTo('App\Comarca');
     }
 
     /**
@@ -65,17 +73,6 @@ class Diligencia extends Model
     public function servicos()
     {
         return $this->belongsToMany('App\Servico');
-    }
-
-    /**
-     * Get the attribute
-     *
-     * @param  string  $value
-     * @return string
-     */
-    public function getUrgenciaAttribute($value)
-    {
-        return 'Normal';
     }
 
     /**

@@ -3593,6 +3593,10 @@ a.list-group-item-primary {
 .aguardando-conclusao{
     background: #ff9ce0;
 }
+.aguardando-checkin{
+    background: rgba(91, 143, 190, 0.85);
+    color: white;
+}
 .sem-checkin{
     background: #563563;
     color: white;
@@ -3614,6 +3618,18 @@ a.list-group-item-primary {
 }.efetivada:hover {
      background: #00304a !important; }
 
+.cancelada{
+  background: #db1f09;
+  color: white;
+}
+.devolvida{
+    background: rgba(170, 121, 103, 0.85);
+    color: white;
+}
+.em-revisao{
+    background: rgba(118, 186, 172, 0.85);
+    color: white;
+}
 .status-block{
     padding: 8px;
 }
@@ -3661,4 +3677,21 @@ a.list-group-item-primary {
 
 td .invoice_info_header_td{
     max-width: 12%;
+}
+
+.label-critica{
+    background-color: #db1f09;
+}
+.label-critica[href]:hover,
+.label-critica[href]:focus {
+    background-color: #db1f09;
+}
+.label-urgente{
+    background-color: rgba(98, 10, 5, 0.75);
+}
+.label-alta{
+    background-color: #e59d10;
+}
+.label-media{
+    background-color: rgba(124, 83, 16, 0.8);
 }

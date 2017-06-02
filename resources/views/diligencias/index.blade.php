@@ -37,15 +37,15 @@
             <div class="spacer">
 
                 <!-- Current Stats Start -->
-                <div class="current-stats">
+                <div class="current-stats" id="statuses">
                     <div class="row">
                         @foreach($statuses as $status)
                             <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 status-block">
                                 <div class="{{ $status->class }} status-btn center-align-text">
                                     <div class="spacer-xs">
                                         <i class="fa fa-github fa-2x"></i>
-                                        <small class="text-white">{{ $status->status }}</small>
-                                        <h3 class="no-margin no-padding">9%</h3>
+                                        <small class="text">{{ $status->status }}</small>
+                                        <h3 class="no-margin no-padding {{ $status->slug  }}-content"></h3>
                                     </div>
                                 </div>
                             </div>
@@ -114,9 +114,59 @@
             $('[name="Diligencias[filters][status_id-in][]"]').val('2');
             $('#filter-btn').click();
         });
+        $('.aguardando-checkin').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('3');
+            $('#filter-btn').click();
+        });
         $('.aguardando-conclusao').click(function(){
             $('[name="Diligencias[filters][status_id-in][]"]').val('4');
             $('#filter-btn').click();
         });
+        $('.sem-checkin').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('5');
+            $('#filter-btn').click();
+        });
+        $('.em-negociacao').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('6');
+            $('#filter-btn').click();
+        });
+        $('.atrasada').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('7');
+            $('#filter-btn').click();
+        });
+        $('.em-revisao').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('8');
+            $('#filter-btn').click();
+        });
+        $('.devolvida').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('9');
+            $('#filter-btn').click();
+        });
+        $('.pagamento-autorizado').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('10');
+            $('#filter-btn').click();
+        });
+        $('.efetivada').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('11');
+            $('#filter-btn').click();
+        });
+        $('.cancelada').click(function(){
+            $('[name="Diligencias[filters][status_id-in][]"]').val('12');
+            $('#filter-btn').click();
+        });
+
+        // Dashboard status
+        $('#statuses').html(function(){
+
+            $.ajax({
+                url: "{{ route('status.getStatusesPercentages') }}",
+                dataType: "html",
+                type: "GET"
+            }).done(function(data) {
+
+                populateStatusFields(data);
+            });
+        });
+
     </script>
 @endsection
