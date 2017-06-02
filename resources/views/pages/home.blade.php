@@ -77,9 +77,9 @@
                                         <li>
                                             <div class="donut animated rubberBand">
                                                 <div id="donut-chart-1" style="width:48px; height: 48px;"></div>
-                                                <span id="correspondentes_overprice">{{ $correspondentes_overprice }}</span>
+                                                <span id="">{{ $correspondentes_overprice }}</span>
                                             </div>
-                                            <h2 class="text-danger">{{ $correspondentes_overprice }}</h2>
+                                            <h2 class="text-danger" id="correspondentes_overprice">{{ $correspondentes_overprice }}</h2>
                                             <p>Overprices</p>
                                         </li>
                                         <li>

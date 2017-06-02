@@ -46,13 +46,14 @@ class PagamentosController extends Controller
                 # See all supported data providers in sources
                 ->setDataProvider(new EloquentDataProvider($query))
                 # Setup caching, value in minutes, turned off in debug mode
-                ->setCachingTime(5)
+                //->setCachingTime(5)
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
                     new IdFieldConfig(),
                     (new FieldConfig())
-                        ->setName('diligencia')
+                        ->setName('diligencia_id')
+                        ->setLabel('Diligência')
                         ->addFilter(
                             (new FilterConfig())
                                 ->setName('diligencia')
@@ -61,12 +62,12 @@ class PagamentosController extends Controller
                         ->setSortable(true)
                     ,
                     (new FieldConfig)
-                        ->setName('authorized')
+                        ->setName('authorized_id')
                         ->setLabel('Autorizado')
                         ->setSortable(true)
                     ,
                     (new FieldConfig)
-                        ->setName('receiver')
+                        ->setName('receiver_id')
                         ->setLabel('Recebedor')
                         ->setSortable(true)
                     ,
@@ -74,6 +75,15 @@ class PagamentosController extends Controller
                         ->setName('tipo')
                         ->setLabel('Tipo')
                         ->setSortable(true)
+                        ->setCallback(function ($val) {
+                            if (!$val)
+                                return '';
+
+                            if ($val == 'C')
+                                return "<span class='badge badge-info edit-status'>Crédito</span>";
+                            else
+                                return "<span class='badge badge-warning edit-status'>Débito</span>";
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('efetivada')
