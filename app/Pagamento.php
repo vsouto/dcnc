@@ -11,5 +11,7 @@ class Pagamento extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'authorized_id','receiver_id','diligencia_id','efetivada','valor','tipo'
+    ];
 }

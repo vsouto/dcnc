@@ -88,14 +88,14 @@ $( "ul.appointments li" ).click(function() {
 $(function () {
 	var data, chartOptions;
 	data = [
-		{ label: "", data: $('#correspondentes_overprice').html() },
 		{ label: "", data: $('#total_correspondentes').html() },
+		{ label: "", data: $('#correspondentes_overprice').html() },
 	];
 	chartOptions = {
 		series: {
 			pie: {
 				show: true,  
-				innerRadius: .8, 
+				innerRadius: .6,
 				stroke: {
 					width: 1,
 				}
@@ -134,7 +134,7 @@ $(function () {
 		series: {
 			pie: {
 				show: true,  
-				innerRadius: .8, 
+				innerRadius: .6,
 				stroke: {
 					width: 1,
 				}
@@ -166,14 +166,14 @@ $(function () {
 $(function () {
 	var data, chartOptions;
 	data = [
-		{ label: "", data: $('#correspondentes_uso').html() },
 		{ label: "", data: $('#total_correspondentes').html() },
+		{ label: "", data:  $('#correspondentes_uso').html()},
 	];
 	chartOptions = {        
 		series: {
 			pie: {
 				show: true,  
-				innerRadius: .8, 
+				innerRadius: .6,
 				stroke: {
 					width: 1,
 				}

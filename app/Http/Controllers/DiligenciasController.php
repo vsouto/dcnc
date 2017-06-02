@@ -8,6 +8,7 @@ use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
 use App\File;
+use App\Pagamento;
 use App\Servico;
 use App\Status;
 use App\Tipo;
@@ -748,6 +749,16 @@ class DiligenciasController extends Controller
 
         $diligencia = Diligencia::where('id',$id)->update([
             'status_id' => '10'
+        ]);
+
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        // Cria crédito
+        Pagamento::create([
+            'diligencia_id' => $id,
+            'authorized_id' => Auth::user()->id,
+            'receiver_id' => $diligencia->correspondente_id,
+            'tipo' => 'C'
         ]);
 
         return redirect()->back()->with('message', 'Diligência aprovada com sucesso. O financeiro será acionado como Pagamento Autorizado.');
