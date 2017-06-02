@@ -16,14 +16,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Readers\Html;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
+use Nayjest\Grids\Components\Filters\DateRangePicker;
 use Nayjest\Grids\Components\FiltersRow;
 use Nayjest\Grids\Components\HtmlTag;
 use Nayjest\Grids\Components\OneCellRow;
 use Nayjest\Grids\Components\Pager;
 use Nayjest\Grids\Components\RecordsPerPage;
+use Nayjest\Grids\Components\RenderFunc;
 use Nayjest\Grids\Components\TFoot;
 use Nayjest\Grids\Components\THead;
 use Nayjest\Grids\Components\TotalsRow;
@@ -273,8 +276,15 @@ class DiligenciasController extends Controller
                                 ->setAttributes([
                                     'class' => 'info'
                                 ]),
-                            # Add this if you have filters for automatic placing to this row
-                            new FiltersRow(),
+                            (new FiltersRow)
+                                ->addComponents([
+                                    (new DateRangePicker())
+                                        ->setName('diligencias.prazo')
+                                        ->setRenderSection(RenderableRegistry::SECTION_BEFORE)
+                                        ->setDefaultValue(['', date('Y-m-d')])
+                                        ->setJsOptions($this->getDates())
+                                        ->setLabel('Período:'),
+                                ]),
                             # Row with additional controls
                             (new OneCellRow())
                                 ->setComponents([
@@ -285,7 +295,7 @@ class DiligenciasController extends Controller
                                             100,
                                             1000
                                         ])
-                                    ,
+                                    ,/*
                                     # Control to show/hide rows in table
                                     (new ColumnsHider())
                                         ->setHiddenByDefault([
@@ -293,7 +303,7 @@ class DiligenciasController extends Controller
                                             'updated_at',
                                             'registration_ip',
                                         ])
-                                    ,
+                                    ,*/
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
                                     (new HtmlTag)
@@ -394,7 +404,8 @@ class DiligenciasController extends Controller
             'local_orgao',
             'vara',
             'orientacoes',
-            'servico_id'
+            'servico_id',
+            'autor'
         );
 
         // Treat File Uploads
@@ -757,6 +768,62 @@ class DiligenciasController extends Controller
         ]);
 
         return redirect()->back()->with('message', 'Diligência devolvida. O correspondente será acionado para revisar o trabalho.');
+    }
+
+
+    /**
+     * get dates for daterange picker on grid
+     *
+     * @return array
+     */
+    public function getDates()
+    {
+        $carbon = new Carbon();
+        $prev_month = Carbon::now()->startOfMonth()->subWeek();
+        $today = Carbon::now();
+        $res = [
+            'format' => 'YYYY-MM-DD',
+            'ranges' => [
+                'previous_month' => [
+                    'Previous month (' . $prev_month->format('F') . ')',
+                    [
+                        $prev_month->startOfMonth()->format('Y-m-d'),
+                        $prev_month->endOfMonth()->format('Y-m-d'),
+                    ]
+                ],
+                'current_month' => [
+                    'Cur. month (' . date('F'). ')',
+                    [
+                        $carbon->startOfMonth()->format('Y-m-d'),
+                        $carbon->endOfMonth()->format('Y-m-d')
+                    ]
+                ],/*
+                'last_week' => [
+                    'This Week',
+                    [
+                        $carbon->startOfWeek()->format('Y-m-d'),
+                        $carbon->endOfWeek()->format('Y-m-d')
+                    ]
+                ],*/
+                'next_14' => [
+                    'Next 14 days',
+                    [
+                        $today->format('Y-m-d'),
+                        Carbon::now()->addDays(13)->format('Y-m-d')
+                    ]
+                ],
+                'today' => [
+                    'Today',
+                    [
+                        $today->format('Y-m-d'),
+                        $today->format('Y-m-d')
+                    ]
+                ],
+
+            ],
+        ];
+
+        return $res;
     }
 
 }

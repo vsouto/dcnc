@@ -45,6 +45,12 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
+    <!-- Data tables -->
+    <script type="text/javascript" src="{{ URL::asset('js/jquery.datatables.js') }}"></script>
+
+    <!-- moment -->
+    <script type="text/javascript" src="{{ URL::asset('js/moment/moment-with-locales.js') }}"></script>
+
 </head>
 
 <body>

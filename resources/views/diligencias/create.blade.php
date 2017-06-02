@@ -299,15 +299,25 @@
 @section('footer')
 
 
-    <link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" media="screen">
+    {{--<script type="text/javascript" src="{{ URL::asset('js/transition.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/collapse.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/bootstrap-datetimepicker.min.js') }}"></script>--}}
+
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" >
 
     <script>
 
         $('#advogados-select').change(function(){
             $('#advogado_id').val( $(this).val());
         });
-
-
+        /*
+        $(function () {
+            $('#prazo').datetimepicker({
+                format: 'd.m.Y H:i',
+                inline: true,
+            });
+        });
+         */
         $( "#prazo" ).datepicker({
             dateFormat: 'dd/mm/yy',
             changeMonth: true,
