@@ -221,8 +221,7 @@ class CorrespondentesController extends Controller
         $data = Input::all();
 
         $correspondente = Correspondente::create([
-            'nome' => $data['nome'],
-            'comarca_id' => $data['comarca_id']
+            'nome' => $data['nome']
         ]);
 
         if ($correspondente) {
@@ -230,9 +229,14 @@ class CorrespondentesController extends Controller
                 if (!$servico['valor'] || empty($servico['valor']))
                     continue;
 
-                $correspondente->servicos()->attach($key, ['valor' => $servico['valor']]);
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+            }
+
+            if (!empty($data['comarca_id'])) {
+                $correspondente->comarcas()->attach($data['comarca_id']);
             }
         }
+
         $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],

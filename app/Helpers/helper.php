@@ -201,3 +201,10 @@ function getCorrespondentesUsoPercentage($qtd, $total) {
 
     return number_format(($qtd * 100) / $total,0,'','.');
 }
+
+function getRatingStars($rating) {
+
+    $star = '<i class="fa fa-star"></i>';
+
+    return str_repeat($star,$rating);
+}
