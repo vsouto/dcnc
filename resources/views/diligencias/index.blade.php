@@ -30,7 +30,7 @@
     <!-- Top Bar ends -->
 
     <!-- Main Container starts -->
-    <div class="main-container">
+    <div class="main-container-fulll">
 
         <!-- Container fluid Starts -->
         <div class="container-fluid">
@@ -55,20 +55,18 @@
                 <!-- Current Stats End -->
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="panel">
-                        <div class="panel-heading"><div class="text-left" style="float:left">
-                                <h4 class="panel-title">Diligências</h4>
+                    <div class="blog">
+                        <div class="blog-header"><div class="text-left" style="float:left">
+                                <h4 class="blog-title">Diligências</h4>
                             </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-info btn-rounded" id="new">Nova</button>
                             </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <div id="dt_example" class="table-responsive example_alt_pagination clearfix">
-                                    <div id="data-table_wrapper" class="dataTables_wrapper" role="grid">
-                                        {!! $grid->render() !!}
-                                    </div>
+                        <div class="calls-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 scrolled">
+                                    {!! $grid->render() !!}
                                 </div>
                             </div>
                         </div>
@@ -81,7 +79,30 @@
 
 @section('footer')
 
+    <!-- Float panel -->
+    <script type="text/javascript" src="{{ URL::asset('js/floatThead/jquery.floatThead.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/floatThead/jquery.floatThead-slim.min.js') }}"></script>
+
+    <!-- daterangePicker -->
+    <script type="text/javascript" src="{{ URL::asset('js/daterangepicker/daterangepicker.js') }}"></script>
+    <link href="{{ asset('js/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet" type="text/css" >
+
     <script>
+
+        $(document).ready(function(){
+/*
+
+            // Refresh the page in 4 minutes
+            setTimeout(function(){
+                location.reload();
+            }, 360000);
+*/
+
+            setFloatingTableHead( '#Diligencias' );
+
+            //$('#Diligencias').css('table-layout','fixed');
+        });
+
         $('#new').click(function(){
             location.href = '{{ route('diligencias.create') }}';
         });

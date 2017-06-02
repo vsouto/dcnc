@@ -175,3 +175,14 @@ $(function () {
     tooltipPrefix: 'Users Online: '
   });
 });
+
+function setFloatingTableHead( table_id ) {
+	// Set floating table head
+	var $table = $( table_id );
+
+	$('html, body').animate({scrollTop: '100px'}, 300);
+
+	$table.floatThead();
+
+	$('.floatThead-table').find('thead').find('tr').addClass('grid-header-toprow');
+}

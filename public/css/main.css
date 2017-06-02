@@ -3695,3 +3695,25 @@ td .invoice_info_header_td{
 .label-media{
     background-color: rgba(124, 83, 16, 0.8);
 }
+
+#Diligencias th{
+  min-width:80px;
+}
+
+.pivete{
+    width: 90px;
+}
+
+.grid-header-toprow {
+    background-color: white;
+}
+.calls-body{
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #dfe6ee;
+}
+
+.scrolled {
+    overflow-x: scroll !important;
+}

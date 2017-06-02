@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\ImportCorrespondentes::class,
-        Commands\CheckDiligencias::class
+        Commands\CheckCriticas::class,
+        Commands\CheckAltas::class
     ];
 
     /**
@@ -25,8 +26,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('check:diligencias')
-                  ->everyMinute();
+        $schedule->command('check:criticas')
+            ->everyMinute();
+
+        $schedule->command('check:altas')
+            ->everyTenMinutes();
     }
 
     /**
