@@ -785,14 +785,14 @@ class DiligenciasController extends Controller
             'format' => 'YYYY-MM-DD',
             'ranges' => [
                 'previous_month' => [
-                    'Previous month (' . $prev_month->format('F') . ')',
+                    'Mês anterior (' . $prev_month->format('F') . ')',
                     [
                         $prev_month->startOfMonth()->format('Y-m-d'),
                         $prev_month->endOfMonth()->format('Y-m-d'),
                     ]
                 ],
                 'current_month' => [
-                    'Cur. month (' . date('F'). ')',
+                    'Mês atual (' . date('F'). ')',
                     [
                         $carbon->startOfMonth()->format('Y-m-d'),
                         $carbon->endOfMonth()->format('Y-m-d')
@@ -806,14 +806,14 @@ class DiligenciasController extends Controller
                     ]
                 ],*/
                 'next_14' => [
-                    'Next 14 days',
+                    'Próximos 14 dias',
                     [
                         $today->format('Y-m-d'),
                         Carbon::now()->addDays(13)->format('Y-m-d')
                     ]
                 ],
                 'today' => [
-                    'Today',
+                    'Hoje',
                     [
                         $today->format('Y-m-d'),
                         $today->format('Y-m-d')
