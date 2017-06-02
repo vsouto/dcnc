@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Advogado;
+use App\Cliente;
 use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
@@ -116,23 +117,17 @@ class DiligenciasController extends Controller
                     (new FieldConfig)
                         ->setName('urgencia')
                         ->setLabel('Urgência')
+                        ->addFilter(
+                            (new \Nayjest\Grids\SelectFilterConfig())
+                                ->setMultipleMode(true)
+                                ->setOptions($this->getUrgenciaList())
+                        )
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
 
                             if (!$val)
                                 return '';
 
                             return getUrgenciaClass($val);
-                        })
-                        ->setSortable(true)
-                    ,
-                    (new FieldConfig)
-                        ->setName('tipo')
-                        ->setLabel('Tipo')
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$val)
-                                return '';
-
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.$val->tipo .'</span>';
                         })
                         ->setSortable(true)
                     ,
@@ -156,6 +151,11 @@ class DiligenciasController extends Controller
                         ->setName('correspondente_id')
                         ->setLabel('Correspondente')
                         ->setSortable(true)
+                        ->addFilter(
+                            (new \Nayjest\Grids\SelectFilterConfig())
+                                ->setSubmittedOnChange(true)
+                                ->setOptions(Correspondente::pluck('nome','id')->toArray())
+                        )
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
                             if (!$val)
                                 return '';
@@ -826,4 +826,14 @@ class DiligenciasController extends Controller
         return $res;
     }
 
+    public function getUrgenciaList()
+    {
+        return [
+            'Crítica' => 'Crítica',
+            'Urgente' => 'Urgente',
+            'Alta' => 'Alta',
+            'Média' => 'Média',
+            'Normal' => 'Normal'
+        ];
+    }
 }

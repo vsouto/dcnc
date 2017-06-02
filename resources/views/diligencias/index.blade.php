@@ -43,9 +43,9 @@
                             <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6 status-block">
                                 <div class="{{ $status->class }} status-btn center-align-text">
                                     <div class="spacer-xs">
-                                        <i class="fa fa-github fa-2x"></i>
+                                        <i class="fa fa-tag fa-2x"></i>
                                         <small class="text">{{ $status->status }}</small>
-                                        <h3 class="no-margin no-padding {{ $status->slug  }}-content"></h3>
+                                        <h3 class="no-margin no-padding {{ $status->slug  }}-content text-center status-loader"><i class="fa fa-refresh fa-spin fa-2x"></i></h3>
                                     </div>
                                 </div>
                             </div>
@@ -178,6 +178,8 @@
 
         // Dashboard status
         $('#statuses').html(function(){
+
+            //$('.status-loader').html('<i class="fa fa-refresh fa-spin fa-2x"></i>');
 
             $.ajax({
                 url: "{{ route('status.getStatusesPercentages') }}",

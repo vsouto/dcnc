@@ -29,4 +29,9 @@ class Comarca extends Model
     {
         return $this->hasMany('App\Diligencia');
     }
+
+    public static function getList()
+    {
+        return Comarca::get()->toArray();
+    }
 }
