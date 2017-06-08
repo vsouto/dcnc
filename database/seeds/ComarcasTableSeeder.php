@@ -12,7 +12,7 @@ class ComarcasTableSeeder extends Seeder
     public function run()
     {
         //
-
+/*
         $faker = Faker\Factory::create();
 
         $comarca = \App\Comarca::create([
@@ -29,6 +29,13 @@ class ComarcasTableSeeder extends Seeder
         ]);
         $comarca = \App\Comarca::create([
             'comarca' => 'Sena Madureira'
-        ]);
+        ]);*/
+
+        $path = storage_path('app/files/comarcas2.sql');
+
+        \Illuminate\Support\Facades\DB::unprepared(file_get_contents($path));
+
+        $this->command->info('Comarcas table seeded!');
+
     }
 }

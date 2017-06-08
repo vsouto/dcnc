@@ -11,7 +11,7 @@ class Comarca extends Model
      *
      * @var array
      */
-    protected $fillable = ['comarca'];
+    protected $fillable = ['comarca','uf'];
 
 
     /**
@@ -33,5 +33,11 @@ class Comarca extends Model
     public static function getList()
     {
         return Comarca::get()->toArray();
+    }
+
+    public static function getEstadosList()
+    {
+
+        return Comarca::groupBy('uf')->orderBy('uf','ASC')->pluck('uf','uf');
     }
 }

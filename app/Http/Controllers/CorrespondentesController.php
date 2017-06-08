@@ -125,6 +125,30 @@ class CorrespondentesController extends Controller
                             return $servicos;
                         })
                     ,
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button2 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('correspondentes.edit', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
+                                .' <i class="fa fa-pencil"></i></span></div> ';
+
+                            // Em negociacao?
+                            if ($row->getSrc()->status_id == '6') {
+                                $button3 = ' <div style="float: left">'.
+                                    '<button type="button" class="btn btn-danger btn-rounded" data-container="body"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                     data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
+                            }
+
+                            return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
+                        })
+                    ,
                 ])
                 # Setup additional grid components
                 ->setComponents([
@@ -194,12 +218,17 @@ class CorrespondentesController extends Controller
      */
     public function create()
     {
-        //
-        $comarcas = Comarca::pluck('comarca','id');
+        $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
 
         $servicos = Servico::get();
 
-        return view('correspondentes.create',compact('comarcas','servicos'));
+        $tipos_conta = [
+            '0' => 'Selecione uma opção',
+            'PF' => 'Pessoa Física',
+            'PJ' => 'Pessoa Jurídica'
+        ];
+
+        return view('correspondentes.create',compact('servicos','estados', 'tipos_conta'));
     }
 
     /**
@@ -212,10 +241,17 @@ class CorrespondentesController extends Controller
     {
         //
         $this->validate($request, [
-            'comarca_id' => 'required',
+            'comarca_id' => 'required|not_in:0',
             'nome' => 'required|min:3',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'senha' => 'required|min:4',
+            'bank' => 'int',
+        ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
+            'bank.int' => 'Banco deve ser o número do banco',
+            'cpf.int' => 'CPF deve ser composto apenas por números',
+            'cnpj.int' => 'CNPJ deve ser composto apenas por números'
         ]);
 
         $data = Input::all();
@@ -224,7 +260,10 @@ class CorrespondentesController extends Controller
             'nome' => $data['nome']
         ]);
 
+        // Salvou
         if ($correspondente) {
+
+            // Salva os serviços
             foreach ($data['servico'] as $key => $servico) {
                 if (!$servico['valor'] || empty($servico['valor']))
                     continue;
@@ -232,11 +271,13 @@ class CorrespondentesController extends Controller
                 $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
             }
 
+            // Salva comarca
             if (!empty($data['comarca_id'])) {
                 $correspondente->comarcas()->attach($data['comarca_id']);
             }
         }
 
+        // Cria o usuario
         $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],
@@ -244,7 +285,8 @@ class CorrespondentesController extends Controller
             'phone' => $data['phone'],
             'endereco' => $data['endereco'],
             'level' => '1',
-            'correspondente_id' => $correspondente->id
+            'correspondente_id' => $correspondente->id,
+            'cpf' => $data['cpf']
         ]);
 
         if ($user)
@@ -276,6 +318,22 @@ class CorrespondentesController extends Controller
     public function edit($id)
     {
         //
+        $correspondente = Correspondente::where('id',$id)
+            ->with('user')
+            ->with('comarcas')
+            ->first();
+
+        $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
+
+        $servicos = Servico::get();
+
+        $tipos_conta = [
+            '0' => 'Selecione uma opção',
+            'PF' => 'Pessoa Física',
+            'PJ' => 'Pessoa Jurídica'
+        ];
+
+        return view('correspondentes.edit',compact('correspondente','servicos','estados', 'tipos_conta'));
     }
 
     /**
@@ -288,6 +346,61 @@ class CorrespondentesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'comarca_id' => 'required|not_in:0',
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+            'bank' => 'int',
+        ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
+            'bank.int' => 'Banco deve ser o número do banco',
+            'cpf.int' => 'CPF deve ser composto apenas por números',
+            'cnpj.int' => 'CNPJ deve ser composto apenas por números'
+        ]);
+
+        $data = Input::all();
+
+        $save = Correspondente::where('id',$id)->update([
+            'nome' => $data['nome'],
+            'bank' => $data['bank'],
+            'ag' => $data['ag'],
+            'conta' => $data['conta'],
+            'cnpj' => $data['cnpj'],
+        ]);
+
+        $correspondente = Correspondente::where('id',$id)->first();
+
+        if ($correspondente) {
+            foreach ($data['servico'] as $key => $servico) {
+                if (!$servico['valor'] || empty($servico['valor']))
+                    continue;
+
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+            }
+
+            if (!empty($data['comarca_id'])) {
+                $correspondente->comarcas()->attach($data['comarca_id']);
+            }
+        }
+
+        $user = User::where('correspondente_id',$id)->update([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['senha']),
+            'phone' => $data['phone'],
+            'endereco' => $data['endereco'],
+            'level' => '1',
+            'correspondente_id' => $correspondente->id
+        ]);
+
+        if ($user)
+            $message = 'Sucesso';
+        else
+            $message = 'Fail!';
+
+        return redirect()->action('CorrespondentesController@index')
+            ->with('message',$message);
     }
 
     /**

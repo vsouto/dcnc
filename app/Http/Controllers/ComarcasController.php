@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Comarca;
+
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Input;
+
 use Illuminate\Http\Request;
 
 class ComarcasController extends Controller
@@ -80,5 +85,15 @@ class ComarcasController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function getComarcas()
+    {
+        $uf = Input::get('uf');
+
+        $comarcas = Comarca::where('uf', $uf)->get();
+
+        return Response::json($comarcas);
     }
 }
