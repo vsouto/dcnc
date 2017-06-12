@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Maatwebsite\Excel\Readers\Html;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
@@ -204,15 +205,17 @@ class DiligenciasController extends Controller
                             if (!$row->getSrc()->correspondente)
                                 return '';
 
-                            $servicos = $row->getSrc()->correspondente->servicos()->get();
-                            $valor = 0;
+                            $servico = $row->getSrc()->servicos()->first();
+                            $servico_id = $servico['id'];
+                            $correspondente_id = $row->getSrc()->correspondente->id;
 
-                            // Pra cada serviço, pega o valor do correspondente
-                            foreach ($servicos as $servico) {
-                                $valor += $servico->pivot->valor;
-                            }
 
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">R$ '.$valor.'</span>';
+                            $get = DB::select("SELECT valor from correspondente_servico WHERE servico_id = '$servico_id'
+                              AND correspondente_id = '$correspondente_id'");
+
+                            if ($get && isset($get[0]))
+                                return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">R$ '
+                                    .$get[0]->valor.'</span>';
                         })
                     ,
                     (new FieldConfig)
