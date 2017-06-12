@@ -41,20 +41,20 @@ class CorrespondentesTableSeeder extends Seeder
             'nome' => $faker->name,
         ]);
 
-        $correspondente1->servicos()->attach(1,['valor' => '55', 'comarca_id' => '1']);
-        $correspondente1->servicos()->attach(2,['valor' => '40', 'comarca_id' => '2']);
+        $correspondente1->servicos()->attach(1,['valor' => '55']);
+        $correspondente1->servicos()->attach(2,['valor' => '40']);
 
-        $correspondente2->servicos()->attach(1,['valor' => '15', 'comarca_id' => '1']);
+        $correspondente2->servicos()->attach(1,['valor' => '15']);
 
-        $correspondente4->servicos()->attach(1,['valor' => '30', 'comarca_id' => '2']);
-        $correspondente4->servicos()->attach(2,['valor' => '40', 'comarca_id' => '3']);
+        $correspondente4->servicos()->attach(1,['valor' => '30']);
+        $correspondente4->servicos()->attach(2,['valor' => '40']);
 
-        $correspondente5->servicos()->attach(1,['valor' => '35', 'comarca_id' => '4']);
-        $correspondente5->servicos()->attach(2,['valor' => '55', 'comarca_id' => '5']);
+        $correspondente5->servicos()->attach(1,['valor' => '35']);
+        $correspondente5->servicos()->attach(2,['valor' => '55']);
 
-        $correspondente6->servicos()->attach(3,['valor' => '105', 'comarca_id' => '5']);
+        $correspondente6->servicos()->attach(3,['valor' => '105']);
 
-        $correspondente7->servicos()->attach(4,['valor' => '175', 'comarca_id' => '6']);
+        $correspondente7->servicos()->attach(4,['valor' => '175']);
 
         $correspondente1->comarcas()->attach(1);
         $correspondente2->comarcas()->attach(2);

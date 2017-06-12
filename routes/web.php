@@ -32,7 +32,6 @@ Route::resource('pagamentos','PagamentosController');
 Route::resource('servicos','ServicosController');
 Route::resource('sondagens','SondagensController');
 Route::resource('statuses','StatusesController');
-Route::resource('tipos','TiposController');
 Route::resource('advogados','AdvogadosController');
 
 // File upload
@@ -49,6 +48,8 @@ Route::get('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' =
 Route::get('diligencias/selecionarCorrespondente/{c_id?}/{d_id?}',['as' => 'diligencias.selecionarCorrespondente', 'uses' => 'DiligenciasController@selecionarCorrespondente']);
 
 Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
+Route::get('getComarcas',['as' => 'getComarcas', 'uses' => 'ComarcasController@getComarcas']);
+Route::get('pages/setup',['as' => 'pages.setup', 'uses' => 'PagesController@setup']);
 
 Auth::routes();
 

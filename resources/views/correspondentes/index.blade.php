@@ -42,7 +42,7 @@
                                 <h4 class="panel-title">Correspondentes</h4>
                             </div>
                             <div class="text-right">
-                                <button type="button" class="btn btn-info btn-rounded" id="new">New</button>
+                                <button type="button" class="btn btn-info btn-rounded" id="new">Novo</button>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -66,6 +66,12 @@
 
         $('#new').click(function(){
             location.href = '{{ route('correspondentes.create') }}';
+        });
+
+        $('.edit-entity').click(function(){
+            var ref = $(this).data('ref');
+
+            location.href = ref;
         });
     </script>
 @endsection

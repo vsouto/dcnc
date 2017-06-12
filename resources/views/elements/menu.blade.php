@@ -61,6 +61,13 @@
                             <span class="{{ isActive('users.index', 'current-page') }}"></span>
                         </a>
                     </li>
+                    <li class="{{ isActive('pages.setup', 'highlight') }}">
+                        <a href='{{ route('pages.setup') }}'>
+                            <i class="fa fa-cog"></i>
+                            <span>Setup</span>
+                            <span class="{{ isActive('pages.setup', 'current-page') }}"></span>
+                        </a>
+                    </li>
                 </ul>
             </li>
         @endif

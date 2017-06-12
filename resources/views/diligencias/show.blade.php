@@ -45,6 +45,13 @@
                             <strong>{{ session('message') }}</strong>
                         </div>
                     @endif
+                        @if (!$diligencia->comarca)
+                            <div class="alert alert-warning alert-white rounded">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                                <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
+                                <strong>Alerta!</strong> Não existe nenhuma comarca vinculada à esta diligência!
+                            </div>
+                        @endif
                     @if (!$diligencia->advogado->cliente)
                         <div class="alert alert-warning alert-white rounded">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
@@ -152,7 +159,7 @@
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Comarca</strong></td>
-                                            <td id="">{{ $diligencia->comarca->comarca }}</td>
+                                            <td id="">{{ $diligencia->comarca->comarca or '' }}</td>
                                             <td class="invoice_info_header_td info"><strong>Vara</strong></td>
                                             <td id="">{{ $diligencia->vara }}</td>
                                         </tr>
@@ -172,7 +179,7 @@
                                             <td class="invoice_info_header_td info"><strong>Correspondente</strong></td>
                                             <td id="invoice_vessel">
                                                 @if ($diligencia->correspondente)
-                                                    {{ $diligencia->correspondente->nome }}
+                                                    {{ $diligencia->correspondente->nome }} {!! getRatingStars($diligencia->correspondente->rating) !!}
                                                 @else
                                                     -
                                                 @endif
@@ -369,7 +376,9 @@
                                                     <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
                                                     <td class="success">
                                                         @foreach($diligencia->servicos as $servico)
-                                                            {{ 'R$ ' . $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor }}
+                                                            @if ($correspondente->servicos()->where('servico_id',$servico->id)->first())
+                                                                {{ 'R$ ' . $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor }}
+                                                            @endif
                                                         @endforeach
                                                     </td>
                                                     <td class="success">

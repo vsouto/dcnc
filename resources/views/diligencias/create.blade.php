@@ -203,7 +203,7 @@
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <label class="control-label">Orientações</label>
+                                                        <label class="control-label">Orientações <span class="text text-danger"> *</span></label>
                                                         {{ Form::textarea('orientacoes', null, ['class' => 'form-control','rows' => '3']) }}
                                                     </div>
                                                 </div>

@@ -53,7 +53,7 @@ class Correspondente extends Model
      */
     public function servicos()
     {
-        return $this->belongsToMany('App\Servico')->withPivot('valor', 'comarca_id');
+        return $this->belongsToMany('App\Servico')->withPivot('valor');
     }
 
     /**
@@ -92,14 +92,6 @@ class Correspondente extends Model
                 WHERE cs.valor > s.max
                 GROUP BY c.id, cs.valor, s.max");
 
-        /*
-         * SELECT c.id, c.nome , cs.valor, s.max
-	FROM correspondentes c
-		JOIN correspondente_servico cs ON (cs.correspondente_id = c.id )
-		JOIN servicos s ON (s.id = cs.servico_id)
-			WHERE cs.valor > s.max
-			GROUP BY c.id, cs.valor, s.max
-         */
     }
 
     /**
@@ -110,31 +102,16 @@ class Correspondente extends Model
      */
     public static function getBestCorrespondenteForDiligencia($comarca_id,$servico_id)
     {
-        /*
-        // Busca o correspondente desta comarca, de maior rating e de menor valor do serviço
-        $correspondente = Correspondente::
-            with('comarcas')
-            ->whereHas('comarcas', function ($query) use ($comarca_id) {
-                $query->where('comarcas.id',$comarca_id);
-            })
-            ->join('correspondente_servico', function ($join) use ($servico_id){
-                $join->on('correspondente_servico.correspondente_id', '=', 'correspondentes.id')
-                    ->where('correspondente_servico.servico_id', $servico_id);
-            })
-            ->join('servicos', 'servicos.id', '=', 'correspondente_servico.servico_id')
-            ->where('correspondente_servico.valor','<=','servicos.max')
-            ->orderBy('rating','DESC')
-            ->first();*/
+        $servico = Servico::where('id',$servico_id)->first();
 
-        return DB::select("SELECT c.*, cs.valor,s.max
-            FROM correspondentes c
-              JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.comarca_id = $comarca_id AND cs.servico_id = $servico_id)
-              JOIN servicos s ON (cs.servico_id = s.id)
-               WHERE cs.valor <= s.max AND s.id = $servico_id
-                ORDER BY rating DESC
-                  LIMIT 1
+        return DB::select("SELECT c.id, c.nome, cs.valor FROM correspondentes c
+                JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
+                JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = 1 AND cs.valor < $servico->max)
+                  GROUP BY cs.valor, c.id
+                    ORDER BY cs.valor ASC, c.rating DESC
+                    LIMIT 1
+
 		");
 
-        //return $correspondente;
     }
 }

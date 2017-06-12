@@ -3003,7 +3003,9 @@ ul.show-stats {
 
 .chart-height-lg {
   position: relative;
-  height: 220px; }
+  height: 220px;
+  max-width: 75%;
+}
 
 .chart-height {
   position: relative;
