@@ -341,7 +341,7 @@
                                 <br>
                                 @if ($diligencia->status_id == 6 && Auth::user()->level >= 5)
                                     <h4>Correspondentes Recomendados</h4>
-                                    @if(!$correspondentes_recomendados || $correspondentes_recomendados->count() <= 0)
+                                    @if(!$correspondentes_recomendados)
                                         <div class="alert alert-danger alert-white rounded">
                                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                                             <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
@@ -365,21 +365,16 @@
                                             </thead>
                                             <tbody>
                                             @foreach ($correspondentes_recomendados as $correspondente)
-                                                <?php if (!$correspondente->user) { continue; } ?>
                                                 <tr>
                                                     <td class="danger">{{ $correspondente->id }}</td>
                                                     <td class="info">{{ $diligencia->comarca->comarca}}</td>
                                                     <td class="warning">{{ $correspondente->nome }}</td>
-                                                    <td class="success">{{ $correspondente->user->email or '' }}</td>
-                                                    <td class="success">{{ $correspondente->user->phone or '' }}</td>
-                                                    <td class="success">{{ $correspondente->user->endereco or '' }}</td>
+                                                    <td class="success"></td>
+                                                    <td class="success"></td>
+                                                    <td class="success"></td>
                                                     <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
                                                     <td class="success">
-                                                        @foreach($diligencia->servicos as $servico)
-                                                            @if ($correspondente->servicos()->where('servico_id',$servico->id)->first())
-                                                                {{ 'R$ ' . $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor }}
-                                                            @endif
-                                                        @endforeach
+                                                        R$ {{ $correspondente->valor }}
                                                     </td>
                                                     <td class="success">
                                                         <button type="button"

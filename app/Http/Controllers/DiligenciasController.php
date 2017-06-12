@@ -519,18 +519,25 @@ class DiligenciasController extends Controller
             }
             else {
                 $comarca_id = $diligencia->comarca_id;
-
+                $servico_id = $diligencia->servicos()->first()->id;
+/*
                 // Busca correspondentes recomendados
                 $correspondentes_recomendados = Correspondente::
-                    with('comarcas')
+                    has('comarcas','=',$diligencia->comarca_id)
+                    ->has('servicos','=',$diligencia->servicos()->first()->id)
+                    ->with('comarcas')
                     ->with('servicos')
-                    ->whereHas('comarcas', function ($query) use ($comarca_id) {
-                        $query->where('comarcas.id',$comarca_id);
-                    })
-                    ->has('servicos',$diligencia->servicos()->first()->id)
                     ->with('user')
                     ->take(5)
-                    ->get();
+                    ->get();*/
+                $correspondentes_recomendados = DB::select("SELECT c.id, c.nome, c.rating, cs.valor
+                    FROM correspondentes c
+                        JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
+                        JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = $servico_id)
+                            GROUP BY c.id, c.nome, cs.valor, c.rating
+                            ORDER BY cs.valor ASC
+                                 ");
+
             }
         }
 
