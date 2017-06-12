@@ -107,7 +107,7 @@ class Correspondente extends Model
         return DB::select("SELECT c.id, c.nome, cs.valor FROM correspondentes c
                 JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
                 JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = 1 AND cs.valor < $servico->max)
-                  GROUP BY cs.valor, c.id, c.rating
+                  GROUP BY cs.valor, c.id, c.rating, c.nome
                     ORDER BY cs.valor ASC, c.rating DESC
                     LIMIT 1
 
