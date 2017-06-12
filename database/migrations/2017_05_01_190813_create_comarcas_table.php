@@ -16,8 +16,8 @@ class CreateComarcasTable extends Migration
         Schema::create('comarcas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('comarca');
-            $table->unsignedInteger('codigo');
-            $table->string('uf');
+            $table->unsignedInteger('codigo')->nullable();
+            $table->string('uf')->nullable();
             $table->timestamps();
         });
     }
