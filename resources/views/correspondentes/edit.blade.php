@@ -100,9 +100,9 @@
                                                 <div class="form-group">
                                                     <label class="col-lg-6 control-label">Senha </label>
                                                     <div class="col-lg-6">
-                                                        {{ Form::text('senha', null, [
+                                                        {{ Form::text('password', null, [
                                                              'class' => 'form-control',
-                                                             'id'    => 'senha'
+                                                             'id'    => 'password'
                                                              ]) }}
                                                         <div class="alert alert-info alert-transparent">
                                                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -148,7 +148,12 @@
                                                             <tr>
                                                                 <td>{{ $servico->id }}</td>
                                                                 <td>{{ $servico->servico }}</td>
-                                                                <td><input type="text" name="servico[{{ $servico->id }}][valor]" class="form-control"> </td>
+                                                                <td>
+                                                                    <input type="text"
+                                                                           name="servico[{{ $servico->id }}][valor]"
+                                                                           class="form-control"
+                                                                            value="{{ $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor or '' }}">
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                         </tbody>

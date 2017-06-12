@@ -126,6 +126,18 @@ class CorrespondentesController extends Controller
                         })
                     ,
                     (new FieldConfig)
+                        ->setName('rating')
+                        ->setLabel('Rating')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            return getRatingStars($val);
+                        })
+                    ,
+                    (new FieldConfig)
                         ->setName('actions')
                         ->setLabel('Ações')
                         ->setSortable(true)
@@ -244,7 +256,7 @@ class CorrespondentesController extends Controller
             'comarca_id' => 'required|not_in:0',
             'nome' => 'required|min:3',
             'email' => 'required|email|unique:users,email',
-            'senha' => 'required|min:4',
+            'password' => 'required|min:4',
             'bank' => 'int',
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
@@ -268,7 +280,7 @@ class CorrespondentesController extends Controller
                 if (!$servico['valor'] || empty($servico['valor']))
                     continue;
 
-                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor']]);
             }
 
             // Salva comarca
@@ -281,7 +293,7 @@ class CorrespondentesController extends Controller
         $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],
-            'password' => Hash::make($data['senha']),
+            'password' => Hash::make($data['password']),
             'phone' => $data['phone'],
             'endereco' => $data['endereco'],
             'level' => '1',
@@ -321,6 +333,7 @@ class CorrespondentesController extends Controller
         $correspondente = Correspondente::where('id',$id)
             ->with('user')
             ->with('comarcas')
+            ->with('servicos')
             ->first();
 
         $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
@@ -372,11 +385,14 @@ class CorrespondentesController extends Controller
         $correspondente = Correspondente::where('id',$id)->first();
 
         if ($correspondente) {
+
+            $correspondente->servicos()->detach();
+
             foreach ($data['servico'] as $key => $servico) {
                 if (!$servico['valor'] || empty($servico['valor']))
                     continue;
 
-                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor']]);
             }
 
             if (!empty($data['comarca_id'])) {
@@ -384,15 +400,28 @@ class CorrespondentesController extends Controller
             }
         }
 
-        $user = User::where('correspondente_id',$id)->update([
-            'nome' => $data['nome'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['senha']),
-            'phone' => $data['phone'],
-            'endereco' => $data['endereco'],
-            'level' => '1',
-            'correspondente_id' => $correspondente->id
-        ]);
+        if ($data['password'] && !empty($data['password'])) {
+            $user = User::where('correspondente_id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'level' => '1',
+                'correspondente_id' => $correspondente->id
+            ]);
+        }
+        else {
+            $user = User::where('correspondente_id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'level' => '1',
+                'correspondente_id' => $correspondente->id
+            ]);
+        }
+
 
         if ($user)
             $message = 'Sucesso';

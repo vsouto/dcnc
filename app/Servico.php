@@ -20,4 +20,13 @@ class Servico extends Model
     {
         return $this->belongsToMany('App\Diligencia');
     }
+
+    /**
+     * Get the entity
+     */
+    public function correspondentes()
+    {
+        return $this->belongsToMany('App\Correspondente')->withPivot('valor');
+    }
+
 }

@@ -49,6 +49,7 @@ Route::get('diligencias/selecionarCorrespondente/{c_id?}/{d_id?}',['as' => 'dili
 
 Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
 Route::get('getComarcas',['as' => 'getComarcas', 'uses' => 'ComarcasController@getComarcas']);
+Route::get('pages/setup',['as' => 'pages.setup', 'uses' => 'PagesController@setup']);
 
 Auth::routes();
 

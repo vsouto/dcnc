@@ -99,9 +99,9 @@
                                                     <div class="form-group">
                                                         <label class="col-lg-6 control-label">Senha <span class="text text-danger"> *</span></label>
                                                         <div class="col-lg-6">
-                                                            {{ Form::text('senha', null, [
+                                                            {{ Form::text('password', null, [
                                                                  'class' => 'form-control',
-                                                                 'id'    => 'senha'
+                                                                 'id'    => 'password'
                                                                  ]) }}
                                                         </div>
                                                     </div>
@@ -227,7 +227,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                         </div>
                                     </div>
                                 </div>

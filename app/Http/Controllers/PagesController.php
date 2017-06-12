@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
+use App\Servico;
 use App\Status;
 use App\User;
 use Illuminate\Http\Request;
@@ -179,17 +181,12 @@ class PagesController extends Controller
                         ->setLabel('Comarca')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$row->getSrc()->correspondente_id)
+                            if (!$row->getSrc()->comarca_id)
                                 return '';
 
-                            $correspondente = Correspondente::where('id',$row->getSrc()->correspondente_id)
-                                ->with('comarca')->first();
+                            $comarca = Comarca::where('id',$row->getSrc()->comarca_id)->first();
 
-                            if (!$correspondente || !$correspondente->comarca)
-                                return '';
-
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.
-                            $correspondente->comarca->comarca .'</span>';
+                            return $comarca->comarca;
                         })
                     ,
                     (new FieldConfig)
@@ -629,6 +626,14 @@ class PagesController extends Controller
     public function dashboard()
     {
         return view('pages.dashboard');
+    }
+
+    public function setup()
+    {
+
+        $servicos = Servico::get();
+
+        return view('pages.setup', compact('servicos'));
     }
 
 }
