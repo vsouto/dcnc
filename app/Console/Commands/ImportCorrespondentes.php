@@ -60,7 +60,7 @@ class ImportCorrespondentes extends Command
     {
         $results = '';
 
-        $file = storage_path('app/files/correspondentes2.xlsx');
+        $file = storage_path('app/files/correspondentes.xlsx');
 
         \Maatwebsite\Excel\Facades\Excel::load( $file, function($reader) {
 
@@ -155,25 +155,25 @@ class ImportCorrespondentes extends Command
                 if (!empty($data['advogado'])) {
                     $valor = str_replace('R$', '', $data['advogado']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(2,['valor' => $valor, 'comarca_id' => $comarca->id]);
+                    $correspondente->servicos()->attach(2,['valor' => $valor]);
                 }
 
                 if (!empty($data['preposto'])){
                     $valor = str_replace('R$', '', $data['preposto']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(1,['valor' => $valor, 'comarca_id' => $comarca->id]);
+                    $correspondente->servicos()->attach(1,['valor' => $valor]);
                 }
 
                 if (!empty($data['diligencia'])) {
                     $valor = str_replace('R$', '', $data['diligencia']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(4,['valor' => $valor, 'comarca_id' => $comarca->id]);
+                    $correspondente->servicos()->attach(4,['valor' => $valor]);
                 }
 
                 if (!empty($data['advogado_preposto'])){
                     $valor = str_replace('R$', '', $data['advogado_preposto']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(3,['valor' => $valor, 'comarca_id' => $comarca->id]);
+                    $correspondente->servicos()->attach(3,['valor' => $valor]);
                 }
 
                 $this->info('Vinculando comarca ' . $comarca->id . ' ao correspondente ' . $correspondente->id);
