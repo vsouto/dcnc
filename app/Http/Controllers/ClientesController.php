@@ -180,6 +180,8 @@ class ClientesController extends Controller
             'nome' => 'required|min:3',
             'email' => 'required|email',
             'senha' => 'required|min:4',
+            'endereco' => 'required|min:4',
+            'phone' => 'required|min:4',
         ]);
 
         $data = Input::all();
@@ -207,7 +209,7 @@ class ClientesController extends Controller
         else
             $message = 'Fail!';
 
-        return redirect()->action('AdvogadosController@index')
+        return redirect()->action('ClientesController@index')
             ->with('message',$message);
     }
 

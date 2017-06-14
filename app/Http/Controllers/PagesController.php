@@ -97,6 +97,7 @@ class PagesController extends Controller
             ->with('advogado')
             ->whereNotNull('correspondente_id')
             ->where('correspondente_id',Auth::user()->correspondente_id)
+            ->orderBy('created_at','DESC')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -365,6 +366,7 @@ class PagesController extends Controller
             ->with('correspondente')
             ->with('advogado')
             ->where('advogado_id',Auth::user()->id)
+            ->orderBy('created_at','DESC')
             ->newQuery();
 
         # Instantiate & Configure Grid

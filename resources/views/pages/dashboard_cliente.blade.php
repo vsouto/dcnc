@@ -1,33 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-        <!-- Top Bar starts -->
-<div class="top-bar">
-    <div class="page-title">
-        Dashboard
-    </div>
-    <ul class="stats hidden-xs">
-        <li>
-            <div class="stats-block hidden-sm hidden-xs">
-                <span id="downloads_graph"></span>
-            </div>
-            <div class="stats-details">
-                <h4>$<span id="today_income">580</span> <i class="fa fa-chevron-up up"></i></h4>
-                <h5>Receitas do Dia</h5>
-            </div>
-        </li>
-        <li>
-            <div class="stats-block hidden-sm hidden-xs">
-                <span id="users_online_graph"></span>
-            </div>
-            <div class="stats-details">
-                <h4>$<span id="today_expenses">235</span> <i class="fa fa-chevron-down down"></i></h4>
-                <h5>Despesas do Dia</h5>
-            </div>
-        </li>
-    </ul>
-</div>
-<!-- Top Bar ends -->
 
 <!-- Main Container starts -->
 <div class="main-container">
@@ -75,33 +48,6 @@
 </div>
 <!-- Main Container ends -->
 
-<!-- Right sidebar starts -->
-<div class="right-sidebar">
-
-    <!-- Addons starts -->
-    <div class="add-on clearfix">
-        <div class="add-on-wrapper">
-            <h5>Ações</h5>
-            <section class="">
-                <fieldset class="">
-                    <label class="todo-list-item info">
-                        <button type="button" class="btn btn-default "><i class="fa fa-bullhorn"></i> Solicitar Documentos</button>
-                    </label>
-                    <label class="todo-list-item danger">
-                        <button type="button" class="btn btn-danger "><i class="fa fa-bolt"></i> Contestar</button>
-                    </label>
-                    <label class="todo-list-item success">
-                        <button type="button" class="btn btn-success "><i class="fa fa-cloud-upload"></i> Atualizar dados</button>
-                    </label>
-                </fieldset>
-            </section>
-        </div>
-    </div>
-    <!-- Addons ends -->
-
-
-</div>
-<!-- Right sidebar ends -->
 @endsection
 
 @section('footer')

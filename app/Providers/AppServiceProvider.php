@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Carbon Localization
+        \Carbon\Carbon::setLocale('pt_BR');
     }
 }

@@ -67,7 +67,6 @@
 
                 // Create the options
                 $("<option value='"+ data[key].id +"'>"+ data[key].comarca +"</option>", {value: data[key].id }).appendTo( where );
-
             }
 
             if (typeof (selected) != 'undefined')

@@ -143,4 +143,12 @@ class Diligencia extends Model
 
         return $button;
     }
+
+    public static function isCurrentCorrespondente($diligencia)
+    {
+        if (!Auth::user()->correspondente_id || empty(Auth::user()->correspondente_id))
+            return false;
+
+        return $diligencia->correspondente_id == Auth::user()->correspondente_id? true : false;
+    }
 }
