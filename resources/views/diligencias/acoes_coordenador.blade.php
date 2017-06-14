@@ -38,7 +38,9 @@
                         <td class="success"></td>
                         <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
                         <td class="success">
-                            R$ {{ $correspondente->valor }}
+                            <span class="text @if (\App\Correspondente::isCorrespondenteOverpriced($diligencia->servicos->first()->id,$correspondente->id)) text-danger @endif ">
+                                    R$ {{ $correspondente->valor }}
+                                </span>
                         </td>
                         <td class="success">
                             <button type="button"

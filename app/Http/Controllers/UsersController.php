@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
 use Nayjest\Grids\Components\FiltersRow;
@@ -35,6 +37,7 @@ class UsersController extends Controller
         //
         # Some params may be predefined, other can be controlled using grid components
         $query = (new User())
+            ->where('level','>=','3')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -161,6 +164,15 @@ class UsersController extends Controller
     public function create()
     {
         //
+        $levels = [
+            '3' => 'Operador',
+            '4' => 'Negociador',
+            '5' => 'Coordenador',
+            '6' => 'Financeiro',
+            '9' => 'Admin',
+        ];
+
+        return view('users.create',compact('levels'));
     }
 
     /**
@@ -172,6 +184,22 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'nome' => 'required|min:3',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:4',
+        ]);
+
+        $data = Input::only('nome','email','password','endereco','phone','level');
+
+        $data['password'] = Hash::make($data['password']);
+
+        $user = User::create($data);
+
+        if ($user)
+            return redirect()->action('UsersController@index');
+        else
+            abort(403,'erro');
     }
 
     /**

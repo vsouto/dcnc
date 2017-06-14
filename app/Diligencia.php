@@ -151,4 +151,6 @@ class Diligencia extends Model
 
         return $diligencia->correspondente_id == Auth::user()->correspondente_id? true : false;
     }
+
+
 }

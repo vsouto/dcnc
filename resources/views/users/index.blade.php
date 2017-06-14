@@ -18,7 +18,7 @@
                                 <h4 class="panel-title">Usuários</h4>
                             </div>
                             <div class="text-right">
-                                <button type="button" class="btn btn-info btn-rounded" id="new">New</button>
+                                <button type="button" class="btn btn-info btn-rounded" id="new">Novo</button>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -37,3 +37,14 @@
     </div>
 @endsection
 
+
+
+@section('footer')
+    <script>
+
+        $('#new').click(function(){
+            location.href = '{{ route('users.create') }}';
+        });
+
+    </script>
+@endsection

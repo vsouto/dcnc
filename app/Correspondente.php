@@ -117,4 +117,19 @@ class Correspondente extends Model
                             ORDER BY cs.valor ASC
                                  ");
     }
+
+    public static function isCorrespondenteOverpriced($servico_id,$correspondente_id)
+    {
+        $correspondente = Correspondente::with('servicos')
+            ->has('servicos',$servico_id)
+            ->first();
+
+        $servico = Servico::where('id',$servico_id)->first();
+
+        if ( $correspondente->servicos()->count() > 0 && $correspondente->servicos()->first()->pivot->valor > $servico->max)
+            return true;
+        else
+            return false;
+    }
+
 }

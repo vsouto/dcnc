@@ -33,7 +33,11 @@
                     <td>
                         <span class="text-info">{{ $servico->descricao }}</span>
                     </td>
-                    <td>R$ {{ $valor }}</td>
+                    <td>R$
+                        <span class="text @if ($valor >= $servico->max) 'text-danger' : 'text-info' @endif">
+                            {{ $valor }}
+                        </span>
+                    </td>
                     <td></td>
                 </tr>
             @endif

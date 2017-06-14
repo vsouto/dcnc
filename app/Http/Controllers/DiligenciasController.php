@@ -515,11 +515,7 @@ class DiligenciasController extends Controller
             ->with('correspondente')
             ->with('advogado','advogado.cliente')
             ->firstOrFail();
-/*
-        // Se tem correspondente selecionado, pega os valores dos serviços
-        if ($diligencia->correspondente_id && $diligencia->servicos()->count() > 0) {
-            foreach ($diligencia->servicos() as $servico)
-        }*/
+
         $correspondentes_recomendados = [];
 
         // Em negociacao?
