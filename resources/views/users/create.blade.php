@@ -2,7 +2,7 @@
 
 @section('content')
     @if (Auth::user()->level >= 4)
-        @include('elements.top-bar', ['title' => 'Advogados'])
+        @include('elements.top-bar', ['title' => 'Users'])
     @endif
 
     <!-- Main Container starts -->
@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <!-- Spacer starts -->
             <div class="spacer">
-                <form id="create_advogado" method="post" action="{{ route('advogados.store') }}" class="form-horizontal" enctype="multipart/form-data">
+                <form id="create_user" method="post" action="{{ route('users.store') }}" class="form-horizontal" enctype="multipart/form-data">
                     {{ Form::token() }}
                     @if (count($errors) > 0)
                         <div class="alert alert-danger">
@@ -34,26 +34,17 @@
                                         </div>
                                         <div class="blog-body">
                                             <fieldset>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Cliente <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-select-grouper">
-                                                            {{ Form::select('cliente_id', $clientes, null, [
-                                                                'class' => 'form-control',
-                                                                'id' => 'clientes-select']) }}
+                                                <div class="form-group resto-form" id="" style="display: block;">
+
+                                                    <div class="form-group">
+                                                        <label class="col-lg-6 control-label">Nome <span class="text text-danger"> *</span></label>
+                                                        <div class="col-lg-6">
+                                                            {{ Form::text('nome', null, [
+                                                                 'class' => 'form-control',
+                                                                 'id'    => 'nome'
+                                                                 ]) }}
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Nome <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::text('nome', null, [
-                                                             'class' => 'form-control',
-                                                             'id'    => 'nome'
-                                                             ]) }}
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
                                                     <div class="form-group">
                                                         <label class="col-lg-6 control-label">Email <span class="text text-danger"> *</span></label>
                                                         <div class="col-lg-6">
@@ -66,9 +57,9 @@
                                                     <div class="form-group">
                                                         <label class="col-lg-6 control-label">Senha <span class="text text-danger"> *</span></label>
                                                         <div class="col-lg-6">
-                                                            {{ Form::text('senha', null, [
+                                                            {{ Form::text('password', null, [
                                                                  'class' => 'form-control',
-                                                                 'id'    => 'senha'
+                                                                 'id'    => 'password'
                                                                  ]) }}
                                                         </div>
                                                     </div>
@@ -85,20 +76,30 @@
                                                         <label class="col-lg-6 control-label">Endereço</label>
                                                         <div class="col-lg-6">
                                                             {{ Form::text('endereco', null, [
-                                                                'class' => 'form-control',
+                                                                'class' => 'form-control ',
                                                                 'id'    => 'endereco'
+                                                                ]) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-lg-6 control-label">Nível</label>
+                                                        <div class="col-lg-6">
+                                                            {{ Form::select('level', $levels, null, [
+                                                                'class' => 'form-control ',
+                                                                'id'    => 'level'
                                                                 ]) }}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </fieldset>
+
                                         </div>
                                     </div>
                                 </div>
 
+
                             </div>
                             <!-- Row Ends -->
-
 
                             <div class="form-group">
 
@@ -124,19 +125,10 @@
 @section('footer')
 
 
-    <link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" media="screen">
-
     <script>
 
+        $(function() {
 
-        $('#new').click(function(){
-            location.href = '{{ route('advogados.create') }}';
-        });
-
-        $( "#prazo" ).datepicker({
-            dateFormat: 'dd/mm/yy',
-            changeMonth: true,
-            changeYear: true
         });
 
     </script>

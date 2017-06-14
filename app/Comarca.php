@@ -37,7 +37,9 @@ class Comarca extends Model
 
     public static function getEstadosList()
     {
-
-        return Comarca::groupBy('uf')->orderBy('uf','ASC')->pluck('uf','uf');
+        return Comarca::whereNotNull('uf')
+                ->groupBy('uf')
+                ->orderBy('uf','ASC')
+                ->pluck('uf','uf');
     }
 }

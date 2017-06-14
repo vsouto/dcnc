@@ -1,33 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-        <!-- Top Bar starts -->
-    <div class="top-bar">
-        <div class="page-title">
-            Visualizando Diligência
-        </div>
-        <ul class="stats hidden-xs">
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="downloads_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_income">580</span> <i class="fa fa-chevron-up up"></i></h4>
-                    <h5>Receitas do Dia</h5>
-                </div>
-            </li>
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="users_online_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_expenses">235</span> <i class="fa fa-chevron-down down"></i></h4>
-                    <h5>Despesas do Dia</h5>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <!-- Top Bar ends -->
+    @if (Auth::user()->level >= 4)
+        @include('elements.top-bar', ['title' => 'Diligências'])
+    @endif
 
     <!-- Main Container starts -->
     <div class="main-container">
@@ -185,73 +161,17 @@
                                                 @endif
                                             </td>
                                             <td id="" colspan="2">
-                                                <button type="button" class="btn btn-danger">Cancelar Correspondente</button></td>
+                                                @if (Auth::user()->level >= 5)
+                                                    <button type="button" class="btn btn-danger">Cancelar Correspondente</button></td>
+                                                @endif
                                         </tr>
                                         </tbody>
                                     </table>
                                     <br>
                                     <br>
 
-                                    <h4><strong>Serviços</strong></h4>
-                                    @if ($diligencia->servicos->count() > 0 && $diligencia->correspondente)
-                                        <table class="table table-striped table-bordered table-hover no-margin">
-                                            <thead>
-                                            <tr>
-                                                <th style="width:10%">#</th>
-                                                <th style="width:20%">Serviço</th>
-                                                <th style="width:40%">Descrição</th>
-                                                <th style="width:10%">Valor</th>
-                                                <th style="width:10%">Total</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php $total = 0; ?>
-                                            @foreach ($diligencia->servicos as $servico)
-                                                <?php $servico_correspondente = $diligencia->correspondente->servicos()->where('servico_id',$servico->id)->first(); ?>
-                                                @if (!$servico_correspondente)
-                                                    <tr>
-                                                        <td>{{ $servico->id }}</td>
-                                                        <td>{{ $servico->servico }}</td>
-                                                        <td>
-                                                            <span class="text-danger">Alerta: O correspondente não tem este serviço!</span>
-                                                        </td>
-                                                        <td>R$ </td>
-                                                        <td></td>
-                                                    </tr>
-                                                @else
-                                                    <?php $valor = $diligencia->correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor; ?>
-                                                    <?php $total += $valor ?>
-                                                    <tr>
-                                                        <td>{{ $servico->id }}</td>
-                                                        <td>{{ $servico->servico }}</td>
-                                                        <td>
-                                                            <span class="text-info">{{ $servico->descricao }}</span>
-                                                        </td>
-                                                        <td>R$ {{ $valor }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                            <tr>
-                                                <td class="total" colspan="4">Subtotal</td>
-                                                <td>R$ {{ $total }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="total" colspan="4">Taxas</td>
-                                                <td>-</td>
-                                            </tr>
-                                            <tr class="warning">
-                                                <td class="total text-warning" colspan="4"><h5>Total</h5></td>
-                                                <td class="hidden-phone text-info"><h4>R$ {{ $total }}</h4></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    @else
-                                        <div class="alert alert-danger alert-white rounded">
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                                            <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-                                            <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência ou não existe um correspondente vinculado.
-                                        </div>
+                                    @if (Auth::user()->level >= 5 || \App\Diligencia::isCurrentCorrespondente($diligencia))
+                                        @include('diligencias.servicos')
                                     @endif
                                 </div>
                             </div>
@@ -260,6 +180,35 @@
                 </div>
 
                 <br>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <!-- Widget starts -->
+                        <div class="blog blog-success">
+                            <div class="blog-header">
+                                <h5 class="blog-title">Ações</h5>
+                            </div>
+                            <div class="blog-body">
+                                Se houver alguma ação a ser tomada neste Diligência, ela poderá ser realizada aqui.
+                                <br>
+                                <br>
+                                @if ( Auth::user()->level == '1')
+                                    @include('diligencias.acoes_correspondente')
+                                @elseif ( Auth::user()->level == '2')
+
+                                @elseif ( Auth::user()->level == '3')
+
+                                @elseif ( Auth::user()->level == '4')
+
+                                @elseif ( Auth::user()->level >= '5')
+                                    @include('diligencias.acoes_coordenador')
+                                @endif
+
+                            </div>
+                        </div>
+                        <!-- Widget ends -->
+                    </div>
+
+                </div>
                 <br>
 
                 <div class="row">
@@ -317,88 +266,38 @@
                         </div>
                         <!-- Widget ends -->
                     </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <!-- Widget starts -->
-                        <div class="blog blog-success">
-                            <div class="blog-header">
-                                <h5 class="blog-title">Ações</h5>
-                            </div>
-                            <div class="blog-body">
-                                Se houver alguma ação a ser tomada neste Diligência, ela poderá ser realizada aqui.
-                                <br>
-                                <br>
-                                <div class="alert alert-warning alert-white rounded">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                                    <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-                                    <strong>Status Atual:</strong> {{ $diligencia->status->status }}
-                                </div>
-                                {!! \App\Diligencia::getCurrentAction($diligencia->id) !!}
-                                <br>
-                                <br>
-                                @if ($diligencia->status_id == 6 && Auth::user()->level >= 5)
-                                    <h4>Correspondentes Recomendados</h4>
-                                    @if(!$correspondentes_recomendados)
-                                        <div class="alert alert-danger alert-white rounded">
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                                            <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-                                            <strong>Alerta:</strong> Não foram encontrados correspondentes nesta comarca ou existem erros nesta Diligência!
-                                        </div>
-                                        <br><button type="button" class="btn btn-info btn-rounded" id="criar-correspondente">Criar Correspondente</button>
-                                    @else
-                                        <table class="table table-hover no-margin">
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Comarca</th>
-                                                <th>Nome</th>
-                                                <th>Telefone</th>
-                                                <th>Email</th>
-                                                <th>Endereço</th>
-                                                <th>Avaliação</th>
-                                                <th>Valor</th>
-                                                <th>Selecionar</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach ($correspondentes_recomendados as $correspondente)
-                                                <tr>
-                                                    <td class="danger">{{ $correspondente->id }}</td>
-                                                    <td class="info">{{ $diligencia->comarca->comarca}}</td>
-                                                    <td class="warning">{{ $correspondente->nome }}</td>
-                                                    <td class="success"></td>
-                                                    <td class="success"></td>
-                                                    <td class="success"></td>
-                                                    <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
-                                                    <td class="success">
-                                                        R$ {{ $correspondente->valor }}
-                                                    </td>
-                                                    <td class="success">
-                                                        <button type="button"
-                                                                class="btn btn-info btn-rounded btn-transparent"
-                                                                id="select-correspondente"
-                                                                data-ref="{{ $correspondente->id }}">Selecionar</button></td>
-                                                </tr>
-                                            @endforeach
-
-                                            </tbody>
-                                        </table>
-                                    @endif
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Widget ends -->
-                    </div>
-
                 </div>
 
             </div>
             <!-- Spacer ends -->
         </div>
     </div>
+
+
+<!-- Right sidebar starts -->
+<div class="right-sidebar">
+
+    @if (\App\Diligencia::isCurrentCorrespondente($diligencia))
+        <!-- Addons starts -->
+        <div class="add-on clearfix">
+            <div class="add-on-wrapper">
+                <h5>Ações</h5>
+                <section class="">
+                    <fieldset class="">
+                        <label class="todo-list-item info">
+                            <button type="button" class="btn btn-default "><i class="fa fa-bullhorn"></i> Solicitar Documentos</button>
+                        </label>
+                        <label class="todo-list-item success">
+                            <button type="button" class="btn btn-success "><i class="fa fa-cloud-upload"></i> Atualizar perfil</button>
+                        </label>
+                    </fieldset>
+                </section>
+            </div>
+        </div>
+    <!-- Addons ends -->
+    @endif
+</div>
+<!-- Right sidebar ends -->
 @endsection
 
 @section('footer')

@@ -55,6 +55,7 @@ class DiligenciasController extends Controller
             ->with('servicos')
             ->with('correspondente')
             ->with('advogado')
+            ->orderBy('created_at','DESC')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -70,6 +71,33 @@ class DiligenciasController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button1 = '<div style="float: left">'.
+                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
+                                ' <i class="fa fa-search"></i></span></div> ';
+
+                            $button2 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('diligencias.edit', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-diligencia">'.
+                                ' <i class="fa fa-pencil"></i></span></div> ';
+
+                            // Em negociacao?
+                            if ($row->getSrc()->status_id == '6') {
+                                $button3 = ' <div style="float: left">'.
+                                    '<button type="button" class="btn btn-danger btn-rounded" data-container="body"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                     data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
+                            }
+
+                            return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
+                        })
+                    ,
                     (new FieldConfig())
                         ->setName('id')
                         ->setLabel('ID')
@@ -242,33 +270,6 @@ class DiligenciasController extends Controller
                             return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.$row->getSrc()->advogado->nome .'</span>';
                         })
                     ,
-                    (new FieldConfig)
-                        ->setName('actions')
-                        ->setLabel('Ações')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-
-                            $button1 = $button2 = $button3 = '';
-
-                            $button1 = '<div style="float: left">'.
-                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
-                                ' <i class="fa fa-search"></i></span></div> ';
-
-                            $button2 = ' <div style="float: left">'.
-                                '<span data-ref="'.route('diligencias.edit', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-diligencia">'.
-                                ' <i class="fa fa-pencil"></i></span></div> ';
-
-                            // Em negociacao?
-                            if ($row->getSrc()->status_id == '6') {
-                                $button3 = ' <div style="float: left">'.
-                                    '<button type="button" class="btn btn-danger btn-rounded" data-container="body"
-                                    data-toggle="tooltip" data-placement="bottom"
-                                     data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
-                            }
-
-                            return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
-                        })
-                    ,
                 ])
                 # Setup additional grid components
                 ->setComponents([
@@ -349,11 +350,13 @@ class DiligenciasController extends Controller
     {
         $advogados = User::getAdvogadosList();
 
-        $comarcas = Comarca::pluck('comarca','id')->prepend('Selecione uma opção', '0');
+        $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
+
+        //$comarcas = Comarca::pluck('comarca','id')->prepend('Selecione uma opção', '0');
 
         $servicos = Servico::get();
 
-        return view('diligencias.create',compact('tipos','advogados','comarcas','servicos'));
+        return view('diligencias.create',compact('tipos','advogados','servicos','estados'));
     }
 
     /**
@@ -364,6 +367,8 @@ class DiligenciasController extends Controller
      */
     public function store(Request $request)
     {
+        $today = Carbon::today();
+
         $this->validate($request, [
             'comarca_id' => 'required|not_in:0',
             'titulo' => 'required|min:3|max:65',
@@ -372,10 +377,11 @@ class DiligenciasController extends Controller
             'reu' => 'required',
             'advogado_id' => 'required|not_in:0', // cliente
             'orgao' => 'required',
-            'prazo' => 'required|date',
+            'prazo' => 'required|date_format:"d/m/Y H:i"|after:' . $today,
             'solicitante' => 'required',
             'orientacoes' => 'required|min:5',
             'servico_id' => 'required',
+            'vara' => 'required',
             'autor' => 'required',
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
@@ -386,11 +392,13 @@ class DiligenciasController extends Controller
             'reu.required' => 'Você precisa digitar um Réu.',
             'orgao.required' => 'Você precisa digitar um Órgão.',
             'prazo.required' => 'Você precisa digitar um Prazo.',
+            'prazo.after' => 'O Prazo precisa ser a partir da data de hoje.',
             'solicitante.required' => 'Você precisa digitar um Solicitante.',
             'orientacoes.required' => 'Você precisa digitar um mínimo de Orientações.',
             'advogado_id.required' => 'Você precisa selecionar um Advogado cliente.',
             'advogado_id.not_in' => 'Você precisa selecionar um Advogado cliente.',
             'servico_id.required' => 'Você precisa selecionar ao menos um Serviço.',
+            'vara.required' => 'Você precisa preencher a Vara.',
             'autor.required' => 'Você precisa digitar o autor.',
         ]);
 
@@ -435,7 +443,7 @@ class DiligenciasController extends Controller
 
         // Prazo to pattern
         if (!empty($data['prazo'])) {
-            $data['prazo'] = Carbon::createFromFormat('d/m/Y',$data['prazo']);
+            $data['prazo'] = Carbon::createFromFormat('d/m/Y h:i',$data['prazo']);
         }
 
         // Select the best Correspondente for this
@@ -481,7 +489,11 @@ class DiligenciasController extends Controller
                 $save->servicos()->attach($servico_id);
             }
 
-            return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
+            // Se foi cadastrado pelo cliente
+            if (Auth::user()->level == 2)
+                return redirect()->route('dashboard_cliente')->with('message', 'Nova Diligência criada com sucesso.');
+            else
+                return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
         }
         else {
             return redirect()->back()->with('message','Algo aconteceu de errado.');
@@ -503,11 +515,7 @@ class DiligenciasController extends Controller
             ->with('correspondente')
             ->with('advogado','advogado.cliente')
             ->firstOrFail();
-/*
-        // Se tem correspondente selecionado, pega os valores dos serviços
-        if ($diligencia->correspondente_id && $diligencia->servicos()->count() > 0) {
-            foreach ($diligencia->servicos() as $servico)
-        }*/
+
         $correspondentes_recomendados = [];
 
         // Em negociacao?
@@ -520,24 +528,8 @@ class DiligenciasController extends Controller
             else {
                 $comarca_id = $diligencia->comarca_id;
                 $servico_id = $diligencia->servicos()->first()->id;
-/*
-                // Busca correspondentes recomendados
-                $correspondentes_recomendados = Correspondente::
-                    has('comarcas','=',$diligencia->comarca_id)
-                    ->has('servicos','=',$diligencia->servicos()->first()->id)
-                    ->with('comarcas')
-                    ->with('servicos')
-                    ->with('user')
-                    ->take(5)
-                    ->get();*/
-                $correspondentes_recomendados = DB::select("SELECT c.id, c.nome, c.rating, cs.valor
-                    FROM correspondentes c
-                        JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
-                        JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = $servico_id)
-                            GROUP BY c.id, c.nome, cs.valor, c.rating
-                            ORDER BY cs.valor ASC
-                                 ");
 
+                $correspondentes_recomendados = Correspondente::getRecomendados($servico_id,$comarca_id);
             }
         }
 
@@ -680,7 +672,11 @@ class DiligenciasController extends Controller
             }
 
 
-            return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
+            // Se foi cadastrado pelo cliente
+            if (Auth::user()->level == 2)
+                return redirect()->route('dashboard_cliente')->with('message', 'Nova Diligência criada com sucesso.');
+            else
+                return redirect()->route('diligencias.index')->with('message', 'Nova Diligência criada com sucesso.');
         }
         else {
             return redirect()->back()->with('message','Algo aconteceu de errado.');

@@ -3719,3 +3719,7 @@ td .invoice_info_header_td{
 .scrolled {
     overflow-x: scroll !important;
 }
+
+.ui-datepicker-calendar {
+  display: none;
+}

@@ -78,13 +78,6 @@ class Correspondente extends Model
                 ->groupBy('correspondentes.id', 'correspondente_servico.valor', 'servicos.max');
 
         else
-        /*
-            return $query->select(DB::raw('DISTINCT(correspondentes.id)'))
-                ->join('correspondente_servico', 'correspondente_servico.correspondente_id','=','correspondentes.id')
-                ->join('servicos', 'servicos.id','=','correspondente_servico.servico_id')
-                ->where('correspondente_servico.valor','<','servicos.max')
-                ->groupBy('correspondentes.id', 'correspondente_servico.valor', 'servicos.max');*/
-
 
         return DB::select("SELECT c.id FROM correspondentes c
             JOIN correspondente_servico cs ON (cs.correspondente_id = c.id )
@@ -112,6 +105,31 @@ class Correspondente extends Model
                     LIMIT 1
 
 		");
-
     }
+
+    public static function getRecomendados($servico_id, $comarca_id)
+    {
+        return DB::select("SELECT c.id, c.nome, c.rating, cs.valor
+                    FROM correspondentes c
+                        JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
+                        JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = $servico_id)
+                            GROUP BY c.id, c.nome, cs.valor, c.rating
+                            ORDER BY cs.valor ASC
+                                 ");
+    }
+
+    public static function isCorrespondenteOverpriced($servico_id,$correspondente_id)
+    {
+        $correspondente = Correspondente::with('servicos')
+            ->has('servicos',$servico_id)
+            ->first();
+
+        $servico = Servico::where('id',$servico_id)->first();
+
+        if ( $correspondente->servicos()->count() > 0 && $correspondente->servicos()->first()->pivot->valor > $servico->max)
+            return true;
+        else
+            return false;
+    }
+
 }

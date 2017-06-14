@@ -1,33 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Top Bar starts -->
-    <div class="top-bar">
-        <div class="page-title">
-            Criar Diligência
-        </div>
-        <ul class="stats hidden-xs">
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="downloads_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_income">580</span> <i class="fa fa-chevron-up up"></i></h4>
-                    <h5>Receitas do Dia</h5>
-                </div>
-            </li>
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="users_online_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_expenses">235</span> <i class="fa fa-chevron-down down"></i></h4>
-                    <h5>Despesas do Dia</h5>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <!-- Top Bar ends -->
+
+    @if (Auth::user()->level >= 4)
+        @include('elements.top-bar', ['title' => 'Diligências'])
+    @endif
 
     <!-- Main Container starts -->
     <div class="main-container">
@@ -59,29 +36,56 @@
                                         <div class="blog-body">
                                             <fieldset>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
+                                                    <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
-                                                            {{ Form::select('comarca_id', $comarcas, null, [
+                                                            {{ Form::select('estado_id', $estados, null, [
                                                                 'class' => 'form-control',
-                                                                'id' => 'comarcas-select']) }}
+                                                                'id' => 'estados-select']) }}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Cliente / Advogado <span class="text text-danger"> *</span></label>
+                                                    <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
-                                                            {{ Form::hidden('advogado_id', Auth::user()->id, [
-                                                                    'class' => 'form-control',
-                                                                    'id'    => 'advogado_id'
-                                                                    ]) }}
-                                                            {{ Form::select('advogados', $advogados, null, [
-                                                                'class' => 'form-control',
-                                                                'id' => 'advogados-select']) }}
+                                                            <select id="comarcas-select" class="form-control" name="comarca_id"></select>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @if (Auth::user()->level == 2)
+                                                    <!-- Cliente -->
+                                                    <div class="form-group">
+                                                        <label class="col-lg-6 control-label">Cliente / Advogado <span class="text text-danger"> *</span></label>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-select-grouper">
+                                                                {{ Form::hidden('advogado_id', Auth::user()->id, [
+                                                                        'class' => 'form-control',
+                                                                        'id'    => 'advogado_id'
+                                                                        ]) }}
+                                                                {{ Form::text('advogado', Auth::user()->nome, [
+                                                                    'class' => 'form-control',
+                                                                    'disabled' => 'disabled',
+                                                                    'id' => 'advogado_id-select']) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group">
+                                                        <label class="col-lg-6 control-label">Cliente / Advogado <span class="text text-danger"> *</span></label>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-select-grouper">
+                                                                {{ Form::hidden('advogado_id', Auth::user()->id, [
+                                                                        'class' => 'form-control',
+                                                                        'id'    => 'advogado_id'
+                                                                        ]) }}
+                                                                {{ Form::select('advogados', $advogados, null, [
+                                                                    'class' => 'form-control',
+                                                                    'id' => 'advogados-select']) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                                 <div class="form-group">
                                                     <label class="col-lg-6 control-label">Título <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
@@ -102,7 +106,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-lg-6 control-label">Número Integração</label>
+                                                        <label class="col-lg-6 control-label">Número Integração (ACT)</label>
                                                         <div class="col-lg-6">
                                                             {{ Form::text('num_integracao', null, [
                                                                  'class' => 'form-control',
@@ -123,7 +127,7 @@
                                                         <label class="col-lg-6 control-label">Prazo <span class="text text-danger"> *</span></label>
                                                         <div class="col-lg-6">
                                                             {{ Form::text('prazo', null, [
-                                                                'class' => 'form-control datepicker',
+                                                                'class' => 'form-control',
                                                                 'id'    => 'prazo'
                                                                 ]) }}
                                                         </div>
@@ -166,7 +170,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label class="control-label">Nome do Réu <span class="text text-danger"> *</span></label>
-                                                        {{ Form::text('reu', null, ['class' => 'form-control datepicker',
+                                                        {{ Form::text('reu', null, ['class' => 'form-control',
                                                                 'id' => 'reu']) }}
                                                         <div class="help-block with-errors"></div>
                                                     </div>
@@ -176,7 +180,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label class="control-label">Órgão <span class="text text-danger"> *</span></label>
-                                                        {{ Form::text('orgao', null, ['class' => 'form-control datepicker',
+                                                        {{ Form::text('orgao', null, ['class' => 'form-control',
                                                             'id' => 'etb']) }}
                                                         <div class="help-block with-errors"></div>
                                                     </div>
@@ -185,8 +189,8 @@
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <label class="control-label">Local <span class="text text-danger"> *</span></label>
-                                                        {{ Form::text('local_orgao', null, ['class' => 'form-control datepicker',
+                                                        <label class="control-label">Local (Endereço Completo) <span class="text text-danger"> *</span></label>
+                                                        {{ Form::text('local_orgao', null, ['class' => 'form-control',
                                                             'id' => 'etb']) }}
                                                         <div class="help-block with-errors"></div>
                                                     </div>
@@ -195,7 +199,7 @@
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <label class="control-label">Vara</label>
+                                                        <label class="control-label">Vara <span class="text text-danger"> *</span></label>
                                                         {{ Form::text('vara', null, ['class' => 'form-control']) }}
                                                     </div>
                                                 </div>
@@ -204,7 +208,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label class="control-label">Orientações <span class="text text-danger"> *</span></label>
-                                                        {{ Form::textarea('orientacoes', null, ['class' => 'form-control','rows' => '3']) }}
+                                                        {{ Form::textarea('orientacoes', null, ['class' => 'form-control','rows' => '10']) }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -303,26 +307,53 @@
     <script type="text/javascript" src="{{ URL::asset('js/collapse.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/bootstrap-datetimepicker.min.js') }}"></script>--}}
 
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" >
+    <script type="text/javascript" src="{{ asset('js/moment-with-locales.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+
+
+    <link href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.css') }}" rel="stylesheet" media="screen">
+    {{--
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}/" />
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" >--}}
 
     <script>
 
         $('#advogados-select').change(function(){
             $('#advogado_id').val( $(this).val());
         });
-        /*
+
+        $('#estados-select').change(function(){
+            var estado_id = $(this).val();
+
+            getComarcas(estado_id);
+        });
+
+
         $(function () {
             $('#prazo').datetimepicker({
-                format: 'd.m.Y H:i',
+                format: 'DD/MM/YYYY hh:mm',
                 inline: true,
+                locale: 'pt',
+                viewMode: 'years',
+                //minDate: moment().format('D/M/Y H:m')
+                //minDate: moment().format('L')
             });
+
+            var estado_id = $('#estados-select').val();
+
+            @if (Input::old('estado_id') && !empty(Input::old('estado_id')) && Input::old('estado_id') != '0')
+                var estado_selected = '{{ Input::old('estado_id') }}';
+
+                getComarcas(estado_id, estado_selected);
+            @endif
         });
-         */
+
+         /*
         $( "#prazo" ).datepicker({
             dateFormat: 'dd/mm/yy',
             changeMonth: true,
             changeYear: true
         });
-
+*/
     </script>
 @endsection

@@ -1,33 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Top Bar starts -->
-    <div class="top-bar">
-        <div class="page-title">
-            Usuários
-        </div>
-        <ul class="stats hidden-xs">
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="downloads_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_income">580</span> <i class="fa fa-chevron-up up"></i></h4>
-                    <h5>Receitas do Dia</h5>
-                </div>
-            </li>
-            <li>
-                <div class="stats-block hidden-sm hidden-xs">
-                    <span id="users_online_graph"></span>
-                </div>
-                <div class="stats-details">
-                    <h4>$<span id="today_expenses">235</span> <i class="fa fa-chevron-down down"></i></h4>
-                    <h5>Despesas do Dia</h5>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <!-- Top Bar ends -->
+    @if (Auth::user()->level >= 4)
+        @include('elements.top-bar', ['title' => 'Users'])
+    @endif
 
     <!-- Main Container starts -->
     <div class="main-container">
@@ -42,7 +18,7 @@
                                 <h4 class="panel-title">Usuários</h4>
                             </div>
                             <div class="text-right">
-                                <button type="button" class="btn btn-info btn-rounded" id="new">New</button>
+                                <button type="button" class="btn btn-info btn-rounded" id="new">Novo</button>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -61,3 +37,14 @@
     </div>
 @endsection
 
+
+
+@section('footer')
+    <script>
+
+        $('#new').click(function(){
+            location.href = '{{ route('users.create') }}';
+        });
+
+    </script>
+@endsection
