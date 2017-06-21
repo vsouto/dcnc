@@ -397,6 +397,7 @@ class CorrespondentesController extends Controller
             }
 
             if (!empty($data['comarca_id'])) {
+                $correspondente->comarcas()->detach();
                 $correspondente->comarcas()->attach($data['comarca_id']);
             }
         }
