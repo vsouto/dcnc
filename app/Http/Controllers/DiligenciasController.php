@@ -549,10 +549,20 @@ class DiligenciasController extends Controller
             ->with('files')
             ->with('servicos')
             ->with('correspondente')
+            ->with('comarca')
             ->with('advogado','advogado.cliente')
             ->first();
 
-        return view('diligencias.edit', compact('diligencia'));
+        $advogados = User::getAdvogadosList();
+
+        $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
+
+        $comarcas = Comarca::where('uf',$diligencia->comarca->uf)
+                ->pluck('comarca','id');
+
+        $servicos = Servico::get();
+
+        return view('diligencias.edit', compact('diligencia','advogados','estados','servicos','comarcas'));
     }
 
     /**
@@ -564,6 +574,8 @@ class DiligenciasController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $today = Carbon::today();
+
         //
         $this->validate($request, [
             'comarca_id' => 'required|not_in:0',
@@ -573,10 +585,9 @@ class DiligenciasController extends Controller
             'reu' => 'required',
             'advogado_id' => 'required|not_in:0', // cliente
             'orgao' => 'required',
-            'prazo' => 'required|date',
+            'prazo' => 'required|date_format:"d/m/Y H:i"|after:' . $today,
             'solicitante' => 'required',
-            'orientacoes' => 'required|min:5',
-            'servico_id' => 'required',
+            'orientacoes' => 'required|min:5'
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
             'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
@@ -590,7 +601,6 @@ class DiligenciasController extends Controller
             'orientacoes.required' => 'Você precisa digitar um mínimo de Orientações.',
             'advogado_id.required' => 'Você precisa selecionar um Advogado cliente.',
             'advogado_id.not_in' => 'Você precisa selecionar um Advogado cliente.',
-            'servico_id.required' => 'Você precisa selecionar ao menos um Serviço.',
         ]);
 
         $data = Input::only(
@@ -606,8 +616,7 @@ class DiligenciasController extends Controller
             'orgao',
             'local_orgao',
             'vara',
-            'orientacoes',
-            'servico_id'
+            'orientacoes'
         );
 
         // Treat File Uploads
@@ -633,23 +642,7 @@ class DiligenciasController extends Controller
 
         // Prazo to pattern
         if (!empty($data['prazo'])) {
-            $data['prazo'] = Carbon::createFromFormat('d/m/Y',$data['prazo']);
-        }
-
-        // Select the best Correspondente for this
-        $correspondente = Correspondente::getBestCorrespondenteForDiligencia($data['comarca_id'], $data['servico_id']);
-
-        // Se não encontrou correspondente
-        if (!$correspondente) {
-
-            // A diligencia entrará como Em Negociação
-            $data['status_id'] = Status::where('slug','em-negociacao')->first()->id;
-        }
-        else {
-            // Set status Sondagem
-            $data['status_id'] = Status::where('slug','sondagem')->first()->id;
-
-            $data['correspondente_id'] = $correspondente->id;
+            $data['prazo'] = Carbon::createFromFormat('d/m/Y h:i',$data['prazo']);
         }
 
         // Create
@@ -664,13 +657,6 @@ class DiligenciasController extends Controller
                     $save->files()->attach($file);
                 }
             }
-
-            // Attach servicos
-            if (!empty($data['servico_id'])) {
-
-                $save->servicos()->attach($data['servico_id']);
-            }
-
 
             // Se foi cadastrado pelo cliente
             if (Auth::user()->level == 2)
