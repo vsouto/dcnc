@@ -14,7 +14,7 @@
             <!-- Spacer starts -->
             <div class="spacer">
                 {{ Form::model($correspondente, ['class' => 'form-horizontal','route' => ['correspondentes.update', $correspondente->id],
-                            'method' => 'PATCH']) }}
+                            'method' => 'PATCH', 'enctype="multipart/form-data"']) }}
                     {{ Form::token() }}
                     @if (count($errors) > 0)
                         <div class="alert alert-danger">

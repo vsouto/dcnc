@@ -302,19 +302,10 @@
 
 @section('footer')
 
-
-    {{--<script type="text/javascript" src="{{ URL::asset('js/transition.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/collapse.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/bootstrap-datetimepicker.min.js') }}"></script>--}}
-
     <script type="text/javascript" src="{{ asset('js/moment-with-locales.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
 
-
     <link href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.css') }}" rel="stylesheet" media="screen">
-    {{--
-    <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}/" />
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" >--}}
 
     <script>
 
@@ -327,7 +318,6 @@
 
             getComarcas(estado_id);
         });
-
 
         $(function () {
             $('#prazo').datetimepicker({
@@ -348,12 +338,5 @@
             @endif
         });
 
-         /*
-        $( "#prazo" ).datepicker({
-            dateFormat: 'dd/mm/yy',
-            changeMonth: true,
-            changeYear: true
-        });
-*/
     </script>
 @endsection
