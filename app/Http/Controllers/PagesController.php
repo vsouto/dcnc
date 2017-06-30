@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cliente;
 use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
@@ -113,6 +114,19 @@ class PagesController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = '<div style="float: left">'.
+                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
+                                '<i class="fa fa-eye"></i></span></div> ';
+
+                            return '<div style="min-width: 90px">' . $button1 . '</div>';
+                        })
+                    ,
                     (new FieldConfig())
                         ->setName('id')
                         ->setLabel('ID')
@@ -275,19 +289,6 @@ class PagesController extends Controller
                             return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.$row->getSrc()->advogado->nome .'</span>';
                         })
                     ,
-                    (new FieldConfig)
-                        ->setName('actions')
-                        ->setLabel('Ações')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-
-                            $button1 = '<div style="float: left">'.
-                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
-                                '<i class="fa fa-eye"></i></span></div> ';
-
-                            return '<div style="min-width: 90px">' . $button1 . '</div>';
-                        })
-                    ,
                 ])
                 # Setup additional grid components
                 ->setComponents([
@@ -360,14 +361,39 @@ class PagesController extends Controller
         if (!Auth::user()->cliente_id || empty(Auth::user()->cliente_id))
             return abort(403, 'Existe um erro em sua conta');
 
-        # Some params may be predefined, other can be controlled using grid components
-        $query = (new Diligencia())
-            ->with('servicos')
-            ->with('correspondente')
-            ->with('advogado')
-            ->where('advogado_id',Auth::user()->id)
-            ->orderBy('created_at','DESC')
-            ->newQuery();
+        $cliente = Cliente::where('id',Auth::user()->cliente_id)->first();
+
+        if (!$cliente)
+            return abort(403, 'Existe um erro em sua conta');
+
+        // Se o user é o cliente master
+        if (Auth::user()->id == $cliente->user_id) {
+            $advogados = [];
+            $advogados_cliente = User::where('cliente_id',$cliente->id)->select('id')->get()->toArray();
+            foreach ($advogados_cliente as $adv) {
+                $advogados[] = $adv['id'];
+            }
+
+            # Some params may be predefined, other can be controlled using grid components
+            $query = (new Diligencia())
+                ->with('servicos')
+                ->with('correspondente')
+                ->with('advogado')
+                ->whereIn('advogado_id',$advogados)
+                ->orderBy('created_at','DESC')
+                ->newQuery();
+        }
+        else {
+            # Some params may be predefined, other can be controlled using grid components
+            $query = (new Diligencia())
+                ->with('servicos')
+                ->with('correspondente')
+                ->with('advogado')
+                ->where('advogado_id',Auth::user()->id)
+                ->orderBy('created_at','DESC')
+                ->newQuery();
+        }
+
 
         # Instantiate & Configure Grid
         $grid = new Grid(
@@ -382,6 +408,19 @@ class PagesController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = '<div style="float: left">'.
+                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
+                                '<i class="fa fa-eye"></i></span></div> ';
+
+                            return '<div style="min-width: 90px">' . $button1 . '</div>';
+                        })
+                    ,
                     (new FieldConfig())
                         ->setName('id')
                         ->setLabel('ID')
@@ -450,18 +489,11 @@ class PagesController extends Controller
                         ->setName('comarca')
                         ->setLabel('Comarca')
                         ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$row->getSrc()->correspondente_id)
+                        ->setCallback(function ($val) {
+                            if (!$val)
                                 return '';
 
-                            $correspondente = Correspondente::where('id',$row->getSrc()->correspondente_id)
-                                ->with('comarca')->first();
-
-                            if (!$correspondente || !$correspondente->comarca)
-                                return '';
-
-                            return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.
-                            $correspondente->comarca->comarca .'</span>';
+                            return $val->comarca;
                         })
                     ,
                     (new FieldConfig)
@@ -547,19 +579,6 @@ class PagesController extends Controller
                                 return '';
 
                             return '<span class="edit-gss" data-call-id="'.$row->getSrc()->id.'">'.$row->getSrc()->advogado->nome .'</span>';
-                        })
-                    ,
-                    (new FieldConfig)
-                        ->setName('actions')
-                        ->setLabel('Ações')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-
-                            $button1 = '<div style="float: left">'.
-                                '<span data-ref="'.route('diligencias.show', ['id' => $row->getSrc()->id]).'" class="btn btn-sm btn-info btn-rounded view-diligencia">'.
-                                '<i class="fa fa-eye"></i></span></div> ';
-
-                            return '<div style="min-width: 90px">' . $button1 . '</div>';
                         })
                     ,
                 ])

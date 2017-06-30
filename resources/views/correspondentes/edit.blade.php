@@ -37,107 +37,56 @@
                                     <div class="blog-body">
                                         <fieldset>
                                             <div class="form-group">
-                                                <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
+                                                <label class="col-lg-6 control-label">Nome <span class="text text-danger"> *</span></label>
                                                 <div class="col-lg-6">
-                                                    <div class="form-select-grouper">
-                                                        {{ Form::select('estado_id', $estados, $correspondente->comarcas->first()->uf, [
-                                                            'class' => 'form-control',
-                                                            'id' => 'estado-select']) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group resto-form" id="" style="display: block;">
-
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-select-grouper">
-                                                            <select id="comarcas-select" class="form-control" name="comarca_id"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Nome <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::text('nome', $correspondente->nome, [
-                                                             'class' => 'form-control',
-                                                             'id'    => 'nome'
-                                                             ]) }}
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Email <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::email('email', $correspondente->user->email, [
+                                                    {{ Form::text('nome', $correspondente->nome, [
                                                          'class' => 'form-control',
-                                                         'id'    => 'email'
+                                                         'id'    => 'nome'
                                                          ]) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Email <span class="text text-danger"> *</span></label>
+                                                <div class="col-lg-6">
+                                                    {{ Form::email('email', $correspondente->user->email, [
+                                                     'class' => 'form-control',
+                                                     'id'    => 'email'
+                                                     ]) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Senha </label>
+                                                <div class="col-lg-6">
+                                                    {{ Form::text('password', null, [
+                                                         'class' => 'form-control',
+                                                         'id'    => 'password'
+                                                         ]) }}
+                                                    <div class="alert alert-info alert-transparent">
+                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                        <strong>Obs:</strong> Apenas digite uma nova senha se quiser alterá-la.
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Senha </label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::text('password', null, [
-                                                             'class' => 'form-control',
-                                                             'id'    => 'password'
-                                                             ]) }}
-                                                        <div class="alert alert-info alert-transparent">
-                                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                                            <strong>Obs:</strong> Apenas digite uma nova senha se quiser alterá-la.
-                                                        </div>
-                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Telefone</label>
+                                                <div class="col-lg-6">
+                                                    {{ Form::text('phone', $correspondente->user->phone, [
+                                                         'class' => 'form-control',
+                                                         'id'    => 'phone'
+                                                         ]) }}
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Telefone</label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::text('phone', $correspondente->user->phone, [
-                                                             'class' => 'form-control',
-                                                             'id'    => 'phone'
-                                                             ]) }}
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Endereço</label>
-                                                    <div class="col-lg-6">
-                                                        {{ Form::text('endereco', $correspondente->user->endereco, [
-                                                            'class' => 'form-control ',
-                                                            'id'    => 'endereco'
-                                                            ]) }}
-                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Endereço</label>
+                                                <div class="col-lg-6">
+                                                    {{ Form::text('endereco', $correspondente->user->endereco, [
+                                                        'class' => 'form-control ',
+                                                        'id'    => 'endereco'
+                                                        ]) }}
                                                 </div>
                                             </div>
                                         </fieldset>
 
-                                        <fieldset class="resto-form" style="display: block;">
-                                            <legend>Serviços</legend>
-                                            <div class="form-group">
-                                                <div class="col-lg-12 control-label">
-                                                    <table class="table table-striped no-margin" style="width: 100%;" width="100%">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Serviço</th>
-                                                            <th>Valor</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        @foreach($servicos as $servico)
-                                                            <tr>
-                                                                <td>{{ $servico->id }}</td>
-                                                                <td>{{ $servico->servico }}</td>
-                                                                <td>
-                                                                    <input type="text"
-                                                                           name="servico[{{ $servico->id }}][valor]"
-                                                                           class="form-control"
-                                                                            value="{{ $correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor or '' }}">
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </fieldset>
                                     </div>
                                 </div>
                             </div>
@@ -277,14 +226,6 @@
             var selecao = $(this).val();
 
             selectConta(selecao);
-        });
-
-        $('#estado-select').change(function(){
-            var estado_id = $(this).val();
-
-            getComarcas(estado_id);
-
-            $('.resto-form').show();
         });
 
         $( "#prazo" ).datepicker({

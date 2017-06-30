@@ -36,26 +36,28 @@
                                     </div>
                                     <div class="blog-body">
                                         <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
-                                                <div class="col-lg-6">
-                                                    <div class="form-select-grouper">
-                                                        {{ Form::select('estado_id', $estados, $diligencia->comarca->uf, [
-                                                            'class' => 'form-control',
-                                                            'id' => 'estados-select']) }}
+                                            @if ($diligencia->status_id <= 2)
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-select-grouper">
+                                                            {{ Form::select('estado_id', $estados, $diligencia->comarca->uf, [
+                                                                'class' => 'form-control',
+                                                                'id' => 'estados-select']) }}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
-                                                <div class="col-lg-6">
-                                                    <div class="form-select-grouper">
-                                                        {{ Form::select('comarca_id', $comarcas, $diligencia->comarca->id, [
-                                                            'class' => 'form-control',
-                                                            'id' => 'comarcas-select']) }}
+                                                <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Comarca <span class="text text-danger"> *</span></label>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-select-grouper">
+                                                            {{ Form::select('comarca_id', $comarcas, $diligencia->comarca->id, [
+                                                                'class' => 'form-control',
+                                                                'id' => 'comarcas-select']) }}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                             @if (Auth::user()->level == 2)
                                                     <!-- Cliente -->
                                             <div class="form-group">

@@ -38,14 +38,19 @@
                         <td class="success"></td>
                         <td class="success">{!! getRatingStars($correspondente->rating) !!}</td>
                         <td class="success">
+                            {{--}}
                             <span class="text @if (\App\Correspondente::isCorrespondenteOverpriced($diligencia->servicos->first()->id,$correspondente->id)) text-danger @endif ">
+                                    R$ {{ $correspondente->valor }}
+                                </span>
+                                {{--}}
+                            <span class="text @if ($correspondente->valor > $diligencia->servicos->first()->max) text-danger @endif">
                                     R$ {{ $correspondente->valor }}
                                 </span>
                         </td>
                         <td class="success">
                             <button type="button"
-                                    class="btn btn-info btn-rounded btn-transparent"
-                                    id="select-correspondente"
+                                    class="btn btn-info btn-rounded btn-transparent select-correspondente"
+                                    id=""
                                     data-ref="{{ $correspondente->id }}">Selecionar</button>
                         </td>
                     </tr>

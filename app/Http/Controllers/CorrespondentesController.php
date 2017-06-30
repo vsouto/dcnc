@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
 use Nayjest\Grids\Components\FiltersRow;
@@ -59,6 +60,35 @@ class CorrespondentesController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button1 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('correspondentes.comarcas', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-success btn-transparent btn-rounded edit-comarcas">'
+                                .' <i class="fa fa-institution"></i></span></div> ';
+
+                            $button2 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('correspondentes.edit', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
+                                .' <i class="fa fa-pencil"></i></span></div> ';
+
+                            // Em negociacao?
+                            if ($row->getSrc()->status_id == '6') {
+                                $button3 = ' <div style="float: left">'.
+                                    '<button type="button" class="btn btn-danger btn-rounded" data-container="body"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                     data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
+                            }
+
+                            return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
+                        })
+                    ,
                     new IdFieldConfig(),
                     (new FieldConfig())
                         ->setName('nome')
@@ -97,36 +127,6 @@ class CorrespondentesController extends Controller
                         })
                     ,
                     (new FieldConfig)
-                        ->setName('servicos')
-                        ->setLabel('Serviços')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$val)
-                                return '';
-
-                            $servicos = '';
-                            foreach ($val as $servico) {
-                                $servicos .= $servico->servico . '<br>';
-                            }
-                            return $servicos;
-                        })
-                    ,
-                    (new FieldConfig)
-                        ->setName('servicos')
-                        ->setLabel('Valor')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-                            if (!$val)
-                                return '';
-
-                            $servicos = '';
-                            foreach ($val as $servico) {
-                                $servicos .= 'R$ ' . $servico->pivot->valor . '<br>';
-                            }
-                            return $servicos;
-                        })
-                    ,
-                    (new FieldConfig)
                         ->setName('rating')
                         ->setLabel('Rating')
                         ->setSortable(true)
@@ -136,30 +136,6 @@ class CorrespondentesController extends Controller
                                 return '';
 
                             return getRatingStars($val);
-                        })
-                    ,
-                    (new FieldConfig)
-                        ->setName('actions')
-                        ->setLabel('Ações')
-                        ->setSortable(true)
-                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
-
-                            $button1 = $button2 = $button3 = '';
-
-                            $button2 = ' <div style="float: left">'.
-                                '<span data-ref="'.route('correspondentes.edit', ['id' => $row->getSrc()->id])
-                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
-                                .' <i class="fa fa-pencil"></i></span></div> ';
-
-                            // Em negociacao?
-                            if ($row->getSrc()->status_id == '6') {
-                                $button3 = ' <div style="float: left">'.
-                                    '<button type="button" class="btn btn-danger btn-rounded" data-container="body"
-                                    data-toggle="tooltip" data-placement="bottom"
-                                     data-original-title="Você tem ações importantes para executar nesta diligência!"><i class="fa fa-warning"></i></button></div> ';
-                            }
-
-                            return '<div style="min-width: 120px">' . $button1 . $button2 . $button3 . '</div>';
                         })
                     ,
                 ])
@@ -312,6 +288,118 @@ class CorrespondentesController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function comarcasStore(Request $request)
+    {
+        //
+        $this->validate($request, [
+            'comarca_id' => 'required|not_in:0',
+            'correspondente_id' => 'required|not_in:0'
+        ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'correspondente_id.required' => 'Nenhum correspondente vinculado.',
+        ]);
+
+        $data = Input::all();
+
+        // Verifica se o correspondente já tem essa comarca
+        $correspondente = Correspondente::where('id', $data['correspondente_id'])->first();
+
+        $existe = $correspondente->comarcas()->where('comarca_id',$data['comarca_id'])
+                ->where('correspondente_id',$data['correspondente_id'])->first();
+
+        // Já existe esta comarca para o correspondente
+        if ($existe && !empty($existe)) {
+            $rules = ['servico' => 'required'];
+            $messages = ['servico' => 'required'];
+
+            $validation = Validator::make($data, $rules, $messages);
+            $validation->getMessageBag()->add('comarca', 'O correspondente já tem esta comarca. Procure na lista para editar.');
+
+            return redirect()->back()->withErrors($validation)->withInput();
+        }
+
+        // Servico?
+        if (!$this->validateServicos($data['servico'])) {
+
+            $rules = ['servico' => 'required'];
+            $messages = ['servico' => 'required'];
+
+            $validation = Validator::make($data, $rules, $messages);
+            $validation->getMessageBag()->add('servico', 'Ao menos um serviço é necessário');
+
+            return redirect()->back()->withErrors($validation)->withInput();
+        }
+
+        // Salvou
+        if ($correspondente) {
+
+            // Salva os serviços
+            foreach ($data['servico'] as $key => $servico) {
+                if (!$servico['valor'] || empty($servico['valor']))
+                    continue;
+
+                // Salva servico - comarca - corresp
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+            }
+
+            // Salva comarca
+            if (!empty($data['comarca_id'])) {
+                $correspondente->comarcas()->attach($data['comarca_id']);
+            }
+        }
+
+        return redirect()->action('CorrespondentesController@index')
+            ->with('message','Sucesso');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function comarcasUpdate(Request $request)
+    {
+        //
+        $this->validate($request, [
+            'comarca_id' => 'required|not_in:0',
+            'correspondente_id' => 'required|not_in:0'
+        ],[
+            'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
+            'correspondente_id.required' => 'Nenhum correspondente vinculado.',
+        ]);
+
+        $data = Input::all();
+
+        // Verifica se o correspondente já tem essa comarca
+        $correspondente = Correspondente::where('id', $data['correspondente_id'])->first();
+
+        // Salva
+        if ($correspondente) {
+
+            // desativa todos os servicos desta comarca
+            $correspondente->servicos()->where('comarca_id',$data['comarca_id'])->detach();
+
+            // Salva o servico
+            foreach ($data['servico'] as $key => $servico) {
+                if (!$servico['valor'] || empty($servico['valor']))
+                    continue;
+
+                // Salva servico - comarca - corresp
+                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+            }
+        }
+
+        return redirect()->back()
+            ->with('message','Sucesso');
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -351,6 +439,34 @@ class CorrespondentesController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function comarcas($id)
+    {
+        //
+        $correspondente = Correspondente::where('correspondentes.id',$id)
+            ->with('user')
+            ->with('servicos')
+            ->first();
+
+        //dd($correspondente->servicos()->where('comarca_id','5602')->first());
+        $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
+
+        $servicos = Servico::get();
+
+        $tipos_conta = [
+            '0' => 'Selecione uma opção',
+            'PF' => 'Pessoa Física',
+            'PJ' => 'Pessoa Jurídica'
+        ];
+
+        return view('correspondentes.comarcas',compact('correspondente','servicos','estados', 'tipos_conta'));
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -361,10 +477,8 @@ class CorrespondentesController extends Controller
     {
         //
         $this->validate($request, [
-            'comarca_id' => 'required|not_in:0',
             'nome' => 'required|min:3',
-            'email' => 'required|email',
-            'bank' => 'int',
+            'email' => 'required|email'
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
             'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
@@ -384,7 +498,7 @@ class CorrespondentesController extends Controller
         ]);
 
         $correspondente = Correspondente::where('id',$id)->first();
-
+/*
         if ($correspondente) {
 
             $correspondente->servicos()->detach();
@@ -400,7 +514,7 @@ class CorrespondentesController extends Controller
                 $correspondente->comarcas()->detach();
                 $correspondente->comarcas()->attach($data['comarca_id']);
             }
-        }
+        }*/
 
         if ($data['password'] && !empty($data['password'])) {
             $user = User::where('correspondente_id',$id)->update([
@@ -449,5 +563,20 @@ class CorrespondentesController extends Controller
     {
 
         
+    }
+
+    public function validateServicos($servicos)
+    {
+        $vazio = true;
+
+        foreach ($servicos as $servico) {
+            if (!array_filter($servico)) {
+                // all values are empty (where "empty" means == false)
+            }
+            else
+                $vazio = false;
+        }
+
+        return !$vazio;
     }
 }

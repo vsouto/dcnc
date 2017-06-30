@@ -162,7 +162,7 @@
                                             </td>
                                             <td id="" colspan="2">
                                                 @if (Auth::user()->level >= 5)
-                                                    <button type="button" class="btn btn-danger">Cancelar Correspondente</button></td>
+                                                    <button type="button" class="btn btn-danger btn-sm">Cancelar Correspondente</button></td>
                                                 @endif
                                         </tr>
                                         </tbody>
@@ -194,7 +194,7 @@
                                 @if ( Auth::user()->level == '1')
                                     @include('diligencias.acoes_correspondente')
                                 @elseif ( Auth::user()->level == '2')
-
+                                    @include('diligencias.acoes_cliente')
                                 @elseif ( Auth::user()->level == '3')
 
                                 @elseif ( Auth::user()->level == '4')
@@ -314,7 +314,6 @@
 
         $('#acao-checkin').click(function(){
 
-
             location.href = '{{ route('diligencias.checkin', ['id' => $diligencia->id]) }}';
         });
 
@@ -347,7 +346,7 @@
             location.href = '{{ route('correspondentes.create') }}';
         });
 
-        $('#select-correspondente').click(function(){
+        $('.select-correspondente').click(function(){
 
             var id = $(this).data('ref');
             var diligencia_id = '{{ $diligencia->id }}';
