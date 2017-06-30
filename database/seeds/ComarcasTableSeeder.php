@@ -31,7 +31,8 @@ class ComarcasTableSeeder extends Seeder
             'comarca' => 'Sena Madureira'
         ]);*/
 
-        $path = storage_path('app/files/comarcas2.sql');
+        //$path = storage_path('app/files/comarcas2.sql');
+        $path = public_path('files/comarcas2.sql');
 
         \Illuminate\Support\Facades\DB::unprepared(file_get_contents($path));
 
