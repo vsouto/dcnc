@@ -60,7 +60,8 @@ class ImportCorrespondentes extends Command
     {
         $results = '';
 
-        $file = storage_path('app/files/correspondentes.xlsx');
+        $file = public_path('files/correspondentes.xlsx');
+        //$file = storage_path('app/files/correspondentes.xlsx');
 
         \Maatwebsite\Excel\Facades\Excel::load( $file, function($reader) {
 
