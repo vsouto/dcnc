@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
         // Correspondente
         \App\User::create([
             'nome' => 'Correspondente',
-            'email' => 'souto.victor2@gmail.com',
+            'email' => 'correspondente@gmail.com',
             'password' => Hash::make('12345'),
             'level' => '1',
             'phone' => '12341332',
@@ -48,8 +48,8 @@ class UsersTableSeeder extends Seeder
 
         // Correspondente
         \App\User::create([
-            'nome' => 'Correspondente',
-            'email' => 'souto34r2@gmail.com',
+            'nome' => 'Correspondente 2',
+            'email' => 'correspondente2@gmail.com',
             'password' => Hash::make('12345'),
             'level' => '1',
             'phone' => '12341332',
@@ -58,23 +58,14 @@ class UsersTableSeeder extends Seeder
 
         // Correspondente
         \App\User::create([
-            'nome' => 'Correspondente',
-            'email' => 'sou21or2@gmail.com',
+            'nome' => 'Correspondente 3',
+            'email' => 'correspondente3@gmail.com',
             'password' => Hash::make('12345'),
             'level' => '1',
             'phone' => '12341332',
             'correspondente_id' => '3'
         ]);
 
-        // Correspondente
-        \App\User::create([
-            'nome' => 'Correspondente',
-            'email' => 'souawe@gmail.com',
-            'password' => Hash::make('12345'),
-            'level' => '1',
-            'phone' => '12341332',
-            'correspondente_id' => '4'
-        ]);
 
     }
 }

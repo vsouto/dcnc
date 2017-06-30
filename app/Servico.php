@@ -23,10 +23,18 @@ class Servico extends Model
 
     /**
      * Get the entity
+     *
+    public function correspondentes()
+    {
+        return $this->belongsToMany('App\Correspondente')->using('App\Servicomarca');
+    }*/
+
+
+    /**
+     * Get the entity
      */
     public function correspondentes()
     {
-        return $this->belongsToMany('App\Correspondente')->withPivot('valor');
+        return $this->belongsToMany('App\Correspondente');
     }
-
 }

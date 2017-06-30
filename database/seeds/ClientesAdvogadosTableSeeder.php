@@ -68,15 +68,6 @@ class ClientesAdvogadosTableSeeder extends Seeder
             'level' => 2
         ]);
         $adv1 = \App\User::create([
-            'nome' => 'Fernanda Takai',
-            'email' => $faker->email,
-            'password' => Hash::make('12345'),
-            'endereco' => $faker->address,
-            'phone' => $faker->phoneNumber,
-            'cliente_id' => $mndm->id,
-            'level' => 2
-        ]);
-        $adv1 = \App\User::create([
             'nome' => 'Diostenes Sargueras',
             'email' => $faker->email,
             'password' => Hash::make('12345'),

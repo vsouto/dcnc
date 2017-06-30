@@ -459,9 +459,7 @@ class DiligenciasController extends Controller
             // Set status Aguardando Confirmação
             $data['status_id'] = Status::where('slug','aguardando-confirmacao')->first()->id;
 
-            $correspondente_id = $correspondente[0]->id;
-
-            $data['correspondente_id'] = $correspondente_id;
+            $data['correspondente_id'] = $correspondente[0]->correspondente_id;
         }
 
         // Salva o servico
@@ -578,7 +576,7 @@ class DiligenciasController extends Controller
 
         //
         $this->validate($request, [
-            'comarca_id' => 'required|not_in:0',
+            //'comarca_id' => 'required|not_in:0',
             'titulo' => 'required|min:3|max:65',
             'descricao' => 'required|min:3',
             'num_processo' => 'required',

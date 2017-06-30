@@ -131,8 +131,8 @@ class Diligencia extends Model
                 break;
             case 'em-revisao':
 
-                // Only for coordenadores
-                if (Auth::user()->level >= 5) {
+                // Only for coordenadores ou clientes
+                if (Auth::user()->level == 2 || Auth::user()->level >= 5) {
                     $button = '<button type="button" class="btn btn-info btn-rounded" id="acao-aprovar">Aprovar</button>';
                     $button .= ' <button type="button" class="btn btn-info btn-rounded" id="acao-devolver">Devolver</button>';
                 }

@@ -53,7 +53,7 @@ class Correspondente extends Model
      */
     public function servicos()
     {
-        return $this->belongsToMany('App\Servico')->withPivot('valor');
+        return $this->belongsToMany('App\Servico')->withPivot(['valor','comarca_id']);
     }
 
     /**
@@ -88,7 +88,7 @@ class Correspondente extends Model
     }
 
     /**
-     * Get Best Correspondente For Diligencia
+     * Get Best Correspondente For a specific Diligencia/Servico
      *
      * @param $comarca_id
      * @return mixed
@@ -97,39 +97,29 @@ class Correspondente extends Model
     {
         $servico = Servico::where('id',$servico_id)->first();
 
-        return DB::select("SELECT c.id, c.nome, cs.valor FROM correspondentes c
-                JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
-                JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = 1 AND cs.valor < $servico->max)
-                  GROUP BY cs.valor, c.id, c.rating, c.nome
-                    ORDER BY cs.valor ASC, c.rating DESC
-                    LIMIT 1
-
-		");
+        return DB::select("SELECT correspondente_id
+            FROM correspondente_servico
+                WHERE comarca_id = '$comarca_id' AND servico_id = '$servico_id' AND valor <= '{$servico->max}'
+                    ORDER BY valor ASC");
     }
 
+    /**
+     * Get correspondentes recomendados para uma diligência
+     * overprices inclusos
+     *
+     * @param $servico_id
+     * @param $comarca_id
+     * @return mixed
+     */
     public static function getRecomendados($servico_id, $comarca_id)
     {
         return DB::select("SELECT c.id, c.nome, c.rating, cs.valor
                     FROM correspondentes c
-                        JOIN comarca_correspondente cc ON (cc.correspondente_id = c.id AND cc.comarca_id = $comarca_id)
-                        JOIN correspondente_servico cs ON (cs.correspondente_id = c.id AND cs.servico_id = $servico_id)
+                        JOIN correspondente_servico cs ON
+                          (cs.correspondente_id = c.id AND cs.servico_id = $servico_id AND cs.comarca_id = $comarca_id)
                             GROUP BY c.id, c.nome, cs.valor, c.rating
                             ORDER BY cs.valor ASC
                                  ");
-    }
-
-    public static function isCorrespondenteOverpriced($servico_id,$correspondente_id)
-    {
-        $correspondente = Correspondente::with('servicos')
-            ->has('servicos',$servico_id)
-            ->first();
-
-        $servico = Servico::where('id',$servico_id)->first();
-
-        if ( $correspondente->servicos()->count() > 0 && $correspondente->servicos()->first()->pivot->valor > $servico->max)
-            return true;
-        else
-            return false;
     }
 
 }

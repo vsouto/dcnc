@@ -11,6 +11,11 @@
         <!-- Container fluid Starts -->
         <div class="container-fluid">
             <div class="spacer">
+                @if (session('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="panel">
                         <div class="panel-heading">
@@ -49,5 +54,12 @@
 
             location.href = ref;
         });
+
+        $('.edit-comarcas').click(function(){
+            var ref = $(this).data('ref');
+
+            location.href = ref;
+        });
+
     </script>
 @endsection

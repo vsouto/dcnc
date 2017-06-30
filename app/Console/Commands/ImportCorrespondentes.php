@@ -43,7 +43,7 @@ class ImportCorrespondentes extends Command
      */
     public function handle()
     {
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '512M');
 
         //
         $this->runData();
@@ -75,26 +75,29 @@ class ImportCorrespondentes extends Command
                 $this->info('comarca: ' . $result->comarca);
 
                 // Busca pela comarca
-                $comarca = Comarca::where('comarca',utf8_encode($result->comarca))
+                $comarca = Comarca::where('comarca', 'LIKE', '%'.$result->comarca.'%')
                     ->first();
 
                 // Create Comarca if needed
                 if (!$comarca || $comarca->count() <= 0) {
                     $this->info('> Criando comarca: ' . $result->comarca);
-                    $comarca = Comarca::create(['comarca' => $result->comarca]);
+                    $comarca = Comarca::create([
+                        'comarca' => $result->comarca,
+                        'uf' => $result->estado
+                    ]);
                 }
 
-                // Verifica se o Correspondente já existe
-                $user_exists = User::where('email', $result->email)
+                // Verifica se o User com este email já existe
+                $user = User::where('email', $result->email)
                     ->has('correspondente')
                     ->with('correspondente')
                     ->first();
 
-                // Existe?
-                if ($user_exists && $user_exists->count() > 0) {
+                // User Existe?
+                if ($user && $user->count() > 0) {
 
-                    $this->info('> Correspondente existe: ' . $user_exists->nome   );
-
+                    $this->info('> Correspondente existe: ' . $user->nome);
+                    /*
                     // Já tem a comarca?
                     if ($user_exists->correspondente->comarcas->contains($result->comarca)) {
                         $this->info('> Correspondente '. $result->nome . ' já existente nesta comarca: ' . $result->comarca);
@@ -104,44 +107,40 @@ class ImportCorrespondentes extends Command
                     else {
                         $this->info('Comarca ' . $comarca->id . ' adicionada ao usuario');
                         $user_exists->correspondente->comarcas()->attach($comarca->id);
-                    }
+                    }*/
+
+                    $correspondente = $user->correspondente;
                 }
+                else {
 
-                $this->info('> Correspondente Não existe. Preparando para criar: ' . $result->nome   );
+                    $this->info('> User Não existe. Preparando para criar: ' . $result->nome   );
 
-                // Prepara os dados
-                $user['nome'] = $result->nome;
-                $user['email'] = $result->email;
-                $user['phone'] = $result->phone;
-                $user['cpf'] = $result->cpf;
-                $user['password'] = Hash::make('12345');
+                    // Prepara os dados
+                    $user['nome'] = $result->nome;
+                    $user['email'] = $result->email;
+                    $user['phone'] = $result->phone;
+                    $user['cpf'] = $result->cpf;
+                    $user['password'] = Hash::make('12345');
 
-                $data['nome'] = $result->nome;
-                //$data['comarca_id'] = $comarca->id;
-                $data['advogado'] = $result->advogado;
-                $data['preposto'] = $result->preposto;
-                $data['diligencia'] = $result->diligencia;
-                $data['cnpj'] = $result->cnpj;
+                    $data['nome'] = $result->nome;
+                    //$data['comarca_id'] = $comarca->id;
+                    $data['advogado'] = $result->advogado;
+                    $data['preposto'] = $result->preposto;
+                    $data['diligencia'] = $result->diligencia;
+                    $data['cnpj'] = $result->cnpj;
 
-                $this->info('> Correspondente ' . $result->nome . ' preparado'   );
+                    $this->info('> Correspondente ' . $result->nome . ' preparado'   );
 
-                // Cria o correspondente
-                $correspondente = Correspondente::create($data);
+                    // Cria o correspondente
+                    $correspondente = Correspondente::create($data);
 
-                $this->info('> Correspondente ' . $result->nome . ' criado'   );
-
-                // Usuario não existe, cria
-                if (!$user_exists || $user_exists->count() <= 0) {
-
+                    $this->info('> Correspondente ' . $result->nome . ' criado'   );
                     $this->info('> Criando usuário: ' . $result->nome   );
 
                     $user['correspondente_id'] = $correspondente->id;
 
                     // Cria o user
                     $user_result = User::create($user);
-                }
-                else {
-                    $this->info('> Usuário Existe: ' . $user_exists->email   );
                 }
 
                 $this->info('Vinculando servicos do correspondente ' . $correspondente->id);
@@ -155,25 +154,25 @@ class ImportCorrespondentes extends Command
                 if (!empty($data['advogado'])) {
                     $valor = str_replace('R$', '', $data['advogado']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(2,['valor' => $valor]);
+                    $correspondente->servicos()->attach(2,['valor' => $valor, 'comarca_id' => $comarca->id]);
                 }
 
                 if (!empty($data['preposto'])){
                     $valor = str_replace('R$', '', $data['preposto']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(1,['valor' => $valor]);
+                    $correspondente->servicos()->attach(1,['valor' => $valor, 'comarca_id' => $comarca->id]);
                 }
 
                 if (!empty($data['diligencia'])) {
                     $valor = str_replace('R$', '', $data['diligencia']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(4,['valor' => $valor]);
+                    $correspondente->servicos()->attach(4,['valor' => $valor, 'comarca_id' => $comarca->id]);
                 }
 
                 if (!empty($data['advogado_preposto'])){
                     $valor = str_replace('R$', '', $data['advogado_preposto']);
                     $valor = number_format( (int)$valor, 0,'', '');
-                    $correspondente->servicos()->attach(3,['valor' => $valor]);
+                    $correspondente->servicos()->attach(3,['valor' => $valor, 'comarca_id' => $comarca->id]);
                 }
 
                 $this->info('Vinculando comarca ' . $comarca->id . ' ao correspondente ' . $correspondente->id);
@@ -182,6 +181,8 @@ class ImportCorrespondentes extends Command
                 $correspondente->comarcas()->attach($comarca->id);
 
                 $this->info('Item ' . $result->id . ' integrado com sucesso. ');
+
+                sleep(0.5);
             }
 
         });
@@ -221,4 +222,20 @@ class ImportCorrespondentes extends Command
         return $all_data;
     }
 
+    function removerAcentos($var)
+    {
+        $var = ereg_replace("[ÁÀÂÃ]","A",$var);
+        $var = ereg_replace("[áàâãª]","a",$var);
+        $var = ereg_replace("[ÉÈÊ]","E",$var);
+        $var = ereg_replace("[éèê]","e",$var);
+        $var = ereg_replace("[ÓÒÔÕ]","O",$var);
+        $var = ereg_replace("[óòôõº]","o",$var);
+        $var = ereg_replace("[ÚÙÛ]","U",$var);
+        $var = ereg_replace("[úùû]","u",$var);
+        $var = str_replace("Ç","C",$var);
+        $var = str_replace("ç","c",$var);
+
+        return trim($var);
+
+    }
 }
