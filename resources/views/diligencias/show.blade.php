@@ -188,7 +188,7 @@
                                 <h5 class="blog-title">Ações</h5>
                             </div>
                             <div class="blog-body">
-                                Se houver alguma ação a ser tomada neste Diligência, ela poderá ser realizada aqui.
+                                Se houver alguma ação a ser tomada nesta Diligência, ela poderá ser realizada aqui.
                                 <br>
                                 <br>
                                 @if ( Auth::user()->level == '1')

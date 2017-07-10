@@ -33,6 +33,7 @@ Route::resource('servicos','ServicosController');
 Route::resource('sondagens','SondagensController');
 Route::resource('statuses','StatusesController');
 Route::resource('advogados','AdvogadosController');
+Route::resource('configuracoes','ConfiguracoesController');
 
 // File upload
 Route::get('/upload', 'FilesController@uploadForm');

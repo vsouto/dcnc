@@ -76,6 +76,14 @@ class Diligencia extends Model
     }
 
     /**
+     * Get the entity
+     */
+    public function conclusao()
+    {
+        return $this->hasOne('App\Conclusao');
+    }
+
+    /**
      * Get the attribute
      *
      * @param  string  $value

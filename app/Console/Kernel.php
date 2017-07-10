@@ -17,7 +17,8 @@ class Kernel extends ConsoleKernel
         Commands\ImportAdvogados::class,
         Commands\ImportUsers::class,
         Commands\CheckCriticas::class,
-        Commands\CheckAltas::class
+        Commands\CheckAltas::class,
+        Commands\CheckAtrasos::class
     ];
 
     /**
@@ -29,10 +30,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('check:criticas')
-            ->everyMinute();
+            ->everyTenMinutes();
 
         $schedule->command('check:altas')
-            ->everyTenMinutes();
+            ->everyThirtyMinutes();
+
+        $schedule->command('check:atrasos')
+            ->everyThirtyMinutes();
     }
 
     /**
