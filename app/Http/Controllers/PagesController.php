@@ -373,8 +373,10 @@ class PagesController extends Controller
 
         // Se o user é o cliente master
         if (Auth::user()->id == $cliente->user_id) {
+
             $advogados = [];
             $advogados_cliente = User::where('cliente_id',$cliente->id)->select('id')->get()->toArray();
+
             foreach ($advogados_cliente as $adv) {
                 $advogados[] = $adv['id'];
             }
