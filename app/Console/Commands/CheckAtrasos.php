@@ -6,6 +6,7 @@ use App\Configuracoes;
 use App\Diligencia;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class CheckAtrasos extends Command
 {
@@ -40,10 +41,52 @@ class CheckAtrasos extends Command
      */
     public function handle()
     {
-        //
+        // Verifica diligencias atrasadas
         $this->checkAtrasadas();
+
+        // Verifica diligencias não confirmadas por correspondentes
+        $this->checkNaoConfirmados();
     }
 
+    /**
+     * Checa diligencias não confirmadas por correspondentes
+     */
+    public function checkNaoConfirmados()
+    {
+        // Get config
+        $config = Configuracoes::where('chave','Aceitacao_Correspondente')->first();
+
+        if ($config && isset($config->valor)) {
+            $valor = $config->valor;
+            $this->info('Config encontrada: ' . $valor);
+        }
+        else {
+            $valor = 8;
+            $this->info('Config NÃO encontrada. Utilizando padrão 8');
+        }
+
+        // Busca as diligencias onde as sondagens ultrapassaram o tempo permitido
+        $atrasadas = DB::table('diligencias')
+            ->select('*')
+            ->where(DB::raw('NOW()'),'>=',DB::raw('DATE_ADD(sondagem, INTERVAL '.$valor . ' HOUR)'))
+            ->get();
+
+        if ($atrasadas && sizeof($atrasadas) > 0) {
+
+            // Atualiza cada uma como em Negociação
+            foreach ($atrasadas as $atrasada) {
+
+                $diligencia = Diligencia::where('id',$atrasada->id)
+                    ->update([
+                        'status_id' => '6'
+                    ]);
+            }
+        }
+    }
+
+    /**
+     * Checa por diligencias atrasadas, a partir da config de horas definida no setup
+     */
     public function checkAtrasadas()
     {
 
@@ -59,22 +102,21 @@ class CheckAtrasos extends Command
             $this->info('Config NÃO encontrada. Utilizando padrão 8');
         }
 
+        // Busca as que passaram do prazo + horas de margem
+        $atrasadas = DB::table('diligencias')
+                ->select('*')
+                ->where(DB::raw('NOW()'),'>=',DB::raw('DATE_ADD(prazo, INTERVAL '.$valor . ' HOUR)'))
+                ->get();
 
-        // Define time
-        $horas_atrasadas = Carbon::now()->addHours($valor);
-
-        // Busca diligencias com prazo estourado e a partir da margem definida
-        $atrasadas = Diligencia::where('prazo','<=',$horas_atrasadas)
-            ->where('status_id','>=', '3')
-            ->get();
-
-        if ($atrasadas && $atrasadas->count() > 0) {
+        if ($atrasadas && sizeof($atrasadas) > 0) {
 
             // Atualiza cada uma como Atrasada
             foreach ($atrasadas as $atrasada) {
-                $atrasada->update([
-                    'status_id' => '7'
-                ]);
+
+                $diligencia = Diligencia::where('id',$atrasada->id)
+                    ->update([
+                        'status_id' => '7'
+                    ]);
             }
         }
     }

@@ -7,9 +7,11 @@ use App\Cliente;
 use App\Comarca;
 use App\Correspondente;
 use App\Diligencia;
+use App\Email;
 use App\File;
 use App\Pagamento;
 use App\Servico;
+use App\Sondagem;
 use App\Status;
 use App\Tipo;
 use App\User;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Readers\Html;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
 use Nayjest\Grids\Components\ColumnHeadersRow;
@@ -460,6 +463,9 @@ class DiligenciasController extends Controller
             $data['status_id'] = Status::where('slug','aguardando-confirmacao')->first()->id;
 
             $data['correspondente_id'] = $correspondente[0]->correspondente_id;
+
+            // Dispara email correspondente
+            Email::setupAndFire($data['correspondente_id'],'a1');
         }
 
         // Salva o servico
@@ -467,6 +473,9 @@ class DiligenciasController extends Controller
             $servico_id = $data['servico_id'];
             unset($data['servico_id']);
         }
+
+        // Define a sondagem do correspondente como este momento
+        $data['sondagem'] = Carbon::now();
 
         // Create
         $save = Diligencia::create($data);
@@ -486,6 +495,9 @@ class DiligenciasController extends Controller
 
                 $save->servicos()->attach($servico_id);
             }
+
+            // Dispara email cliente
+            Email::setupAndFire($data['advogado_id'],'a1');
 
             // Se foi cadastrado pelo cliente
             if (Auth::user()->level == 2)
@@ -688,9 +700,14 @@ class DiligenciasController extends Controller
         if (!$id)
             abort(403,'wat');
 
-        $diligencia = Diligencia::where('id',$id)->update([
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        $diligencia->update([
             'status_id' => '3'
         ]);
+
+        // Dispara email correspondente
+        Email::setupAndFire($diligencia->correspondente_id,'B1');
 
         return redirect()->back()->with('message', 'Diligência aceita com sucesso.');
     }
@@ -705,9 +722,14 @@ class DiligenciasController extends Controller
         if (!$id)
             abort(403,'wat');
 
-        $diligencia = Diligencia::where('id',$id)->update([
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        $diligencia->update([
             'status_id' => '4'
         ]);
+
+        // Dispara email correspondente
+        Email::setupAndFire($diligencia->correspondente_id,'C3');
 
         return redirect()->back()->with('message', 'Checkin efetuado com sucesso.');
     }
@@ -722,11 +744,47 @@ class DiligenciasController extends Controller
         if (!$id)
             abort(403,'wat');
 
-        $diligencia = Diligencia::where('id',$id)->update([
-            'status_id' => '8'
+        $data = Input::all();
+
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        $diligencia->update([
+            'status_id' => '8',
+            'realizado_sucesso' => $data['realizado_sucesso'],
+            'realizador_nome' => $data['realizador_nome'],
+            'realizador_telefone' => $data['realizador_telefone'],
+            'realizador_email' => $data['realizador_email'],
         ]);
 
+        // Dispara email correspondente
+        Email::setupAndFire($diligencia->correspondente_id,'R1');
+
         return redirect()->back()->with('message', 'Diligência concluída com sucesso. Aguarde decisão da revisão.');
+    }
+
+    /**
+     * Correspondente resolve uma diligencia em pedido de revisão
+     *
+     * @param $id
+     */
+    public function resolver($id)
+    {
+        if (!$id)
+            abort(403,'wat');
+
+        $data = Input::all();
+
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        $diligencia->update([
+            'status_id' => '8',
+            'revisao_resolucao' => $data['revisao_resolucao'],
+        ]);
+
+        // Dispara email
+        Email::setupAndFire($diligencia->correspondente_id,'R1');
+
+        return redirect()->back()->with('message', 'Diligência resolvida com sucesso. Aguarde decisão da revisão.');
     }
 
     /**
@@ -753,6 +811,10 @@ class DiligenciasController extends Controller
             'tipo' => 'C'
         ]);
 
+        // Dispara email correspondente
+        Email::setupAndFire($diligencia->correspondente_id,'P1');
+        Email::setupAndFire($diligencia->advogado_id,'P2');
+
         return redirect()->back()->with('message', 'Diligência aprovada com sucesso. O financeiro será acionado como Pagamento Autorizado.');
     }
 
@@ -766,9 +828,21 @@ class DiligenciasController extends Controller
         if (!$id)
             abort(403,'wat');
 
-        $diligencia = Diligencia::where('id',$id)->update([
-            'status_id' => '9'
-        ]);
+        $data = Input::all();
+
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        // Devolvida
+        if (isset($data['revisao_instrucoes']) && !empty($data['revisao_instrucoes'])) {
+            $diligencia->update([
+                'status_id' => '9',
+                'revisao_instrucoes' => $data['revisao_instrucoes']
+            ]);
+        }
+
+        // Dispara emails
+        Email::setupAndFire($diligencia->correspondente_id,'D1');
+        Email::setupAndFire($diligencia->advogado_id,'D2');
 
         return redirect()->back()->with('message', 'Diligência devolvida. O correspondente será acionado para revisar o trabalho.');
     }
@@ -788,6 +862,9 @@ class DiligenciasController extends Controller
             'correspondente_id' => $correspondente_id,
             'status_id' => '2'
         ]);
+
+        // Dispara emails
+        Email::setupAndFire($diligencia->correspondente_id,'A3');
 
         return redirect()->back()->with('message', 'Correspondente Selecionado com sucesso. O correspondente será notificado por email e deverá aceitar o trabalho.');
     }
@@ -856,5 +933,25 @@ class DiligenciasController extends Controller
             'Média' => 'Média',
             'Normal' => 'Normal'
         ];
+    }
+
+    /**
+     * Cancela uma diligencia
+     *
+     * @param $id
+     */
+    public function cancelar($id)
+    {
+        $diligencia = Diligencia::where('id',$id)->first();
+
+        $diligencia->update([
+            'status_id' => '12'
+        ]);
+
+        // Dispara emails
+        Email::setupAndFire($diligencia->correspondente_id,'X1');
+        Email::setupAndFire($diligencia->advogado_id,'X2');
+
+       return redirect()->action('DiligenciasController@index');
     }
 }

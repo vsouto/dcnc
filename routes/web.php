@@ -42,11 +42,13 @@ Route::post('/upload', 'FilesController@uploadSubmit');
 // Acoes
 Route::get('diligencias/aceitar/{id}',['as' => 'diligencias.aceitar', 'uses' => 'DiligenciasController@aceitar']);
 Route::get('diligencias/checkin/{id}',['as' => 'diligencias.checkin', 'uses' => 'DiligenciasController@checkin']);
-Route::get('diligencias/concluir/{id}',['as' => 'diligencias.concluir', 'uses' => 'DiligenciasController@concluir']);
+Route::post('diligencias/concluir/{id}',['as' => 'diligencias.concluir', 'uses' => 'DiligenciasController@concluir']);
 Route::get('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' => 'DiligenciasController@resolver']);
 Route::get('diligencias/aprovar/{id}',['as' => 'diligencias.aprovar', 'uses' => 'DiligenciasController@aprovar']);
-Route::get('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' => 'DiligenciasController@devolver']);
+Route::post('diligencias/devolver/{id}',['as' => 'diligencias.devolver', 'uses' => 'DiligenciasController@devolver']);
 Route::get('diligencias/selecionarCorrespondente/{c_id?}/{d_id?}',['as' => 'diligencias.selecionarCorrespondente', 'uses' => 'DiligenciasController@selecionarCorrespondente']);
+Route::get('diligencias/cancelar/{id}',['as' => 'diligencias.cancelar', 'uses' => 'DiligenciasController@cancelar']);
+Route::post('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' => 'DiligenciasController@resolver']);
 
 Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
 Route::get('getComarcas',['as' => 'getComarcas', 'uses' => 'ComarcasController@getComarcas']);
