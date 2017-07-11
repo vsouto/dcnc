@@ -14,10 +14,11 @@ class Diligencia extends Model
      */
     protected $fillable = [
         'comarca_id','titulo','descricao','advogado_id','orgao','local_orgao','vara','num_integracao','num_processo',
-        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id','urgencia','autor'
+        'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id','urgencia','autor','sondagem',
+        'realizado_sucesso', 'realizador_nome','realizador_telefone','realizador_email','revisao_instrucoes', 'revisao_resolucao'
     ];
 
-    protected $dates = ['created_at','updated_at','prazo'];
+    protected $dates = ['created_at','updated_at','prazo','sondagem'];
 
     /**
      * Get the entity
@@ -76,6 +77,14 @@ class Diligencia extends Model
     }
 
     /**
+     * Get the entity
+     */
+    public function conclusao()
+    {
+        return $this->hasOne('App\Conclusao');
+    }
+
+    /**
      * Get the attribute
      *
      * @param  string  $value
@@ -127,7 +136,7 @@ class Diligencia extends Model
                 break;
             case 'devolvida':
 
-                $button = '<button type="button" class="btn btn-info btn-rounded" id="acao-concluir">Resolvido</button>';
+                $button = '<button type="button" class="btn btn-info btn-rounded" id="acao-resolver-confirma">Resolvido</button>';
                 break;
             case 'em-revisao':
 

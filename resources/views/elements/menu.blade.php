@@ -68,6 +68,13 @@
                             <span class="{{ isActive('pages.setup', 'current-page') }}"></span>
                         </a>
                     </li>
+                    <li class="{{ isActive('emails.index', 'highlight') }}">
+                        <a href='{{ route('emails.index') }}'>
+                            <i class="fa fa-envelope-o"></i>
+                            <span>Emails</span>
+                            <span class="{{ isActive('emails.index', 'current-page') }}"></span>
+                        </a>
+                    </li>
                 </ul>
             </li>
         @endif

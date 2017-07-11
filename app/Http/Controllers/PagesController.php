@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cliente;
 use App\Comarca;
+use App\Configuracoes;
 use App\Correspondente;
 use App\Diligencia;
 use App\Servico;
@@ -71,14 +72,18 @@ class PagesController extends Controller
 
         $statuses = Status::all();
 
-        $correspondentes_menos_ocupados = Correspondente::take(6)->get();
+        //$correspondentes_menos_ocupados = Correspondente::take(6)->get();
+
+        $clientes_mais_atrasos = Cliente::where('atrasos','>','0')->orderBy('atrasos','DESC')->get();
+
 
         return view('pages.home', compact(
             'correspondentes_count','diligencias_destaque', 'statuses',
             'correspondentes_menos_ocupados',
             'correspondentes_overprice', 'correspondentes_not_overprice','correspondentes_em_uso',
             'correspondentes_rating_avg',
-            'correspondentes_mais_atrasos'));
+            'correspondentes_mais_atrasos',
+            'clientes_mais_atrasos'));
     }
 
     /**
@@ -368,8 +373,10 @@ class PagesController extends Controller
 
         // Se o user é o cliente master
         if (Auth::user()->id == $cliente->user_id) {
+
             $advogados = [];
             $advogados_cliente = User::where('cliente_id',$cliente->id)->select('id')->get()->toArray();
+
             foreach ($advogados_cliente as $adv) {
                 $advogados[] = $adv['id'];
             }
@@ -654,7 +661,10 @@ class PagesController extends Controller
 
         $servicos = Servico::get();
 
-        return view('pages.setup', compact('servicos'));
+        $configs = Configuracoes::get();
+
+        return view('pages.setup', compact('servicos','configs'));
     }
 
 }
+

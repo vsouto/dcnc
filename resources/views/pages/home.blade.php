@@ -139,6 +139,48 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <!-- Widget starts -->
+                    <div class="blog blog-info">
+                        <div class="blog-header">
+                            <h5 class="blog-title">Clientes com mais atrasos</h5>
+                        </div>
+                        <div class="blog-body">
+                            <ul class="clients-list">
+                                @if ($clientes_mais_atrasos && $clientes_mais_atrasos->count() > 0)
+                                    @foreach ($clientes_mais_atrasos as $cliente)
+                                        <li class="client clearfix">
+                                            <img src="img/user4.jpg" class="avatar" alt="Client">
+                                            <div class="client-details">
+                                                <p>
+                                                    <span class="name">{{ $cliente->nome }}</span>
+                                                    <span class="email">{{ $cliente->email }}</span>
+                                                </p>
+                                                <ul class="icons-nav">
+                                                    <li>
+                                                        {{ $cliente->atrasos }}
+                                                    </li>
+                                                    <li>
+                                                        <a href="mailto:{{ $cliente->email }}" data-toggle="tooltip" data-placement="left" title="Email">
+                                                            <i class="fa fa-envelope-o"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="tel:{{ $cliente->phone }}" data-toggle="tooltip" data-placement="left" title="Contact">
+                                                            <i class="fa fa-phone"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Widget ends -->
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <!-- Widget starts -->
                     <div class="blog blog-danger">
                         <div class="blog-header">
                             <h5 class="blog-title">Correspondentes Com Mais Atrasos</h5>
@@ -175,16 +217,6 @@
                         </div>
                     </div>
                     <!-- Widget ends -->
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="blog">
-                            <div class="blog-header">
-                                <h5 class="panel-title">Situação das Diligências</h5>
-                            </div>
-                            <div class="blog-body">
-                                <div id="stacked-area-chart" class="chart-height"></div>
-                            </div>
-                        </div>
                 </div>
 
             </div>

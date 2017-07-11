@@ -2,7 +2,7 @@
 <br>
 
 @if ($diligencia->status_id == 8)
-    <!-- Aguardando Confirmação -->
+    <!-- Em Revisão -->
     <h4>Em Revisão</h4>
     <div class="alert alert-info alert-white rounded">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
@@ -20,7 +20,26 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
-                    Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                   O Correspondente enviou as seguintes informações:
+                    <br>
+                    <br>
+                    <label>Realizado com sucesso?</label>
+                    {{ $diligencia->realizado_sucesso? 'Sim' : 'Não' }}
+                    <br>
+                    <label>Realizador Nome</label>
+                    {{ $diligencia->realizador_nome or 'Ele mesmo' }}
+                    <br>
+                    <label>Realizador Telefone</label>
+                    {{ $diligencia->realizador_telefone or 'Ele mesmo' }}
+                    <br>
+                    <label>Realizador Email</label>
+                    {{ $diligencia->realizador_email or 'Ele mesmo' }}
+                    <br>
+                    @if ($diligencia->revisao_resolucao)
+                        <label>Informações de Revisão:</label>
+                        {{ $diligencia->revisao_resolucao or 'Ele mesmo' }}
+                        <br>
+                    @endif
                 </div>
             </div>
         </div>
@@ -41,6 +60,16 @@
                     <br>
                     <br>
                     {!! \App\Diligencia::getCurrentAction($diligencia->id) !!}
+                    <br>
+                    <div id="form-devolver-correspondente" style="display: none;">
+                        <form id="form-devolver" method="post" action="{{ route('diligencias.devolver',['id' => $diligencia->id]) }}" class="form-horizontal" enctype="multipart/form-data">
+                        {{ Form::token() }}
+                            <label>Instruções para Revisão: </label><br>
+                            <textarea name="revisao_instrucoes" class="form-control" id="revisao_instrucoes"></textarea>
+                            <br style="clear: both;">
+                            <button type="button" class="btn btn-info btn-rounded" id="acao-devolver-confirma">Devolver</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

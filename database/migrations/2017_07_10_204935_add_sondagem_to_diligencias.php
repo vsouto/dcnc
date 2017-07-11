@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCorrespondenteRequestToDiligencias extends Migration
+class AddSondagemToDiligencias extends Migration
 {
     /**
      * Run the migrations.
@@ -14,6 +14,10 @@ class AddCorrespondenteRequestToDiligencias extends Migration
     public function up()
     {
         //
+        Schema::table('diligencias', function (Blueprint $table) {
+
+            $table->timestamp('sondagem')->nullable();
+        });
     }
 
     /**

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSondagensTable extends Migration
+class CreateConfiguracoesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateSondagensTable extends Migration
      */
     public function up()
     {
-        Schema::create('sondagens', function (Blueprint $table) {
+        //
+        Schema::create('configuracoes', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('diligencia_id');
-            $table->dateTime('prazo'); // Prazo que expira a sondagem
-            $table->char('status',1); // (S)elecionada, (R)ecusada, (E)m andamento
+            $table->string('chave'); // Atraso diligencia,
+            $table->text('descricao'); //
+            $table->string('valor');
+
             $table->timestamps();
         });
     }
@@ -29,6 +31,7 @@ class CreateSondagensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sondagens');
+        //
+        Schema::dropIfExists('configuracoes');
     }
 }

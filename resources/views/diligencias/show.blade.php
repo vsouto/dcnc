@@ -153,17 +153,13 @@
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Correspondente</strong></td>
-                                            <td id="invoice_vessel">
+                                            <td id="invoice_vessel" colspan="3">
                                                 @if ($diligencia->correspondente)
                                                     {{ $diligencia->correspondente->nome }} {!! getRatingStars($diligencia->correspondente->rating) !!}
                                                 @else
                                                     -
                                                 @endif
                                             </td>
-                                            <td id="" colspan="2">
-                                                @if (Auth::user()->level >= 5)
-                                                    <button type="button" class="btn btn-danger btn-sm">Cancelar Correspondente</button></td>
-                                                @endif
                                         </tr>
                                         </tbody>
                                     </table>
@@ -188,7 +184,7 @@
                                 <h5 class="blog-title">Ações</h5>
                             </div>
                             <div class="blog-body">
-                                Se houver alguma ação a ser tomada neste Diligência, ela poderá ser realizada aqui.
+                                Se houver alguma ação a ser tomada nesta Diligência, ela poderá ser realizada aqui.
                                 <br>
                                 <br>
                                 @if ( Auth::user()->level == '1')
@@ -296,6 +292,23 @@
         </div>
     <!-- Addons ends -->
     @endif
+
+    @if (Auth::user()->level >= 5)
+        <!-- Addons starts -->
+        <div class="add-on clearfix">
+            <div class="add-on-wrapper">
+                <h5>Ações</h5>
+                <section class="">
+                    <fieldset class="">
+                        <label class="todo-list-item danger">
+                            <button type="button" class="btn btn-default btn-danger" id="cancel-diligencia"><i class="fa fa-bullhorn"></i> Cancelar Diligência</button>
+                        </label>
+                    </fieldset>
+                </section>
+            </div>
+        </div>
+        <!-- Addons ends -->
+    @endif
 </div>
 <!-- Right sidebar ends -->
 @endsection
@@ -305,6 +318,12 @@
     <script>
         $('#new').click(function(){
             location.href = '{{ route('diligencias.create') }}';
+        });
+
+        $('#cancel-diligencia').click(function(){
+
+            if (confirm('Confirma cancelar esta diligência?'))
+                location.href = '{{ route('diligencias.cancelar',['id' => $diligencia->id]) }}';
         });
 
         $('#acao-aceitar').click(function(){
@@ -324,12 +343,37 @@
 
         $('#acao-devolver').click(function(){
 
-            location.href = '{{ route('diligencias.devolver', ['id' => $diligencia->id]) }}';
+            $('#form-devolver-correspondente').show();
+        });
+
+        $('#acao-devolver-confirma').click(function(){
+
+            if( $('#revisao_instrucoes').val().length < 5) {
+                alert('Digite ao menos 5 caracteres de instruções.');
+            }
+            else {
+                $('#form-devolver').submit();
+            }
+
+            //location.href = '{{ route('diligencias.devolver', ['id' => $diligencia->id]) }}';
+        });
+
+        $('#acao-resolver-confirma').click(function(){
+
+            if( $('#revisao_resolucao').val().length < 5) {
+                alert('Digite ao menos 5 caracteres de informações.');
+            }
+            else {
+                $('#form-resolver').submit();
+            }
+
+            //location.href = '{{ route('diligencias.resolver', ['id' => $diligencia->id]) }}';
         });
 
         $('#acao-concluir').click(function(){
 
-            location.href = '{{ route('diligencias.concluir', ['id' => $diligencia->id]) }}';
+            $('#form-concluir').submit();
+            //location.href = '{{ route('diligencias.concluir', ['id' => $diligencia->id]) }}';
         });
 
         $('#print').click(function(){

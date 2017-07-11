@@ -199,6 +199,9 @@ function calculateRatingPercentage($avg) {
 
 function getCorrespondentesUsoPercentage($qtd, $total) {
 
+    if ($qtd <= 0 )
+        return 0;
+
     return number_format(($qtd * 100) / $total,0,'','.');
 }
 

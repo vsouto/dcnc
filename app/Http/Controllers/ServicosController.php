@@ -69,7 +69,7 @@ class ServicosController extends Controller
         }
 
 
-        return redirect()->back();
+        return redirect()->back()->with('message','Salvo com sucesso.');
     }
 
     /**
