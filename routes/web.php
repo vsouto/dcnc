@@ -61,4 +61,5 @@ Route::post('correspondentes/comarcasUpdate',['as' => 'correspondentes.comarcasU
 
 Auth::routes();
 
-
+// Mail test
+Route::get('test',['as' => 'emails.test', 'uses' => 'EmailsController@test']);

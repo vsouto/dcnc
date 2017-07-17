@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Email;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Readers\Html;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
@@ -223,5 +225,18 @@ class EmailsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function test()
+    {
+
+        $user = User::where('email','souto.victor@gmail.com')->first();
+
+        Mail::send('emails.index', ['user' => $user], function ($m) use ($user) {
+            $m->from('hello@app.com', 'Your Application');
+
+            $m->to($user->email, $user->name)->subject('Your Reminder!');
+        });
+
     }
 }
