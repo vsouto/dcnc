@@ -250,14 +250,16 @@ class CorrespondentesController extends Controller
     {
         //
         $this->validate($request, [
-            'comarca_id' => 'required|not_in:0',
+            //'comarca_id' => 'required|not_in:0',
             'nome' => 'required|min:3',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:4',
-            'bank' => 'int',
+            //'bank' => 'int',
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
             'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
+            'nome.required' => 'Você precisa digitar um Nome.',
+            'email.required' => 'Você precisa digitar um Email.',
             'bank.int' => 'Banco deve ser o número do banco',
             'cpf.int' => 'CPF deve ser composto apenas por números',
             'cnpj.int' => 'CNPJ deve ser composto apenas por números'
