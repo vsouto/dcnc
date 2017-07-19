@@ -33,6 +33,15 @@ class Email extends Model
         return $this->belongsTo('App\User'); // Receiver
     }
 
+
+    /**
+     * Setup email and fire
+     *
+     * @param $type
+     * @param array $user
+     * @param Diligencia|null $diligencia
+     * @return bool|void
+     */
     public static function setupAndFire($type, Array $user, Diligencia $diligencia = null)
     {
         $result = false;

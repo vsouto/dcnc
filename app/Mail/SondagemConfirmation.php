@@ -22,7 +22,7 @@ class SondagemConfirmation extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Sondagem do Correspondente';
 
         // O que faz?
         $this->description = $description;
@@ -57,9 +57,8 @@ class SondagemConfirmation extends Mailable
      */
     public function build()
     {
-        //$user = User::where('id', $this->user_id)->first();
-
         return $this->markdown($this->view)
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

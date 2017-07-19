@@ -21,7 +21,7 @@ class DiligenciaCancelada extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Diligência Cancelada';
+        $this->title = 'DiligÃªncia Cancelada';
 
         // O que faz?
         $this->description = $description;
@@ -55,6 +55,7 @@ class DiligenciaCancelada extends Mailable
     public function build()
     {
         return $this->markdown($this->view)
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

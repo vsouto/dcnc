@@ -48,6 +48,7 @@ class NovoCorrespondente extends Mailable
     public function build()
     {
         return $this->markdown('emails.correspondente.novo')
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user

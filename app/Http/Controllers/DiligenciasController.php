@@ -739,6 +739,7 @@ class DiligenciasController extends Controller
 
         // Dispara emails
         Email::setupAndFire('C_3', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
+        Email::setupAndFire('C_4', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
 
         return redirect()->back()->with('message', 'Checkin efetuado com sucesso.');
     }

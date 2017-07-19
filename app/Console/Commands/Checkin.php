@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Configuracoes;
+use App\Diligencia;
+use App\Email;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -58,11 +60,19 @@ class Checkin extends Command
         }
 
         // Busca as que passaram do prazo + horas de margem
-        $checkin_atrasado = DB::table('diligencias')
+        $checkins_atrasados = DB::table('diligencias')
             ->select('*')
             ->where(DB::raw('NOW()'),'>=',DB::raw('DATE_SUB(prazo, INTERVAL '.$valor . ' HOUR)'))
+            ->where('checkin_emitido','1')
             ->get();
 
+        foreach ($checkins_atrasados as $diligencia) {
+
+            Diligencia::where('id',$diligencia->id)->update(['checkin_emitido' => '1']);
+
+            // Email para cobrar Checkin
+            Email::setupAndFire('C_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        }
 
     }
 }

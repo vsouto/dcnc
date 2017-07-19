@@ -48,6 +48,7 @@ class NovoCliente extends Mailable
     public function build()
     {
         return $this->markdown('emails.clientes.novo')
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user

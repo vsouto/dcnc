@@ -33,7 +33,6 @@ class CheckinCobranca extends Mailable
         $this->types = [
             'C_1' => 'emails.diligencias.checkin-cobranca-correspondente',
             'C_2' => 'emails.diligencias.checkin-lembrete-correspondente',
-            'C_3' => 'emails.diligencias.checkin-feito-cliente',
         ];
 
         $this->type = $this->types[$type];
@@ -60,6 +59,12 @@ class CheckinCobranca extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->markdown($this->view)
+            ->with([
+                'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
+                'user' => $this->user,
+                'diligencia' => $this->diligencia,
+                'correspondente' => $this->correspondente
+            ]);
     }
 }

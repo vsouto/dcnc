@@ -48,6 +48,7 @@ class NovoAdvogado extends Mailable
     public function build()
     {
         return $this->markdown('emails.advogados.novo')
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user

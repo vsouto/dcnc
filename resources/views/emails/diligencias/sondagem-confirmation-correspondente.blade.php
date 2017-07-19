@@ -3,7 +3,7 @@
 # Prezado Sr. {{ $user->nome }},
 
 
-O seu escritório foi pré-selecionado para realizar o ato de n.º xxxx, cujos dados encontram-se abaixo resumidos:
+O seu escritório foi pré-selecionado para realizar o ato de n.º {{ $diligencia->id }}, cujos dados encontram-se abaixo resumidos:
 
 @include('emails.diligencias.info',['diligencia' => $diligencia])
 

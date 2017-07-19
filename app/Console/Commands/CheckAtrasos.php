@@ -82,6 +82,7 @@ class CheckAtrasos extends Command
                         'status_id' => '6'
                     ]);
 
+                // Email para informa Em Negociação
                 Email::setupAndFire('A_3', ['type' => 'correspondente_id', 'id' => $atrasada->correspondente_id], $atrasada);
             }
         }
@@ -120,6 +121,9 @@ class CheckAtrasos extends Command
                     ->update([
                         'status_id' => '7'
                     ]);
+
+
+                Email::setupAndFire('A_3', ['type' => 'correspondente_id', 'id' => $atrasada->correspondente_id], $atrasada);
             }
         }
     }

@@ -21,7 +21,7 @@ class DiligenciaPagamentoAutorizado extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '')
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Pagamento Autorizado';
 
         // O que faz?
         $this->description = $description;
@@ -50,6 +50,7 @@ class DiligenciaPagamentoAutorizado extends Mailable
     public function build()
     {
         return $this->markdown('emails.diligencias.sondagem-confirmation')
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

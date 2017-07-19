@@ -2,7 +2,7 @@
 @component('mail::message')
 # Prezado Sr. {{ $user->nome }},
 
-Considerando que não houve confirmação da sua disponibilidade para o cumprimento do ato de n.º xxxx, estamos cancelando a pré-contratação anteriormente veiculada pelo Escritório.
+Considerando que não houve confirmação da sua disponibilidade para o cumprimento do ato de n.º {{ $diligencia->id }}, estamos cancelando a pré-contratação anteriormente veiculada pelo Escritório.
 
 @include('emails.diligencias.info',['diligencia' => $diligencia])
 

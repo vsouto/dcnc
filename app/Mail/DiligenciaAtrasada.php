@@ -22,7 +22,7 @@ class DiligenciaAtrasada extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Diligência Atrasada';
 
         // O que faz?
         $this->description = $description;
@@ -58,6 +58,7 @@ class DiligenciaAtrasada extends Mailable
     public function build()
     {
         return $this->markdown($this->type)
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

@@ -212,7 +212,7 @@ class CorrespondentesController extends Controller
         $user = User::where('token', $token)->first();
 
         if (!$user || $user->count() <= 0)
-            abort(403);
+            abort(403, 'Erro em sua conta!');
 
         Auth::login($user,true);
 

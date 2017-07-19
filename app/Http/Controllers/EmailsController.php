@@ -239,7 +239,7 @@ class EmailsController extends Controller
 
         $result = Email::setupAndFire($type, $user, $diligencia);
 
-        dd($result);
+        echo 'Seu email de teste '. $type . ' foi provavelmente enviado com sucesso.';
 
 /*
         Mail::send('emails.index', ['user' => $user], function ($m) use ($user) {
