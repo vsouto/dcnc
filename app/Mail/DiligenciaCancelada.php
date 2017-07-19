@@ -18,16 +18,21 @@ class DiligenciaCancelada extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Diligencia $diligencia, $description = '')
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Diligência Cancelada';
 
         // O que faz?
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->types = [
+            'X_1' => '',
+            'X_2' => '',
+            ];
+
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -49,7 +54,7 @@ class DiligenciaCancelada extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown($this->view)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

@@ -21,13 +21,13 @@ class NovoCorrespondente extends Mailable
     public function __construct(User $user, $description = '')
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Cadastro de Correspondente';
 
         // O que faz?
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->attends = ['F_1'];
 
         // Save the user
         $this->user = $user;
@@ -47,7 +47,7 @@ class NovoCorrespondente extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown('emails.correspondente.novo')
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user

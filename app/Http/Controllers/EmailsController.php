@@ -230,13 +230,14 @@ class EmailsController extends Controller
         //
     }
 
-    public function test()
+    public function test($type = 'A_1')
     {
-        $user = User::where('email','souto.victor@gmail.com')->first();
+        //$user = User::where('email','souto.victor@gmail.com')->first();
+        $user = ['type' => 'id', 'id' => Auth::user()->id];
 
-        $diligencia = Diligencia::where('id','1')->first();
+        $diligencia = Diligencia::where('id','1')->with('correspondente')->first();
 
-        $result = Email::setupAndFire($user, $diligencia, 'A_2');
+        $result = Email::setupAndFire($type, $user, $diligencia);
 
         dd($result);
 

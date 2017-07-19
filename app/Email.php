@@ -33,12 +33,12 @@ class Email extends Model
         return $this->belongsTo('App\User'); // Receiver
     }
 
-    public static function setupAndFire($type, Array $user, Diligencia $diligencia = false)
+    public static function setupAndFire($type, Array $user, Diligencia $diligencia = null)
     {
         $result = false;
 
         if (!$user || !is_array($user))
-            return abort('503');
+            return abort('503', 'Must be array');
 
         // TODO: REMOVE
         $user = User::where('id','5')->first();
@@ -74,26 +74,26 @@ class Email extends Model
             case 'A_2':
             case 'A_3':
 
-                $result = Mail::to($user)->send(new SondagemConfirmation($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new SondagemConfirmation($user, $diligencia, $description, $type));
 
                 break;
             case 'B_1':
             case 'B_2':
 
-                $result = Mail::to($user)->send(new DiligenciaConfirmada($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaConfirmada($user, $diligencia, $description, $type));
 
                 break;
             case 'C_1':
             case 'C_2':
             case 'C_3':
 
-                $result = Mail::to($user)->send(new CheckinCobranca($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new CheckinCobranca($user, $diligencia, $description, $type));
 
                 break;
             case 'T_1':
             case 'T_2':
 
-                $result = Mail::to($user)->send(new DiligenciaAtrasada($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaAtrasada($user, $diligencia, $description, $type));
 
                 break;
             case 'R_1':
@@ -103,7 +103,7 @@ class Email extends Model
             case 'D_1':
             case 'D_2':
 
-                $result = Mail::to($user)->send(new DiligenciaDevolvida($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaDevolvida($user, $diligencia, $description, $type));
 
                 break;
             case 'D_3':
@@ -114,7 +114,7 @@ class Email extends Model
             case 'X_1':
             case 'X_2':
 
-                $result = Mail::to($user)->send(new DiligenciaCancelada($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaCancelada($user, $diligencia, $description, $type));
 
                 break;
             case 'P_1':

@@ -26,7 +26,7 @@ class Diligencia extends Model
      */
     public function advogado()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'advogado_id');
     }
 
     /**

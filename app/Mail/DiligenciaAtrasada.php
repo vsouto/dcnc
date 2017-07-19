@@ -2,6 +2,9 @@
 
 namespace App\Mail;
 
+use App\Diligencia;
+use App\User;
+use Faker\Provider\Uuid;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,9 +19,35 @@ class DiligenciaAtrasada extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
+        $this->title = 'Email de Sondagem do Correspondente';
+
+        // O que faz?
+        $this->description = $description;
+
+        // Preenche quais requisitos?
+        $this->types = [
+            'T_1' => 'emails.diligencias.atrasada-correspondente',
+            'T_2' => 'emails.diligencias.atrasada-cliente',
+        ];
+
+        $this->type = $this->types[$type];
+
+        // Save the user
+        $this->user = $user;
+
+        // Create user access Token
+        $this->token = Uuid::uuid();
+
+        $user->update([
+            'token' => $this->token
+        ]);
+
+        $this->diligencia = $diligencia;
+
+        $this->correspondente = User::where('correspondente_id',$diligencia->correspondente_id)->first();
     }
 
     /**
@@ -28,6 +57,12 @@ class DiligenciaAtrasada extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->markdown($this->type)
+            ->with([
+                'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
+                'user' => $this->user,
+                'diligencia' => $this->diligencia,
+                'correspondente' => $this->correspondente
+            ]);
     }
 }

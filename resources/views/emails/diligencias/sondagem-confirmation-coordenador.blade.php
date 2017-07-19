@@ -21,9 +21,4 @@ Em caso de dúvidas ou de inconsistências nas informações aqui prestadas, gen
 
 Atenciosamente,
 
-
-
-
-Atenciosamente,<br>
-{{ config('app.name') }}
 @endcomponent

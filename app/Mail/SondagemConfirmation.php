@@ -19,7 +19,7 @@ class SondagemConfirmation extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Diligencia $diligencia, $description = '')
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
         $this->title = 'Email de Sondagem do Correspondente';
@@ -28,7 +28,14 @@ class SondagemConfirmation extends Mailable
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->types = [
+            'A_1' => 'emails.diligencias.sondagem-confirmation-coordenador',
+            'A_2' => 'emails.diligencias.sondagem-confirmation-correspondente',
+            'A_3' => 'emails.diligencias.sondagem-confirmation-correspondente-cancelled'
+        ];
+
+        // Define the type
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -52,7 +59,7 @@ class SondagemConfirmation extends Mailable
     {
         //$user = User::where('id', $this->user_id)->first();
 
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown($this->view)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

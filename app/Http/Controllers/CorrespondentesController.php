@@ -211,6 +211,9 @@ class CorrespondentesController extends Controller
     {
         $user = User::where('token', $token)->first();
 
+        if (!$user || $user->count() <= 0)
+            abort(403);
+
         Auth::login($user,true);
 
         //return view('correspondentes.entrar',compact('user'));

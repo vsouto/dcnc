@@ -18,16 +18,21 @@ class DiligenciaDevolvida extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Diligencia $diligencia, $description = '')
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Diligência Devolvida';
 
         // O que faz?
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->types = [
+            'D_1' => 'emails.diligencias.devolvida-correspondente',
+            'D_2' => 'emails.diligencias.devolvida-coordenador',
+        ];
+
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -49,7 +54,7 @@ class DiligenciaDevolvida extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown($this->view)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,
