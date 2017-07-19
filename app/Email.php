@@ -15,6 +15,7 @@ use App\Mail\NovoAdvogado;
 use App\Mail\NovoCorrespondente;
 use App\Mail\SondagemConfirmation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class Email extends Model
