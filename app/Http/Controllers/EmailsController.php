@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Diligencia;
 use App\Email;
+use App\Mail\SondagemConfirmation;
 use App\User;
 use Carbon\Carbon;
+use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -229,14 +232,22 @@ class EmailsController extends Controller
 
     public function test()
     {
-
         $user = User::where('email','souto.victor@gmail.com')->first();
 
-        Mail::send('emails.index', ['user' => $user], function ($m) use ($user) {
-            $m->from('hello@app.com', 'Your Application');
+        $diligencia = Diligencia::where('id','1')->first();
 
-            $m->to($user->email, $user->name)->subject('Your Reminder!');
-        });
+        $result = Email::setupAndFire($user, $diligencia, 'A_2');
+
+        dd($result);
+
+/*
+        Mail::send('emails.index', ['user' => $user], function ($m) use ($user) {
+            $m->from('tester@dcnc-log.com.br', 'DCNC Manager');
+
+            //$m->to('tester@dcnc-log.com.br', $user->name)->subject('Hello You!');
+            $m->to('souto.victor@gmail.com', $user->name)->subject('Hello You!');
+            //$m->to($user->email, $user->name)->subject('Hello You!');
+        });*/
 
     }
 }
