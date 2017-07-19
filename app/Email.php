@@ -51,7 +51,7 @@ class Email extends Model
             return abort('503', 'Must be array');
 
         // TODO: REMOVE
-        $user = User::where('id','5')->first();
+        $user = User::where('id',Auth::user()->id)->first();
         //$user = User::where($user['type'],$user['id'])->first();
 
         if (!$user)
