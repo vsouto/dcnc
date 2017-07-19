@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Mail\CheckinCobranca;
+use App\Mail\CheckinFeito;
 use App\Mail\DiligenciaAtrasada;
 use App\Mail\DiligenciaCancelada;
 use App\Mail\DiligenciaConfirmada;
@@ -94,9 +95,13 @@ class Email extends Model
                 break;
             case 'C_1':
             case 'C_2':
-            case 'C_3':
 
                 $result = Mail::to($user)->send(new CheckinCobranca($user, $diligencia, $description, $type));
+                break;
+            case 'C_3':
+            case 'C_4':
+
+                $result = Mail::to($user)->send(new CheckinFeito($user, $diligencia, $description, $type));
 
                 break;
             case 'T_1':
