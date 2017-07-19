@@ -8,6 +8,7 @@ use App\Servico;
 use App\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -198,6 +199,25 @@ class CorrespondentesController extends Controller
         );
 
         return view('correspondentes.index',compact('grid'));
+    }
+
+    /**
+     * Porta de entrada do correspondente na plataforma com um token
+     *
+     * @param $token
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function entrar($token)
+    {
+        $user = User::where('token', $token)->first();
+
+        if (!$user || $user->count() <= 0)
+            abort(403, 'Erro em sua conta!');
+
+        Auth::login($user,true);
+
+        //return view('correspondentes.entrar',compact('user'));
+        return redirect()->action('PagesController@dashboard_correspondente');
     }
 
     /**

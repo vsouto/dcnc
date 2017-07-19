@@ -59,7 +59,10 @@ Route::get('correspondentes/comarcas/{id}',['as' => 'correspondentes.comarcas', 
 Route::post('correspondentes/comarcas',['as' => 'correspondentes.comarcasStore', 'uses' => 'CorrespondentesController@comarcasStore']);
 Route::post('correspondentes/comarcasUpdate',['as' => 'correspondentes.comarcasUpdate', 'uses' => 'CorrespondentesController@comarcasUpdate']);
 
+// Porta de entrada do correspondente na plataforma
+Route::get('correspondentes/entrar/{token}',['as' => 'correspondentes.entrar', 'uses' => 'CorrespondentesController@entrar']);
+
 Auth::routes();
 
 // Mail test
-Route::get('test',['as' => 'emails.test', 'uses' => 'EmailsController@test']);
+Route::get('test/{type}',['as' => 'emails.test', 'uses' => 'EmailsController@test']);

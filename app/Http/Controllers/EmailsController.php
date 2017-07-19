@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Diligencia;
 use App\Email;
+use App\Mail\SondagemConfirmation;
 use App\User;
 use Carbon\Carbon;
+use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -227,16 +230,25 @@ class EmailsController extends Controller
         //
     }
 
-    public function test()
+    public function test($type = 'A_1')
     {
+        //$user = User::where('email','souto.victor@gmail.com')->first();
+        $user = ['type' => 'id', 'id' => Auth::user()->id];
 
-        $user = User::where('email','souto.victor@gmail.com')->first();
+        $diligencia = Diligencia::where('id','1')->with('correspondente')->first();
 
+        $result = Email::setupAndFire($type, $user, $diligencia);
+
+        echo 'Seu email de teste '. $type . ' foi provavelmente enviado com sucesso.';
+
+/*
         Mail::send('emails.index', ['user' => $user], function ($m) use ($user) {
-            $m->from('hello@app.com', 'Your Application');
+            $m->from('tester@dcnc-log.com.br', 'DCNC Manager');
 
-            $m->to($user->email, $user->name)->subject('Your Reminder!');
-        });
+            //$m->to('tester@dcnc-log.com.br', $user->name)->subject('Hello You!');
+            $m->to('souto.victor@gmail.com', $user->name)->subject('Hello You!');
+            //$m->to($user->email, $user->name)->subject('Hello You!');
+        });*/
 
     }
 }

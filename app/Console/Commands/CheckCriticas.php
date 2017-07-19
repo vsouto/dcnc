@@ -43,7 +43,7 @@ class CheckCriticas extends Command
         // Verifica as urgencias e faz as alterações
         $this->checkDiligenciasUrgentes();
 
-        // Verficai os tempos das sondagens
+        // Verficai os tempos das sondagens TODO
         //$this->checkDiligenciasSondagens();
     }
 

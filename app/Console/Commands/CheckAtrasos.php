@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Configuracoes;
 use App\Diligencia;
+use App\Email;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -80,6 +81,9 @@ class CheckAtrasos extends Command
                     ->update([
                         'status_id' => '6'
                     ]);
+
+                // Email para informa Em Negociação
+                Email::setupAndFire('A_3', ['type' => 'correspondente_id', 'id' => $atrasada->correspondente_id], $atrasada);
             }
         }
     }
@@ -117,6 +121,9 @@ class CheckAtrasos extends Command
                     ->update([
                         'status_id' => '7'
                     ]);
+
+
+                Email::setupAndFire('A_3', ['type' => 'correspondente_id', 'id' => $atrasada->correspondente_id], $atrasada);
             }
         }
     }

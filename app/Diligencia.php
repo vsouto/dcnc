@@ -15,7 +15,8 @@ class Diligencia extends Model
     protected $fillable = [
         'comarca_id','titulo','descricao','advogado_id','orgao','local_orgao','vara','num_integracao','num_processo',
         'prazo', 'tipo_id','reu','status_id','solicitante','orientacoes','correspondente_id','urgencia','autor','sondagem',
-        'realizado_sucesso', 'realizador_nome','realizador_telefone','realizador_email','revisao_instrucoes', 'revisao_resolucao'
+        'realizado_sucesso', 'realizador_nome','realizador_telefone','realizador_email','revisao_instrucoes', 'revisao_resolucao',
+        'visited_by_correspondente'
     ];
 
     protected $dates = ['created_at','updated_at','prazo','sondagem'];
@@ -25,7 +26,7 @@ class Diligencia extends Model
      */
     public function advogado()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'advogado_id');
     }
 
     /**

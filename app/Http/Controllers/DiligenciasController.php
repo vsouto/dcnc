@@ -463,9 +463,6 @@ class DiligenciasController extends Controller
             $data['status_id'] = Status::where('slug','aguardando-confirmacao')->first()->id;
 
             $data['correspondente_id'] = $correspondente[0]->correspondente_id;
-
-            // Dispara email correspondente
-            Email::setupAndFire($data['correspondente_id'],'a1');
         }
 
         // Salva o servico
@@ -497,7 +494,11 @@ class DiligenciasController extends Controller
             }
 
             // Dispara email cliente
-            Email::setupAndFire($data['advogado_id'],'a1');
+            Email::setupAndFire('A_1', ['type' => 'advogado_id', 'id' => $data['advogado_id']], $save);
+
+            if (isset($data['correspondente_id']) && !empty($data['correspondente_id']))
+                // Dispara email correspondente
+                Email::setupAndFire('A_2', ['type' => 'correspondente_id', 'id' => $data['correspondente_id']], $save);
 
             // Se foi cadastrado pelo cliente
             if (Auth::user()->level == 2)
@@ -525,6 +526,13 @@ class DiligenciasController extends Controller
             ->with('correspondente')
             ->with('advogado','advogado.cliente')
             ->firstOrFail();
+
+        // Se é um correspondente, registra visita
+        if (Auth::user()->level == '1') {
+            $diligencia->update([
+                'visited_by_correspondente' => '1'
+            ]);
+        }
 
         $correspondentes_recomendados = [];
 
@@ -706,8 +714,9 @@ class DiligenciasController extends Controller
             'status_id' => '3'
         ]);
 
-        // Dispara email correspondente
-        Email::setupAndFire($diligencia->correspondente_id,'B1');
+        // Dispara emails
+        Email::setupAndFire('B_1', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
+        Email::setupAndFire('B_2', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência aceita com sucesso.');
     }
@@ -728,8 +737,9 @@ class DiligenciasController extends Controller
             'status_id' => '4'
         ]);
 
-        // Dispara email correspondente
-        Email::setupAndFire($diligencia->correspondente_id,'C3');
+        // Dispara emails
+        Email::setupAndFire('C_3', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
+        Email::setupAndFire('C_4', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
 
         return redirect()->back()->with('message', 'Checkin efetuado com sucesso.');
     }
@@ -756,8 +766,9 @@ class DiligenciasController extends Controller
             'realizador_email' => $data['realizador_email'],
         ]);
 
-        // Dispara email correspondente
-        Email::setupAndFire($diligencia->correspondente_id,'R1');
+        // Dispara emails
+        Email::setupAndFire('R_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        Email::setupAndFire('R_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência concluída com sucesso. Aguarde decisão da revisão.');
     }
@@ -782,7 +793,7 @@ class DiligenciasController extends Controller
         ]);
 
         // Dispara email
-        Email::setupAndFire($diligencia->correspondente_id,'R1');
+        Email::setupAndFire('R_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência resolvida com sucesso. Aguarde decisão da revisão.');
     }
@@ -811,9 +822,9 @@ class DiligenciasController extends Controller
             'tipo' => 'C'
         ]);
 
-        // Dispara email correspondente
-        Email::setupAndFire($diligencia->correspondente_id,'P1');
-        Email::setupAndFire($diligencia->advogado_id,'P2');
+        // Dispara emails
+        Email::setupAndFire('P_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        Email::setupAndFire('P2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência aprovada com sucesso. O financeiro será acionado como Pagamento Autorizado.');
     }
@@ -841,8 +852,8 @@ class DiligenciasController extends Controller
         }
 
         // Dispara emails
-        Email::setupAndFire($diligencia->correspondente_id,'D1');
-        Email::setupAndFire($diligencia->advogado_id,'D2');
+        Email::setupAndFire('D_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        Email::setupAndFire('D_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência devolvida. O correspondente será acionado para revisar o trabalho.');
     }
@@ -864,7 +875,7 @@ class DiligenciasController extends Controller
         ]);
 
         // Dispara emails
-        Email::setupAndFire($diligencia->correspondente_id,'A3');
+        Email::setupAndFire('A_2', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
 
         return redirect()->back()->with('message', 'Correspondente Selecionado com sucesso. O correspondente será notificado por email e deverá aceitar o trabalho.');
     }
@@ -949,8 +960,8 @@ class DiligenciasController extends Controller
         ]);
 
         // Dispara emails
-        Email::setupAndFire($diligencia->correspondente_id,'X1');
-        Email::setupAndFire($diligencia->advogado_id,'X2');
+        Email::setupAndFire('X_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        Email::setupAndFire('X_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
        return redirect()->action('DiligenciasController@index');
     }
