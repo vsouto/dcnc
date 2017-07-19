@@ -24,7 +24,7 @@ class CheckinFeito extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Checkin Realizado';
 
         // O que faz?
         $this->description = $description;
@@ -32,10 +32,10 @@ class CheckinFeito extends Mailable
         // Preenche quais requisitos?
         $this->types = [
             'C_3' => 'emails.diligencias.checkin-feito-cliente',
-            'C_4' => 'emails.diligencias.checkin-feito-correspondente',
+            'C_4' => 'emails.diligencias.checkin-feito-correspondente'
         ];
 
-        $this->type = $this->types[$type];
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -60,6 +60,7 @@ class CheckinFeito extends Mailable
     public function build()
     {
         return $this->markdown($this->view)
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,

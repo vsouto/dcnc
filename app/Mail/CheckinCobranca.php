@@ -24,7 +24,7 @@ class CheckinCobranca extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Email de Sondagem do Correspondente';
+        $this->title = 'Check-In';
 
         // O que faz?
         $this->description = $description;
@@ -35,7 +35,7 @@ class CheckinCobranca extends Mailable
             'C_2' => 'emails.diligencias.checkin-lembrete-correspondente',
         ];
 
-        $this->type = $this->types[$type];
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -60,6 +60,7 @@ class CheckinCobranca extends Mailable
     public function build()
     {
         return $this->markdown($this->view)
+            ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,
