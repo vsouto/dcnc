@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('nome');
             $table->string('email')->unique();
             $table->string('password');
-            $table->tinyInteger('level')->default('1'); // 1 - correspondente , 2 - cliente,
+            $table->tinyInteger('level')->default('1'); // 1 - correspondente , 2 - cliente/advogado,
                                         // 3 - operador, 4- negociador, 5 - coordenador,
                                         // 6 - financeiro, 9 - admin
             $table->string('phone')->nullable();

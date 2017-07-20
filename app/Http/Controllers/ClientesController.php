@@ -39,7 +39,6 @@ class ClientesController extends Controller
         # Some params may be predefined, other can be controlled using grid components
         $query = (new Cliente())
             ->with('admin')
-            ->has('admin')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -161,7 +160,7 @@ class ClientesController extends Controller
     public function create()
     {
         //
-        $users = User::whereNull('cliente_id')->pluck('nome','id');
+        $users = User::where('level', '2')->pluck('nome','id');
 
         return view('clientes.create',compact('users'));
     }
