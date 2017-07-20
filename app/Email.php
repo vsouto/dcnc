@@ -44,19 +44,25 @@ class Email extends Model
      * @param Diligencia|null $diligencia
      * @return bool|void
      */
-    public static function setupAndFire($type, Array $user, Diligencia $diligencia = null)
+    public static function setupAndFire($type, Array $user, Diligencia $diligencia = null, $test = false)
     {
         $result = false;
 
         if (!$user || !is_array($user))
             return abort('503', 'Must be array');
 
-        // TODO: REMOVE
-        $user = User::where('id',Auth::user()->id)->first();
-        //$user = User::where($user['type'],$user['id'])->first();
+        // Testing?
+        if ($test) {
+            // send to yourself
+            $user = User::where('id',Auth::user()->id)->first();
+        }
+        else {
+            $user = User::where($user['type'],$user['id'])->first();
+        }
+
 
         if (!$user)
-            return false;
+            return abort('403', 'No user.');
 
         if (!$diligencia) {
             $description = 'Email ' . $type . ' para ' . $user->id . ' - ' . $user->nome;
