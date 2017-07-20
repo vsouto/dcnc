@@ -90,7 +90,7 @@ class EmailsController extends Controller
 
                             if (!$val)
                                 return '';
-                            
+
                             //return $val->id . ' - ' . $val->nome . ' <' . $val->email . '>';
                             return $val->nome . ' - ' . $val->email;
                         })
