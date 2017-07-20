@@ -237,7 +237,7 @@ class EmailsController extends Controller
 
         $diligencia = Diligencia::where('id','1')->with('correspondente')->first();
 
-        $result = Email::setupAndFire($type, $user, $diligencia);
+        $result = Email::setupAndFire($type, $user, $diligencia, true);
 
         echo 'Seu email de teste '. $type . ' foi provavelmente enviado com sucesso.';
 
