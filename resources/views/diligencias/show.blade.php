@@ -234,27 +234,33 @@
                                         Nenhum arquivo anexado.
                                     @else
                                         @foreach ($diligencia->files as $file)
-                                            <li class="client clearfix">
-                                                <i class="fa {{ getFileClass($file->filename) }} pull-left fa-lg fa-3x"></i>
-                                                <div class="client-details">
-                                                    <p>
-                                                        <span class="name">{{ $file->titulo }}</span>
-                                                        <span class="email">{{ $file->user->nome }}</span>
-                                                    </p>
-                                                    <ul class="icons-nav">
-                                                        <li>
-                                                            <a href="#" data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete">
-                                                                <i class="fa fa-trash-o"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ Storage::url($file->filename) }}" data-toggle="tooltip" data-placement="left" title="" data-original-title="Download">
-                                                                <i class="fa fa-download"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </li>
+                                            @if (File::exists($file->filename))
+                                                <li class="client clearfix">
+                                                    <i class="fa {{ getFileClass($file->filename) }} pull-left fa-lg fa-3x"></i>
+                                                    <div class="client-details">
+                                                        <p>
+                                                            <span class="name">{{ $file->titulo }}</span>
+                                                            <span class="email">{{ $file->user->nome }}</span>
+                                                        </p>
+                                                        <ul class="icons-nav">
+                                                            <li>
+                                                                <a href="#" data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete">
+                                                                    <i class="fa fa-trash-o"></i>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ Storage::url($file->filename) }}" data-toggle="tooltip" data-placement="left" title="" data-original-title="Download">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            @else
+                                                <li class="client clearfix">
+                                                    Arquivo não existe ou está corrompido.
+                                                </li>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </ul>
