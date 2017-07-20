@@ -49,7 +49,7 @@ class Email extends Model
         $result = false;
 
         if (!$user || !is_array($user))
-            return abort('503', 'Must be array');
+            return false;
 
         // Testing?
         if ($test) {
@@ -60,9 +60,8 @@ class Email extends Model
             $user = User::where('id',$user['id'])->first();
         }
 
-
         if (!$user)
-            return abort('403', 'No user.');
+            return false;
 
         if (!$diligencia) {
             $description = 'Email ' . $type . ' para ' . $user->id . ' - ' . $user->nome;

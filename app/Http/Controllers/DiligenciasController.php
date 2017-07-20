@@ -496,9 +496,10 @@ class DiligenciasController extends Controller
             // Dispara email cliente
             Email::setupAndFire('A_1', ['type' => 'advogado_id', 'id' => $data['advogado_id']], $save);
 
-            if (isset($data['correspondente_id']) && !empty($data['correspondente_id']))
+            if (isset($data['correspondente_id']) && !empty($data['correspondente_id'])) {
                 // Dispara email correspondente
                 Email::setupAndFire('A_2', ['type' => 'correspondente_id', 'id' => $data['correspondente_id']], $save);
+            }
 
             // Se foi cadastrado pelo cliente
             if (Auth::user()->level == 2)
