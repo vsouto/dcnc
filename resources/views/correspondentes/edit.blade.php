@@ -85,6 +85,15 @@
                                                         ]) }}
                                                 </div>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Ativo?</label>
+                                                <div class="col-lg-6">
+                                                    {{ Form::select('ativo', $ativo_options, $correspondente->ativo, [
+                                                        'class' => 'form-control ',
+                                                        'id'    => 'ativo'
+                                                        ]) }}
+                                                </div>
+                                            </div>
                                         </fieldset>
 
                                     </div>
@@ -205,9 +214,8 @@
                 $('.resto-form').show();
 
                 var estado_id = $('#estado-select').val();
-                var selected = '{{ $correspondente->comarcas->first()->id }}';
 
-                getComarcas(estado_id, selected);
+                //getComarcas(estado_id, selected);
             }
 
             if ( $('#select-conta').val() != '0') {

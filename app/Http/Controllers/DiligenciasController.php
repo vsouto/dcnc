@@ -714,6 +714,8 @@ class DiligenciasController extends Controller
             'status_id' => '3'
         ]);
 
+        $diligencia = Diligencia::where('id',$id)->first();
+
         // Dispara emails
         Email::setupAndFire('B_1', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
         Email::setupAndFire('B_2', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
@@ -736,6 +738,8 @@ class DiligenciasController extends Controller
         $diligencia->update([
             'status_id' => '4'
         ]);
+
+        $diligencia = Diligencia::where('id',$id)->first();
 
         // Dispara emails
         Email::setupAndFire('C_3', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
@@ -766,6 +770,8 @@ class DiligenciasController extends Controller
             'realizador_email' => $data['realizador_email'],
         ]);
 
+        $diligencia = Diligencia::where('id',$id)->first();
+
         // Dispara emails
         Email::setupAndFire('R_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
         Email::setupAndFire('R_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
@@ -791,6 +797,8 @@ class DiligenciasController extends Controller
             'status_id' => '8',
             'revisao_resolucao' => $data['revisao_resolucao'],
         ]);
+
+        $diligencia = Diligencia::where('id',$id)->first();
 
         // Dispara email
         Email::setupAndFire('R_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
@@ -851,6 +859,9 @@ class DiligenciasController extends Controller
             ]);
         }
 
+
+        $diligencia = Diligencia::where('id',$id)->first();
+
         // Dispara emails
         Email::setupAndFire('D_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
         Email::setupAndFire('D_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
@@ -873,6 +884,8 @@ class DiligenciasController extends Controller
             'correspondente_id' => $correspondente_id,
             'status_id' => '2'
         ]);
+
+        $diligencia = Diligencia::where('id',$diligencia_id)->first();
 
         // Dispara emails
         Email::setupAndFire('A_2', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);

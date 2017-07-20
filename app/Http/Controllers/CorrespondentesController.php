@@ -91,6 +91,15 @@ class CorrespondentesController extends Controller
                         })
                     ,
                     new IdFieldConfig(),
+                    (new FieldConfig)
+                        ->setName('ativo')
+                        ->setLabel('Ativo')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            return (!$val || $val == '0')? 'Não' : 'Sim';
+                        })
+                    ,
                     (new FieldConfig())
                         ->setName('nome')
                         ->addFilter(
@@ -457,7 +466,9 @@ class CorrespondentesController extends Controller
             'PJ' => 'Pessoa Jurídica'
         ];
 
-        return view('correspondentes.edit',compact('correspondente','servicos','estados', 'tipos_conta'));
+        $ativo_options = Correspondente::$ativo_options;
+
+        return view('correspondentes.edit',compact('correspondente','servicos','estados', 'tipos_conta', 'ativo_options'));
     }
 
     /**
@@ -517,6 +528,7 @@ class CorrespondentesController extends Controller
             'ag' => $data['ag'],
             'conta' => $data['conta'],
             'cnpj' => $data['cnpj'],
+            'ativo' => $data['ativo'],
         ]);
 
         $correspondente = Correspondente::where('id',$id)->first();

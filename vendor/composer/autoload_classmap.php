@@ -11,6 +11,7 @@ return array(
     'AddCheckinToDiligencias' => $baseDir . '/database/migrations/2017_07_19_203714_add_checkin_to_diligencias.php',
     'AddCodigoToDiligencias' => $baseDir . '/database/migrations/2017_06_12_211939_add_codigo_to_diligencias.php',
     'AddCpfToUsers' => $baseDir . '/database/migrations/2017_05_29_120031_add_cpf_to_users.php',
+    'AddInativoToCorrespondentes' => $baseDir . '/database/migrations/2017_07_20_111909_add_inativo_to_correspondentes.php',
     'AddInstrucoesToDiligencias' => $baseDir . '/database/migrations/2017_07_11_163659_add_instrucoes_to_diligencias.php',
     'AddRealizadorToDiligencias' => $baseDir . '/database/migrations/2017_07_11_160118_add_realizador_to_diligencias.php',
     'AddReceiverToEmails' => $baseDir . '/database/migrations/2017_07_11_015045_add_receiver_to_emails.php',
