@@ -181,7 +181,7 @@ class AdvogadosController extends Controller
         $this->validate($request, [
             'cliente_id' => 'required',
             'nome' => 'required|min:3',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'senha' => 'required|min:4',
         ]);
 
