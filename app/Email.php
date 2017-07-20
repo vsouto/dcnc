@@ -57,7 +57,15 @@ class Email extends Model
             $user = User::where('id',Auth::user()->id)->first();
         }
         else {
-            $user = User::where('id',$user['id'])->first();
+
+            if ($user['type'] == 'correspondente_id') {
+                $correspondente = Correspondente::where('id',$user['id'])->first();
+
+                $user = User::where('correspondente_id',$correspondente->id)->first();
+            }
+            else {
+                $user = User::where('id',$user['id'])->first();
+            }
         }
 
         if (!$user)

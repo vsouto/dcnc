@@ -87,6 +87,10 @@ class EmailsController extends Controller
                         ->setLabel('Recipiente')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+                            
                             //return $val->id . ' - ' . $val->nome . ' <' . $val->email . '>';
                             return $val->nome . ' - ' . $val->email;
                         })
