@@ -57,7 +57,7 @@ class Email extends Model
             $user = User::where('id',Auth::user()->id)->first();
         }
         else {
-            $user = User::where($user['type'],$user['id'])->first();
+            $user = User::where('id',$user['id'])->first();
         }
 
 
