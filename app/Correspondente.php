@@ -29,8 +29,13 @@ class Correspondente extends Model
      *
      * @var array
      */
-    protected $fillable = ['nome','rating','comarca_id','slug'];
+    protected $fillable = ['nome','rating','comarca_id','slug','ativo'];
 
+
+    public static $ativo_options = [
+        '1' => 'Sim',
+        '0' => 'Não'
+    ];
 
     /**
      * Get the entity
@@ -98,13 +103,16 @@ class Correspondente extends Model
         $servico = Servico::where('id',$servico_id)->first();
 
         return DB::select("SELECT correspondente_id
-            FROM correspondente_servico
-                WHERE comarca_id = '$comarca_id' AND servico_id = '$servico_id' AND valor <= '{$servico->max}'
+            FROM correspondente_servico cs
+                JOIN correspondentes c on (c.id = cs.correspondente_id)
+                WHERE cs.comarca_id = '$comarca_id'
+                    AND cs.servico_id = '$servico_id' AND cs.valor <= '{$servico->max}'
+                    AND c.ativo = '1'
                     ORDER BY valor ASC");
     }
 
     /**
-     * Get correspondentes recomendados para uma dilig�ncia
+     * Get correspondentes recomendados para uma diligência
      * overprices inclusos
      *
      * @param $servico_id
@@ -117,6 +125,7 @@ class Correspondente extends Model
                     FROM correspondentes c
                         JOIN correspondente_servico cs ON
                           (cs.correspondente_id = c.id AND cs.servico_id = $servico_id AND cs.comarca_id = $comarca_id)
+                            WHERE c.ativo = '1'
                             GROUP BY c.id, c.nome, cs.valor, c.rating
                             ORDER BY cs.valor ASC
                                  ");
