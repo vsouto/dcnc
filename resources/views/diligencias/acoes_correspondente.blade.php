@@ -228,7 +228,7 @@
                                 <form id="form-resolver" method="post" action="{{ route('diligencias.resolver',['id' => $diligencia->id]) }}" class="form-horizontal" enctype="multipart/form-data">
                                     {{ Form::token() }}
                                     <label>Resposta para Revisão: </label><br>
-                                    <textarea name="revisao_resolucao" class="form-control" id="revisao_resolucao"></textarea>
+                                    <textarea name="revisao_resolucao" class="form-control" id="revisao_resolucao" cols="200" rows="6"></textarea>
                                     <br style="clear: both;">
                                 </form>
                             </div>

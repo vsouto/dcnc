@@ -126,7 +126,7 @@ class Email extends Model
                 break;
             case 'R_1':
 
-                $result = Mail::to($user)->send(new DiligenciaEmRevisao($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaEmRevisao($user, $diligencia, $description, $type));
                 break;
             case 'D_1':
             case 'D_2':
@@ -136,7 +136,7 @@ class Email extends Model
                 break;
             case 'D_3':
 
-                $result = Mail::to($user)->send(new DiligenciaEmRevisao($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaEmRevisao($user, $diligencia, $description, $type));
 
                 break;
             case 'X_1':
