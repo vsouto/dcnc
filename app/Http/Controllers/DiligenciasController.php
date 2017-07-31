@@ -446,7 +446,7 @@ class DiligenciasController extends Controller
 
         // Prazo to pattern
         if (!empty($data['prazo'])) {
-            $data['prazo'] = Carbon::createFromFormat('d/m/Y h:i',$data['prazo']);
+            $data['prazo'] = Carbon::createFromFormat('d/m/Y H:i',$data['prazo']);
         }
 
         // Select the best Correspondente for this

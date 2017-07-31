@@ -321,7 +321,7 @@
 
         $(function () {
             $('#prazo').datetimepicker({
-                format: 'DD/MM/YYYY hh:mm',
+                format: 'DD/MM/YYYY HH:mm',
                 inline: true,
                 locale: 'pt',
                 viewMode: 'years',
