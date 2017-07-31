@@ -92,6 +92,9 @@ class Email extends Model
             ]);
         }
 
+        // Check if MAIL is active
+        if (!env('MAIL_ACTIVE'))
+            return false;
 
         switch ($type) {
             case 'A_1':
