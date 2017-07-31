@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Mail;
+use App\Correspondente;
 use App\Diligencia;
 use App\User;
 use Faker\Provider\Uuid;
@@ -18,7 +19,7 @@ class DiligenciaPagamentoAutorizado extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Diligencia $diligencia, $description = '')
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
         $this->title = 'Pagamento Autorizado';
@@ -27,7 +28,12 @@ class DiligenciaPagamentoAutorizado extends Mailable
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->types = [
+            'P_1' => 'emails.diligencias.pagamento-autorizado-correspondente',
+            'P_2' => 'emails.diligencias.pagamento-autorizado-cliente'
+        ];
+
+        $this->view = $this->types[$type];
 
         // Save the user
         $this->user = $user;
@@ -40,6 +46,8 @@ class DiligenciaPagamentoAutorizado extends Mailable
         ]);
 
         $this->diligencia = $diligencia;
+
+        $this->correspondente = Correspondente::where('id',$diligencia->correspondente_id)->first();
     }
 
     /**
@@ -49,12 +57,13 @@ class DiligenciaPagamentoAutorizado extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown($this->view)
             ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,
-                'diligencia' => $this->diligencia
+                'diligencia' => $this->diligencia,
+                'correspondente' => $this->correspondente
             ]);
     }
 }

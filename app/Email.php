@@ -148,7 +148,7 @@ class Email extends Model
             case 'P_1':
             case 'P_2':
 
-                $result = Mail::to($user)->send(new DiligenciaPagamentoAutorizado($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaPagamentoAutorizado($user, $diligencia, $description, $type));
 
                 break;
             case 'Z_1':

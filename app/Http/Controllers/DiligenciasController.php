@@ -833,7 +833,7 @@ class DiligenciasController extends Controller
 
         // Dispara emails
         Email::setupAndFire('P_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
-        Email::setupAndFire('P2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
+        Email::setupAndFire('P_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
         return redirect()->back()->with('message', 'Diligência aprovada com sucesso. O financeiro será acionado como Pagamento Autorizado.');
     }
