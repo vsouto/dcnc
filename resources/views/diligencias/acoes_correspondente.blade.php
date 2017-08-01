@@ -149,6 +149,10 @@
                                         <label>Realizador Email: </label><input type="text" name="realizador_email" class="form-control">
                                     </div>
                                 </div>
+
+                                <div class="input-group">
+                                    @include('elements.file-upload')
+                                </div>
                             </div>
                         </div>
 
@@ -215,24 +219,27 @@
             <div id="collapseThree" class="panel-collapse collapse" style="height: auto;">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            @if ($diligencia->revisao_instrucoes)
+                        <form id="form-resolver" method="post" action="{{ route('diligencias.resolver',['id' => $diligencia->id]) }}" class="form-horizontal" enctype="multipart/form-data">
+                            {{ Form::token() }}
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                @if ($diligencia->revisao_instrucoes)
+                                    <div class="input-group">
+                                        <label>O Revisor Instruiu:</label><br>
+                                        {{ $diligencia->revisao_instrucoes  }}
+                                        <br>
+                                        <br>
+                                    </div>
+                                @endif
                                 <div class="input-group">
-                                    <label>O Revisor Instruiu:</label><br>
-                                    {{ $diligencia->revisao_instrucoes  }}
-                                    <br>
-                                    <br>
-                                </div>
-                            @endif
-                            <div class="input-group">
-                                <form id="form-resolver" method="post" action="{{ route('diligencias.resolver',['id' => $diligencia->id]) }}" class="form-horizontal" enctype="multipart/form-data">
-                                    {{ Form::token() }}
                                     <label>Resposta para Revisão: </label><br>
                                     <textarea name="revisao_resolucao" class="form-control" id="revisao_resolucao" cols="200" rows="6"></textarea>
                                     <br style="clear: both;">
-                                </form>
+                                </div>
+                                <div class="input-group">
+                                    @include('elements.file-upload')
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
 
                     <br style="clear: both;">

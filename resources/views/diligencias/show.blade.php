@@ -258,7 +258,7 @@
                                                 </li>
                                             @else
                                                 <li class="client clearfix">
-                                                    Arquivo não existe ou está corrompido.
+                                                    <i class="fa fa-ambulance pull-left fa-lg fa-3x"></i> Arquivo não existe ou está corrompido.
                                                 </li>
                                             @endif
                                         @endforeach

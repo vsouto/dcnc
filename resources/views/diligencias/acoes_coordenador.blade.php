@@ -116,12 +116,17 @@
                     <br>
                     {!! \App\Diligencia::getCurrentAction($diligencia->id) !!}
                     <br>
+                    <br>
                     <div id="form-devolver-correspondente" style="display: none;">
                         <form id="form-devolver" method="post" action="{{ route('diligencias.devolver',['id' => $diligencia->id]) }}" class="form-horizontal" enctype="multipart/form-data">
                             {{ Form::token() }}
                             <label>Instruções para Revisão: </label><br>
                             <textarea name="revisao_instrucoes" class="form-control" id="revisao_instrucoes" cols="200" rows="6"></textarea>
                             <br style="clear: both;">
+                            <div class="input-group">
+                                @include('elements.file-upload')
+                            </div>
+
                             <button type="button" class="btn btn-info btn-rounded" id="acao-devolver-confirma">Devolver</button>
                         </form>
                     </div>

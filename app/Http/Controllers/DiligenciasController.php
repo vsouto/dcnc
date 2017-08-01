@@ -766,7 +766,7 @@ exit;*/
      *
      * @param $id
      */
-    public function concluir($id)
+    public function concluir(Request $request, $id)
     {
         if (!$id)
             abort(403,'wat');
@@ -783,7 +783,37 @@ exit;*/
             'realizador_email' => $data['realizador_email'],
         ]);
 
+        // Treat File Uploads
+        if ($request->hasFile('files')) {
+
+            $files = Input::file('files');
+            $files_ids = [];
+
+            foreach ($files as $file) {
+
+                //$filename = $file->store('files');
+                $name = Storage::disk('uploads')->put($id, $file, 'public');
+
+                $new_file = File::create([
+                    'titulo' => 'Anexo em D-' . $id,
+                    'descricao' => 'Anexo em Diligência ' . $id,
+                    'filename' => $name,
+                    'user_id' => Auth::user()->id
+                ]);
+
+                $files_ids[] = $new_file->id;
+            }
+        }
+
         $diligencia = Diligencia::where('id',$id)->first();
+
+        // Attach files
+        if (!empty($files_ids)) {
+            // Attach files to this Diligencia
+            foreach ($files_ids as $file) {
+                $diligencia->files()->attach($file);
+            }
+        }
 
         // Dispara emails
         Email::setupAndFire('R_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
@@ -797,14 +827,44 @@ exit;*/
      *
      * @param $id
      */
-    public function resolver($id)
+    public function resolver(Request $request, $id)
     {
         if (!$id)
             abort(403,'wat');
 
         $data = Input::all();
 
+        // Treat File Uploads
+        if ($request->hasFile('files')) {
+
+            $files = Input::file('files');
+            $files_ids = [];
+
+            foreach ($files as $file) {
+
+                //$filename = $file->store('files');
+                $name = Storage::disk('uploads')->put($id, $file, 'public');
+
+                $new_file = File::create([
+                    'titulo' => 'Anexo em D-' . $id,
+                    'descricao' => 'Anexo em Diligência ' . $id,
+                    'filename' => $name,
+                    'user_id' => Auth::user()->id
+                ]);
+
+                $files_ids[] = $new_file->id;
+            }
+        }
+
         $diligencia = Diligencia::where('id',$id)->first();
+
+        // Attach files
+        if (!empty($files_ids)) {
+            // Attach files to this Diligencia
+            foreach ($files_ids as $file) {
+                $diligencia->files()->attach($file);
+            }
+        }
 
         $diligencia->update([
             'status_id' => '8',
@@ -855,14 +915,44 @@ exit;*/
      *
      * @param $id
      */
-    public function devolver($id)
+    public function devolver(Request $request, $id)
     {
         if (!$id)
             abort(403,'wat');
 
         $data = Input::all();
 
+        // Treat File Uploads
+        if ($request->hasFile('files')) {
+
+            $files = Input::file('files');
+            $files_ids = [];
+
+            foreach ($files as $file) {
+
+                //$filename = $file->store('files');
+                $name = Storage::disk('uploads')->put($id, $file, 'public');
+
+                $new_file = File::create([
+                    'titulo' => 'Anexo em D-' . $id,
+                    'descricao' => 'Anexo em Diligência ' . $id,
+                    'filename' => $name,
+                    'user_id' => Auth::user()->id
+                ]);
+
+                $files_ids[] = $new_file->id;
+            }
+        }
+
         $diligencia = Diligencia::where('id',$id)->first();
+
+        // Attach files
+        if (!empty($files_ids)) {
+            // Attach files to this Diligencia
+            foreach ($files_ids as $file) {
+                $diligencia->files()->attach($file);
+            }
+        }
 
         // Devolvida
         if (isset($data['revisao_instrucoes']) && !empty($data['revisao_instrucoes'])) {
@@ -871,7 +961,6 @@ exit;*/
                 'revisao_instrucoes' => $data['revisao_instrucoes']
             ]);
         }
-
 
         $diligencia = Diligencia::where('id',$id)->first();
 
