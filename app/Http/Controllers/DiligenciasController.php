@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Readers\Html;
 use Nayjest\Grids\Components\Base\RenderableRegistry;
 use Nayjest\Grids\Components\ColumnHeadersRow;
@@ -423,27 +424,6 @@ class DiligenciasController extends Controller
             'autor'
         );
 
-        // Treat File Uploads
-        if ($request->hasFile('files')) {
-
-            $files = Input::file('files');
-            $files_ids = [];
-
-            foreach ($files as $file) {
-
-                $filename = $file->store('files');
-
-                $new_file = File::create([
-                    'titulo' => $filename,
-                    'descricao' => $filename,
-                    'filename' => $filename,
-                    'user_id' => Auth::user()->id
-                ]);
-
-                $files_ids[] = $new_file->id;
-            }
-        }
-
         // Prazo to pattern
         if (!empty($data['prazo'])) {
             $data['prazo'] = Carbon::createFromFormat('d/m/Y H:i',$data['prazo']);
@@ -478,6 +458,28 @@ class DiligenciasController extends Controller
         $save = Diligencia::create($data);
 
         if ($save) {
+
+            // Treat File Uploads
+            if ($request->hasFile('files')) {
+
+                $files = Input::file('files');
+                $files_ids = [];
+
+                foreach ($files as $file) {
+
+                    //$filename = $file->store('files');
+                    $name = Storage::disk('uploads')->put($save->id, $file, 'public');
+
+                    $new_file = File::create([
+                        'titulo' => 'Anexo em D-' . $save->id,
+                        'descricao' => 'Anexo em Diligência ' . $save->id,
+                        'filename' => $name,
+                        'user_id' => Auth::user()->id
+                    ]);
+
+                    $files_ids[] = $new_file->id;
+                }
+            }
 
             // Attach files
             if (!empty($files_ids)) {
@@ -534,7 +536,16 @@ class DiligenciasController extends Controller
                 'visited_by_correspondente' => '1'
             ]);
         }
+/*
+        foreach($diligencia->files as $file) {
 
+            $filezera = Storage::disk('uploads')->url($file->filename);
+
+            //var_dump($filezera);
+
+            var_dump(public_path() . '/uploads/'  . $file->filename);
+        }
+exit;*/
         $correspondentes_recomendados = [];
 
         // Em negociacao?
@@ -638,27 +649,6 @@ class DiligenciasController extends Controller
             'orientacoes'
         );
 
-        // Treat File Uploads
-        if ($request->hasFile('files')) {
-
-            $files = Input::file('files');
-            $files_ids = [];
-
-            foreach ($files as $file) {
-
-                $filename = $file->store('files');
-
-                $new_file = File::create([
-                    'titulo' => $filename,
-                    'descricao' => $filename,
-                    'filename' => $filename,
-                    'user_id' => Auth::user()->id
-                ]);
-
-                $files_ids[] = $new_file->id;
-            }
-        }
-
         // Prazo to pattern
         if (!empty($data['prazo'])) {
             $data['prazo'] = Carbon::createFromFormat('d/m/Y h:i',$data['prazo']);
@@ -668,6 +658,28 @@ class DiligenciasController extends Controller
         $save = Diligencia::where('id',$id)->update($data);
 
         if ($save) {
+
+            // Treat File Uploads
+            if ($request->hasFile('files')) {
+
+                $files = Input::file('files');
+                $files_ids = [];
+
+                foreach ($files as $file) {
+
+                    //$filename = $file->store('files');
+                    $name = Storage::disk('uploads')->put($id, $file, 'public');
+
+                    $new_file = File::create([
+                        'titulo' => 'Anexo em D-' . $id,
+                        'descricao' => 'Anexo em Diligência ' . $id,
+                        'filename' => $name,
+                        'user_id' => Auth::user()->id
+                    ]);
+
+                    $files_ids[] = $new_file->id;
+                }
+            }
 
             // Attach files
             if (!empty($files_ids)) {

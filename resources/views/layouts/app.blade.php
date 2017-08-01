@@ -81,63 +81,15 @@
                 <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-bell"></i>
                 </a>
-                <span class="info-label danger-bg animated rubberBand">4</span>
+                <span class="info-label danger-bg animated rubberBand">0</span>
                 <ul class="dropdown-menu bounceIn animated messages">
                     <li class="plain">
                         Messages
                     </li>
                     <li>
-                        <div class="user-pic">
-                            <img src="{{ asset('img/user4.jpg') }}" alt="User">
-                        </div>
-                        <div class="details">
-                            <strong class="text-danger">Wilson</strong>
-                            <span>Uploaded 28 new files yesterday.</span>
-                            <div class="progress progress-xs no-margin">
-                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%;">
-                                </div>
-                            </div>
-                        </div>
+                        No messages.
                     </li>
-                    <li>
-                        <div class="user-pic">
-                            <img src="{{ asset('img/user1.jpg') }}" alt="User">
-                        </div>
-                        <div class="details">
-                            <strong class="text-danger">Adams</strong>
-                            <span>Got 12 new messages.</span>
-                            <div class="progress progress-xs no-margin">
-                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="user-pic">
-                            <img src="{{ asset('img/user3.jpg') }}" alt="User">
-                        </div>
-                        <div class="details">
-                            <strong class="text-info">Sam</strong>
-                            <span>Uploaded new project files today.</span>
-                            <div class="progress progress-xs no-margin">
-                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%;">
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="user-pic">
-                            <img src="{{ asset('img/user5.jpg') }}" alt="User">
-                        </div>
-                        <div class="details">
-                            <strong class="text-info">Jennifer</strong>
-                            <span>128 new purchases last 3 hours.</span>
-                            <div class="progress progress-xs no-margin">
-                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%;">
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+
                 </ul>
             </li>
             <li class="list-box user-profile hidden-xs">

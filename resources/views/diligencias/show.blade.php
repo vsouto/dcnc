@@ -234,7 +234,7 @@
                                         Nenhum arquivo anexado.
                                     @else
                                         @foreach ($diligencia->files as $file)
-                                            @if (File::exists($file->filename))
+                                            @if (Storage::disk('uploads')->exists($file->filename))
                                                 <li class="client clearfix">
                                                     <i class="fa {{ getFileClass($file->filename) }} pull-left fa-lg fa-3x"></i>
                                                     <div class="client-details">
@@ -249,7 +249,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Storage::url($file->filename) }}" data-toggle="tooltip" data-placement="left" title="" data-original-title="Download">
+                                                                <a href="{{ asset($file->filepath) }}" title="" target="_blank">
                                                                     <i class="fa fa-download"></i>
                                                                 </a>
                                                             </li>

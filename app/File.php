@@ -28,4 +28,13 @@ class File extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function getFilepathAttribute($value)
+    {
+        if (!isset($this->attributes['filename']) || empty($this->attributes['filename']))
+            return '';
+
+        //return $this->attributes->filename;
+        return '/uploads/'  . $this->attributes['filename'];
+    }
 }
