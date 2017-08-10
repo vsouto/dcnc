@@ -35,16 +35,6 @@
                                         <div class="blog-body">
                                             <fieldset>
                                                 <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Cliente <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-select-grouper">
-                                                            {{ Form::select('cliente_id', $clientes, null, [
-                                                                'class' => 'form-control',
-                                                                'id' => 'clientes-select']) }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
                                                     <label class="col-lg-6 control-label">Nome <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         {{ Form::text('nome', null, [
@@ -88,6 +78,16 @@
                                                                 'class' => 'form-control',
                                                                 'id'    => 'endereco'
                                                                 ]) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-lg-6 control-label">Cliente</label>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-select-grouper">
+                                                                {{ Form::select('cliente_id', $clientes, null, [
+                                                                    'class' => 'form-control',
+                                                                    'id' => 'clientes-select']) }}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

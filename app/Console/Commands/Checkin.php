@@ -59,11 +59,12 @@ class Checkin extends Command
             $this->info('Config NÃO encontrada. Utilizando padrão 8');
         }
 
-        // Busca as que passaram do prazo + horas de margem
+        // Busca AUDIENCIAS as que passaram do prazo + horas de margem
         $checkins_atrasados = DB::table('diligencias')
             ->select('*')
             ->where(DB::raw('NOW()'),'>=',DB::raw('DATE_SUB(prazo, INTERVAL '.$valor . ' HOUR)'))
             ->where('checkin_emitido','1')
+            ->where('audiencia','1')
             ->get();
 
         foreach ($checkins_atrasados as $diligencia) {

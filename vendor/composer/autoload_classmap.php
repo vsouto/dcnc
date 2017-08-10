@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddAtrasosToClientes' => $baseDir . '/database/migrations/2017_07_07_164630_add_atrasos_to_clientes.php',
+    'AddAudienciaToDiligencias' => $baseDir . '/database/migrations/2017_08_02_163105_add_audiencia_to_diligencias.php',
     'AddBankToCorrespondentes' => $baseDir . '/database/migrations/2017_05_29_111124_add_bank_to_correspondentes.php',
     'AddCheckinToDiligencias' => $baseDir . '/database/migrations/2017_07_19_203714_add_checkin_to_diligencias.php',
     'AddCodigoToDiligencias' => $baseDir . '/database/migrations/2017_06_12_211939_add_codigo_to_diligencias.php',

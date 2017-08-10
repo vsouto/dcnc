@@ -119,7 +119,7 @@
                                             <td class="invoice_info_header_td info"><strong>Núm Integração</strong></td>
                                             <td id="">{{ $diligencia->num_integracao }}</td>
                                             <td class="invoice_info_header_td info"><strong>Prazo</strong></td>
-                                            <td id="">{{ $diligencia->prazo->diffForHumans() }} ({{ $diligencia->prazo->format('d/m/Y h:i') }})</td>
+                                            <td id="">{{ $diligencia->prazo->diffForHumans() }} ({{ $diligencia->prazo->format('d/m/Y H:i') }})</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Solicitante</strong></td>
@@ -141,7 +141,9 @@
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Local</strong></td>
-                                            <td id="" colspan="3">{{ $diligencia->local_orgao }}</td>
+                                            <td id="" colspan="">{{ $diligencia->local_orgao }}</td>
+                                            <td class="invoice_info_header_td info"><strong>Audiência?</strong></td>
+                                            <td id="">{{ $diligencia->audiencia? 'Sim' : 'Não' }}</td>
                                         </tr>
                                         <tr>
                                             <td class="invoice_info_header_td info"><strong>Orientações</strong></td>
@@ -160,6 +162,10 @@
                                                     -
                                                 @endif
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="invoice_info_header_td info"><strong>Serviço</strong></td>
+                                            <td id="" colspan="3">{{ $diligencia->servicos->first()->servico}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

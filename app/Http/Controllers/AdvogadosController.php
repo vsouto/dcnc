@@ -163,8 +163,8 @@ class AdvogadosController extends Controller
     public function create()
     {
 
-        //
-        $clientes = Cliente::pluck('nome','id');
+        // Clients
+        $clientes = Cliente::pluck('nome','id')->prepend('-- Please Select-- ',0);
 
         return view('advogados.create',compact('clientes'));
     }
@@ -179,7 +179,6 @@ class AdvogadosController extends Controller
     {
         //
         $this->validate($request, [
-            'cliente_id' => 'required',
             'nome' => 'required|min:3',
             'email' => 'required|email|unique:users,email',
             'senha' => 'required|min:4',

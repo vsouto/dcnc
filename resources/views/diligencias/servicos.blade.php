@@ -60,6 +60,6 @@
     <div class="alert alert-danger alert-white rounded">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
         <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
-        <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência ou não existe um correspondente vinculado.
+        <strong>Alerta:</strong> Não existem serviços atrelados à esta diligência ou ainda não existe um correspondente vinculado.
     </div>
 @endif

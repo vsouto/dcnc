@@ -36,6 +36,14 @@
                                         <div class="blog-body">
                                             <fieldset>
                                                 <div class="form-group">
+                                                    <label class="col-lg-6 control-label">Audiência <span class="text text-danger"> *</span></label>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-select-grouper">
+                                                            {{ Form::checkbox('audiencia', 1, false) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
                                                     <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
                                                     <div class="col-lg-6">
                                                         <div class="form-select-grouper">
@@ -144,17 +152,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="col-lg-6 control-label">Autor <span class="text text-danger"> *</span></label>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-select-grouper">
-                                                            {{ Form::text('autor', null, [
-                                                                'class' => 'form-control',
-                                                                'id'    => 'autor'
-                                                                ]) }}
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </fieldset>
                                         </div>
                                     </div>
@@ -163,9 +160,21 @@
                                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                                     <div class="blog">
                                         <div class="blog-header">
-                                            <h5 class="blog-title">Réu & Localização</h5>
+                                            <h5 class="blog-title">Demais Infos</h5>
                                         </div>
                                         <div class="blog-body">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="control-label">Autor <span class="text text-danger"> *</span></label>
+                                                            {{ Form::text('autor', null, [
+                                                                'class' => 'form-control',
+                                                                'id'    => 'autor'
+                                                                ]) }}
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
@@ -189,18 +198,18 @@
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <label class="control-label">Local (Endereço Completo) <span class="text text-danger"> *</span></label>
-                                                        {{ Form::text('local_orgao', null, ['class' => 'form-control',
-                                                            'id' => 'etb']) }}
-                                                        <div class="help-block with-errors"></div>
+                                                        <label class="control-label">Vara <span class="text text-danger"> *</span></label>
+                                                        {{ Form::text('vara', null, ['class' => 'form-control']) }}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <label class="control-label">Vara <span class="text text-danger"> *</span></label>
-                                                        {{ Form::text('vara', null, ['class' => 'form-control']) }}
+                                                        <label class="control-label">Local (Endereço Completo) <span class="text text-danger"> *</span></label>
+                                                        {{ Form::text('local_orgao', null, ['class' => 'form-control',
+                                                            'id' => 'etb']) }}
+                                                        <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                             </div>

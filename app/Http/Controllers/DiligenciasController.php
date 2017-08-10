@@ -112,6 +112,22 @@ class DiligenciasController extends Controller
                         ->setSortable(true)
                     ,
                     (new FieldConfig())
+                        ->setName('audiencia')
+                        ->setLabel('Audiência')
+                        ->addFilter(
+                            (new \Nayjest\Grids\SelectFilterConfig())
+                                ->setSubmittedOnChange(true)
+                                ->setOptions(['1' => 'Sim', '0' => 'Não'])
+                        )
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if ($val && $val == true)
+                                return "<span class='badge badge-info edit-status'>Audiência</span>";
+
+                        })
+                    ,
+                    (new FieldConfig())
                         ->setName('titulo')
                         ->setLabel('Título')
                         ->addFilter(
@@ -386,7 +402,7 @@ class DiligenciasController extends Controller
             'orientacoes' => 'required|min:5',
             'servico_id' => 'required',
             'vara' => 'required',
-            'autor' => 'required',
+            'autor' => 'required'
         ],[
             'comarca_id.required' => 'Você precisa selecionar uma Comarca.',
             'comarca_id.not_in' => 'Você precisa selecionar uma Comarca.',
@@ -421,7 +437,8 @@ class DiligenciasController extends Controller
             'vara',
             'orientacoes',
             'servico_id',
-            'autor'
+            'autor',
+            'audiencia'
         );
 
         // Prazo to pattern
@@ -646,12 +663,13 @@ exit;*/
             'orgao',
             'local_orgao',
             'vara',
-            'orientacoes'
+            'orientacoes',
+            'audiencia'
         );
 
         // Prazo to pattern
         if (!empty($data['prazo'])) {
-            $data['prazo'] = Carbon::createFromFormat('d/m/Y h:i',$data['prazo']);
+            $data['prazo'] = Carbon::createFromFormat('d/m/Y H:i',$data['prazo']);
         }
 
         // Create
@@ -723,9 +741,18 @@ exit;*/
 
         $diligencia = Diligencia::where('id',$id)->first();
 
-        $diligencia->update([
-            'status_id' => '3'
-        ]);
+        // So vai pra Aguardando Checkin se for Audiência
+        if ($diligencia->audiencia) {
+            $diligencia->update([
+                'status_id' => '3'
+            ]);
+        }
+        else {
+            // Aguardando Conclusão
+            $diligencia->update([
+                'status_id' => '4'
+            ]);
+        }
 
         $diligencia = Diligencia::where('id',$id)->first();
 

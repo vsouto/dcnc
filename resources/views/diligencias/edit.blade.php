@@ -36,6 +36,15 @@
                                     </div>
                                     <div class="blog-body">
                                         <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-6 control-label">Audiência <span class="text text-danger"> *</span></label>
+                                                <div class="col-lg-6">
+                                                    <div class="form-select-grouper">
+                                                        {{Form::hidden('audiencia',0)}}
+                                                        {{ Form::checkbox('audiencia', 1) }}
+                                                    </div>
+                                                </div>
+                                            </div>
                                             @if ($diligencia->status_id <= 2)
                                                 <div class="form-group">
                                                     <label class="col-lg-6 control-label">Estado <span class="text text-danger"> *</span></label>
@@ -312,14 +321,14 @@
                 var selected = '{{ $diligencia->comarca->uf }}';
 
                 getComarcas(estado_id, selected);
-            }*/
+            }
 
             if ( $('#select-conta').val() != '0') {
 
                 var selecao = $('#select-conta').val();
 
                 selectConta(selecao);
-            }
+            }*/
         });
 
         $('#advogados-select').change(function(){
@@ -334,7 +343,7 @@
 
         $(function () {
             $('#prazo').datetimepicker({
-                format: 'DD/MM/YYYY hh:mm',
+                format: 'DD/MM/YYYY HH:mm',
                 inline: true,
                 locale: 'pt',
                 viewMode: 'years',
