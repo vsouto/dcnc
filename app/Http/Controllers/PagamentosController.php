@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Correspondente;
+use App\Diligencia;
 use App\Pagamento;
+use App\User;
 use Illuminate\Http\Request;
 
 use Nayjest\Grids\Components\ColumnHeadersRow;
@@ -60,16 +63,43 @@ class PagamentosController extends Controller
                                 ->setOperator(FilterConfig::OPERATOR_LIKE)
                         )
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            $diligencia = Diligencia::where('id', $row->getSrc()->id)->first();
+
+                            return $row->getSrc()->id . " - " . $diligencia->titulo;
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('authorized_id')
                         ->setLabel('Autorizado')
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            $user = User::where('id', $val)->first();
+
+                            return $user->nome;
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('receiver_id')
                         ->setLabel('Recebedor')
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            $correspondente = Correspondente::where('id', $val)->first();
+
+                            return $correspondente->nome;
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('tipo')
@@ -89,11 +119,25 @@ class PagamentosController extends Controller
                         ->setName('efetivada')
                         ->setLabel('Efetivada')
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            return $val? 'Sim' : 'Não';
+                        })
                     ,
                     (new FieldConfig)
                         ->setName('valor')
                         ->setLabel('Valor')
                         ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if (!$val)
+                                return '';
+
+                            return 'R$ ' . $val;
+                        })
                     ,
                 ])
                 # Setup additional grid components

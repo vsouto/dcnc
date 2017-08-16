@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAudienciaToDiligencias extends Migration
+class AddValorToPagamentos extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,9 @@ class AddAudienciaToDiligencias extends Migration
     public function up()
     {
         //
-        Schema::table('diligencias', function (Blueprint $table) {
+        Schema::table('pagamentos', function (Blueprint $table) {
 
-            $table->boolean('audiencia')->default(0)->nullable(); //
+            $table->decimal()->nullable(); //
         });
     }
 

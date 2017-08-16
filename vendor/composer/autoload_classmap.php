@@ -19,6 +19,7 @@ return array(
     'AddRevisaoResolucaoToDiligencias' => $baseDir . '/database/migrations/2017_07_11_165022_add_revisao_resolucao_to_diligencias.php',
     'AddSondagemToDiligencias' => $baseDir . '/database/migrations/2017_07_10_204935_add_sondagem_to_diligencias.php',
     'AddTokenToUsers' => $baseDir . '/database/migrations/2017_07_17_205139_add_token_to_users.php',
+    'AddValorToPagamentos' => $baseDir . '/database/migrations/2017_08_16_214242_add_valor_to_pagamentos.php',
     'AddVisitsToDiligencias' => $baseDir . '/database/migrations/2017_07_18_191904_add_visits_to_diligencias.php',
     'ClientesAdvogadosTableSeeder' => $baseDir . '/database/seeds/ClientesAdvogadosTableSeeder.php',
     'ComarcasTableSeeder' => $baseDir . '/database/seeds/ComarcasTableSeeder.php',

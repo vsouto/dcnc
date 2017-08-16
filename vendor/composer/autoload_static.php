@@ -380,6 +380,7 @@ class ComposerStaticInit7e7b5a2625f29c79d7fba33c1927b383
         'AddRevisaoResolucaoToDiligencias' => __DIR__ . '/../..' . '/database/migrations/2017_07_11_165022_add_revisao_resolucao_to_diligencias.php',
         'AddSondagemToDiligencias' => __DIR__ . '/../..' . '/database/migrations/2017_07_10_204935_add_sondagem_to_diligencias.php',
         'AddTokenToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_07_17_205139_add_token_to_users.php',
+        'AddValorToPagamentos' => __DIR__ . '/../..' . '/database/migrations/2017_08_16_214242_add_valor_to_pagamentos.php',
         'AddVisitsToDiligencias' => __DIR__ . '/../..' . '/database/migrations/2017_07_18_191904_add_visits_to_diligencias.php',
         'ClientesAdvogadosTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ClientesAdvogadosTableSeeder.php',
         'ComarcasTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ComarcasTableSeeder.php',
