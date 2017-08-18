@@ -320,15 +320,7 @@ class DiligenciasController extends Controller
                                             100,
                                             1000
                                         ])
-                                    ,/*
-                                    # Control to show/hide rows in table
-                                    (new ColumnsHider())
-                                        ->setHiddenByDefault([
-                                            'activated_at',
-                                            'updated_at',
-                                            'registration_ip',
-                                        ])
-                                    ,*/
+                                    ,
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
                                     (new HtmlTag)
@@ -920,14 +912,20 @@ exit;*/
             'status_id' => '10'
         ]);
 
-        $diligencia = Diligencia::where('id',$id)->first();
+        $diligencia = Diligencia::where('id',$id)
+            ->with('servicos')
+            ->with('correspondente')
+            ->first();
+
+        $valor = Diligencia::calculaValorTotal($diligencia);
 
         // Cria crédito
         Pagamento::create([
             'diligencia_id' => $id,
             'authorized_id' => Auth::user()->id,
             'receiver_id' => $diligencia->correspondente_id,
-            'tipo' => 'C'
+            'tipo' => 'C',
+            'valor' => $valor
         ]);
 
         // Dispara emails
@@ -1107,4 +1105,7 @@ exit;*/
 
        return redirect()->action('DiligenciasController@index');
     }
+
+
+
 }

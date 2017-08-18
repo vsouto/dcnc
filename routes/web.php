@@ -50,6 +50,9 @@ Route::get('diligencias/selecionarCorrespondente/{c_id?}/{d_id?}',['as' => 'dili
 Route::get('diligencias/cancelar/{id}',['as' => 'diligencias.cancelar', 'uses' => 'DiligenciasController@cancelar']);
 Route::post('diligencias/resolver/{id}',['as' => 'diligencias.resolver', 'uses' => 'DiligenciasController@resolver']);
 
+// Pagamentos
+Route::get('pagamentos/efetivar/{id?}',['as' => 'pagamentos.efetivar', 'uses' => 'PagamentosController@efetivar']);
+
 Route::get('status/getStatusesPercentages',['as' => 'status.getStatusesPercentages', 'uses' => 'StatusesController@getStatusesPercentages']);
 Route::get('getComarcas',['as' => 'getComarcas', 'uses' => 'ComarcasController@getComarcas']);
 Route::get('pages/setup',['as' => 'pages.setup', 'uses' => 'PagesController@setup']);

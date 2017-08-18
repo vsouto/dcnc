@@ -13,12 +13,9 @@
             <div class="spacer">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="panel">
-                        <div class="panel-heading"><div class="text-left" style="float:left">
-                                <h4 class="panel-title">Pagamentos</h4>
-                            </div>
-                            <div class="text-right">
-                                <button type="button" class="btn btn-info btn-rounded" id="new">New</button>
-                            </div>
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Pagamentos</h4>
+
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
@@ -36,3 +33,16 @@
     </div>
 @endsection
 
+@section('footer')
+
+    <script>
+
+        $('.efetivar').click(function(){
+            var pagamento_id = $(this).data('ref');
+
+            location.href = '{{ route('pagamentos.efetivar') }}/' + pagamento_id;
+            //efetivar(diligencia_id);
+        });
+
+    </script>
+@endsection

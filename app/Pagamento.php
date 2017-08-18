@@ -14,4 +14,12 @@ class Pagamento extends Model
     protected $fillable = [
         'authorized_id','receiver_id','diligencia_id','efetivada','valor','tipo'
     ];
+
+    /**
+     * Get the entity
+     */
+    public function diligencia()
+    {
+        return $this->belongsTo('App\Diligencia');
+    }
 }

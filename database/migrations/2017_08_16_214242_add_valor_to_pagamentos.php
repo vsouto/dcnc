@@ -16,7 +16,7 @@ class AddValorToPagamentos extends Migration
         //
         Schema::table('pagamentos', function (Blueprint $table) {
 
-            $table->decimal()->nullable(); //
+            $table->decimal('valor',15,2)->nullable(); //
         });
     }
 

@@ -90,7 +90,7 @@ class ImportCorrespondentes extends Command
 
                 // Verifica se o User com este email já existe
                 $user = User::where('email', $result->email)
-                    ->has('correspondente')
+                    //->has('correspondente')
                     ->with('correspondente')
                     ->first();
 
@@ -110,35 +110,25 @@ class ImportCorrespondentes extends Command
                         $user_exists->correspondente->comarcas()->attach($comarca->id);
                     }*/
 
-                    $correspondente = $user->correspondente;
+                    if (!$user->correspondente)
+                        $correspondente = $this->createCorrespondente($result);
+
                 }
                 else {
 
                     $this->info('> User Não existe. Preparando para criar: ' . $result->nome   );
 
-                    // Prepara os dados
-                    $user['nome'] = $result->nome;
-                    $user['email'] = $result->email;
-                    $user['phone'] = $result->phone;
-                    $user['cpf'] = $result->cpf;
-                    $user['password'] = Hash::make('12345');
-
-                    $data['nome'] = $result->nome;
-                    //$data['comarca_id'] = $comarca->id;
-                    $data['advogado'] = $result->advogado;
-                    $data['preposto'] = $result->preposto;
-                    $data['diligencia'] = $result->diligencia;
-                    $data['cnpj'] = $result->cnpj;
-
-                    $this->info('> Correspondente ' . $result->nome . ' preparado'   );
-
-                    // Cria o correspondente
-                    $correspondente = Correspondente::create($data);
+                    $correspondente = $this->createCorrespondente($result);
 
                     $this->info('> Correspondente ' . $result->nome . ' criado'   );
                     $this->info('> Criando usuário: ' . $result->nome   );
 
                     $user['correspondente_id'] = $correspondente->id;
+                    $user['nome'] = $result->nome;
+                    $user['email'] = $result->email;
+                    $user['phone'] = $result->phone;
+                    $user['cpf'] = $result->cpf;
+                    $user['password'] = Hash::make('12345');
 
                     // Cria o user
                     $user_result = User::create($user);
@@ -238,5 +228,26 @@ class ImportCorrespondentes extends Command
 
         return trim($var);
 
+    }
+
+    function createCorrespondente( $result ) {
+
+        // Prepara os dados
+        $data['nome'] = $result->nome;
+        //$data['comarca_id'] = $comarca->id;
+        $data['advogado'] = $result->advogado;
+        $data['preposto'] = $result->preposto;
+        $data['diligencia'] = $result->diligencia;
+        $data['cnpj'] = $result->cnpj;
+
+        // Cria o correspondente
+        $create = Correspondente::create($data);
+
+        $this->info('> Correspondente ' . $result->nome . ' criado'   );
+
+        if ($create)
+            return Correspondente::where('id', $create->id)->first();
+
+        return false;
     }
 }

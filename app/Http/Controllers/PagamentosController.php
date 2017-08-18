@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Correspondente;
 use App\Diligencia;
 use App\Pagamento;
+use App\Status;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,8 @@ class PagamentosController extends Controller
         //
         # Some params may be predefined, other can be controlled using grid components
         $query = (new Pagamento())
+            ->with('diligencia')
+            ->has('diligencia')
             ->newQuery();
 
         # Instantiate & Configure Grid
@@ -68,14 +71,25 @@ class PagamentosController extends Controller
                             if (!$val)
                                 return '';
 
-                            $diligencia = Diligencia::where('id', $row->getSrc()->id)->first();
+                            $diligencia = Diligencia::where('id', $val)->first();
 
-                            return $row->getSrc()->id . " - " . $diligencia->titulo;
+                            return "<a href='".route('diligencias.show',['id' => $diligencia->id])."' class='underline-text'>" . $val . " - " . $diligencia->titulo . "</a>";
                         })
                     ,
                     (new FieldConfig)
+                        ->setName('status_id')
+                        ->setLabel('Status')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $status = Status::where('id',$row->getSrc()->diligencia->status_id)->first();
+
+                            return "<span class='badge {$status->class} edit-status'>{$status->status}</span>";
+
+                        }),
+                    (new FieldConfig)
                         ->setName('authorized_id')
-                        ->setLabel('Autorizado')
+                        ->setLabel('Autorizado Por')
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
 
@@ -121,10 +135,15 @@ class PagamentosController extends Controller
                         ->setSortable(true)
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
 
-                            if (!$val)
-                                return '';
+                            //$diligencia = Diligencia::where('id',$row->getSrc()->diligencia_id)->first();
 
-                            return $val? 'Sim' : 'Não';
+                            // Não efetivada
+                            if (!$val) {
+
+                                return '<span class="btn btn-success efetivar" data-ref="'.$row->getSrc()->id.'">Efetivar</span>';
+                            }
+                            else
+                                return 'Efetivada';
                         })
                     ,
                     (new FieldConfig)
@@ -163,24 +182,14 @@ class PagamentosController extends Controller
                                             1000
                                         ])
                                     ,
-                                    # Control to show/hide rows in table
-                                    (new ColumnsHider())
-                                        ->setHiddenByDefault([
-                                            'activated_at',
-                                            'updated_at',
-                                            'registration_ip',
-                                        ])
-                                    ,
                                     # Submit button for filters.
                                     # Place it anywhere in the grid (grid is rendered inside form by default).
-                                    (new HtmlTag())
+                                    (new HtmlTag)
+                                        ->setContent('<span class="glyphicon glyphicon-refresh" id="filter-btn"></span> Filter ')
                                         ->setTagName('button')
                                         ->setAttributes([
-                                            'type' => 'submit',
-                                            # Some bootstrap classes
-                                            'class' => 'btn btn-primary'
-                                        ])
-                                        ->setContent('Filter')
+                                            'class' => 'btn btn-success btn-sm btn-grid'
+                                        ]),
                                 ])
                                 # Components may have some placeholders for rendering children there.
                                 ->setRenderSection(THead::SECTION_BEGIN)
@@ -267,5 +276,36 @@ class PagamentosController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Cancela uma diligencia
+     *
+     * @param $id
+     */
+    public function efetivar($id)
+    {
+        if (!$id)
+            abort(503);
+
+        $pagamento = Pagamento::where('id',$id)->first();
+
+        if (!$pagamento)
+            abort(503);
+
+        $diligencia = Diligencia::where('id',$pagamento->diligencia_id)->first();
+
+        $diligencia->update([
+            'status_id' => '11'
+        ]);
+
+        // Update pagamento
+        $pagamento->update(['efetivada' => '1']);
+
+        // Dispara emails
+        //Email::setupAndFire('X_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        //Email::setupAndFire('X_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
+
+        return redirect()->back();
     }
 }

@@ -86,6 +86,14 @@ class Diligencia extends Model
     }
 
     /**
+     * Get the entity
+     */
+    public function pagamento()
+    {
+        return $this->hasOne('App\Pagamento');
+    }
+
+    /**
      * Get the attribute
      *
      * @param  string  $value
@@ -162,5 +170,22 @@ class Diligencia extends Model
         return $diligencia->correspondente_id == Auth::user()->correspondente_id? true : false;
     }
 
+    public static function calculaValorTotal($diligencia)
+    {
+
+        if (!$diligencia || !$diligencia->servicos || $diligencia->servicos->count() <= 0)
+            return false;
+
+        $total = 0;
+
+        foreach ($diligencia->servicos as $servico) {
+
+            $valor = $diligencia->correspondente->servicos()->where('servico_id',$servico->id)->first()->pivot->valor;
+
+            $total += $valor;
+        }
+
+        return $total;
+    }
 
 }
