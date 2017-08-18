@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Correspondente;
 use App\Diligencia;
+use App\Email;
 use App\Pagamento;
 use App\Status;
 use App\User;
