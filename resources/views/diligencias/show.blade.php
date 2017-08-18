@@ -59,8 +59,10 @@
                                     <div class="col-md-6 col-sm-12 col-sx-12">
                                         <div class="pull-right">
                                             <button type="button" class="btn btn-info" id="print"><i class="fa fa-print"></i> <span class="hidden-xs">Print</span></button>
-                                            <button type="button" class="btn btn-success" id="edit_diligencia"><i class="fa fa-pencil"></i> <span class="hidden-xs">Editar</span></button>
-                                            <button type="button" class="btn btn-danger"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></button>
+                                            @if (Auth::user()->level >= 5 && $diligencia->status_id <= 7)
+                                                <button type="button" class="btn btn-success" id="edit_diligencia"><i class="fa fa-pencil"></i> <span class="hidden-xs">Editar</span></button>
+                                                <button type="button" class="btn btn-danger"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></button>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -305,7 +307,7 @@
     <!-- Addons ends -->
     @endif
 
-    @if (Auth::user()->level >= 5)
+    @if (Auth::user()->level >= 5 && $diligencia->status_id <= 2)
         <!-- Addons starts -->
         <div class="add-on clearfix">
             <div class="add-on-wrapper">
