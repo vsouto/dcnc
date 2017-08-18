@@ -21,7 +21,7 @@ class DiligenciaEmRevisao extends Mailable
     public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
-        $this->title = 'Diligência em Revisão';
+        $this->title = 'DiligÃªncia em RevisÃ£o';
 
         // O que faz?
         $this->description = $description;

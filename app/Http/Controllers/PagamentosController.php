@@ -303,7 +303,7 @@ class PagamentosController extends Controller
         $pagamento->update(['efetivada' => '1']);
 
         // Dispara emails
-        //Email::setupAndFire('X_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
+        Email::setupAndFire('X_1', ['type' => 'correspondente_id', 'id' => $diligencia->correspondente_id], $diligencia);
         //Email::setupAndFire('X_2', ['type' => 'advogado_id', 'id' => $diligencia->advogado_id], $diligencia);
 
         return redirect()->back();

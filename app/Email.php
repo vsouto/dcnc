@@ -155,9 +155,12 @@ class Email extends Model
 
                 break;
             case 'Z_1':
+
+                $result = Mail::to($user)->send(new DiligenciaEfetivada($user, $diligencia, $description, $type));
+                break;
             case 'Z_2':
 
-                $result = Mail::to($user)->send(new DiligenciaEfetivada($user, $diligencia, $description));
+                $result = Mail::to($user)->send(new DiligenciaEfetivada($user, $diligencia, $description, $type));
 
                 break;
             case 'F_1':

@@ -18,7 +18,7 @@ class DiligenciaEfetivada extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Diligencia $diligencia, $description = '')
+    public function __construct(User $user, Diligencia $diligencia, $description = '', $type)
     {
         //
         $this->title = 'Diligência Efetivada';
@@ -27,8 +27,13 @@ class DiligenciaEfetivada extends Mailable
         $this->description = $description;
 
         // Preenche quais requisitos?
-        $this->attends = ['A_2', 'A_2', 'A_3'];
+        $this->types = [
+            'Z_1' => 'emails.diligencias.efetivada-correspondente',
+            'Z_2' => 'emails.diligencias.efetivada-cliente'
+        ];
 
+        $this->view = $this->types[$type];
+        
         // Save the user
         $this->user = $user;
 
@@ -40,6 +45,8 @@ class DiligenciaEfetivada extends Mailable
         ]);
 
         $this->diligencia = $diligencia;
+
+        $this->correspondente = User::where('correspondente_id',$diligencia->correspondente->id)->first();
     }
 
     /**
@@ -49,12 +56,13 @@ class DiligenciaEfetivada extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.diligencias.sondagem-confirmation')
+        return $this->markdown($this->view)
             ->subject($this->title)
             ->with([
                 'url' => action('CorrespondentesController@entrar',['token' => $this->token]),
                 'user' => $this->user,
-                'diligencia' => $this->diligencia
+                'diligencia' => $this->diligencia,
+                'correspondente' => $this->correspondente
             ]);
     }
 }
