@@ -3,6 +3,7 @@ var map;
 
 var myLatLng = {lat: -22.9068467, lng: -43.1728965};
 var myLatLng2 = {lat: -1.4557549, lng: -48.4901799};
+/*
 
 var citymap = {
     rio: {
@@ -18,6 +19,7 @@ var citymap = {
         population: 385779
     },
 };
+*/
 
 function initMap() {
     // Create the map.
@@ -26,7 +28,7 @@ function initMap() {
         center: {lat: -13.2399455, lng: -49.43847656},
         mapTypeId: 'terrain'
     });
-
+/*
     // Construct the circle for each value in citymap.
     // Note: We scale the area of the circle based on the population.
     for (var city in citymap) {
@@ -41,7 +43,7 @@ function initMap() {
             center: citymap[city].center,
             radius: Math.sqrt(citymap[city].population) * 100
         });
-    }
+    }*/
 }
 
 /*

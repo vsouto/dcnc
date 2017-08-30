@@ -116,17 +116,17 @@
         <div class="user-name">Olá {{ Auth::user()->nome }}</div>
         <ul class="user-links">
             <li>
-                <a href="profile.html">
+                <a href="#">
                     <i class="fa fa-user text-success"></i>
                 </a>
             </li>
             <li>
-                <a href="invoice.html">
+                <a href="#">
                     <i class="fa fa-file-pdf-o text-warning"></i>
                 </a>
             </li>
             <li>
-                <a href="components.html">
+                <a href="#">
                     <i class="fa fa-sliders text-info"></i>
                 </a>
             </li>

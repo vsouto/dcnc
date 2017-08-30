@@ -4,7 +4,7 @@
         {{ $title }}
     </div>
     <ul class="stats hidden-xs">
-        <li>
+        {{--<li>
             <div class="stats-block hidden-sm hidden-xs">
                 <span id="downloads_graph"></span>
             </div>
@@ -21,7 +21,7 @@
                 <h4>$<span id="today_expenses">235</span> <i class="fa fa-chevron-down down"></i></h4>
                 <h5>Despesas do Dia</h5>
             </div>
-        </li>
+        </li>--}}
     </ul>
 </div>
 <!-- Top Bar ends -->
