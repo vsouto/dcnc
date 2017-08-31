@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Nayjest\Grids\Components\ColumnHeadersRow;
 use Nayjest\Grids\Components\ColumnsHider;
@@ -410,11 +411,11 @@ class CorrespondentesController extends Controller
         // Verifica se o correspondente já tem essa comarca
         $correspondente = Correspondente::where('id', $data['correspondente_id'])->first();
 
-        // Salva
+        //
         if ($correspondente) {
 
             // desativa todos os servicos desta comarca
-            $correspondente->servicos()->where('comarca_id',$data['comarca_id'])->detach();
+            $correspondente->servicos()->wherePivot('comarca_id',$data['comarca_id'])->detach();
 
             // Salva o servico
             foreach ($data['servico'] as $key => $servico) {
@@ -422,12 +423,50 @@ class CorrespondentesController extends Controller
                     continue;
 
                 // Salva servico - comarca - corresp
-                $correspondente->servicos()->attach($key, ['valor' => $servico['valor'],'comarca_id' => $data['comarca_id']]);
+                $correspondente->servicos()->attach($key, [
+                    'valor' => $servico['valor'],
+                    'comarca_id' => $data['comarca_id'],
+                ]);
             }
         }
 
         return redirect()->back()
             ->with('message','Sucesso');
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function comarcaRemove(Request $request)
+    {
+
+        $data = Input::all();
+
+        // Verifica se o correspondente já tem essa comarca
+        $correspondente = Correspondente::where('id', $data['correspondente_id'])
+            ->with('comarcas')
+            ->with('servicos')
+            ->first();
+
+        //
+        if ($correspondente) {
+
+            // desativa todos os servicos desta comarca, deste correspondente
+            $correspondente->servicos()->wherePivot('comarca_id',$data['comarca_id'])->detach();
+
+            $correspondente->comarcas()->wherePivot('comarca_id', $data['comarca_id'])->detach();
+          /*
+            foreach($correspondente->comarcas()->get() as $comarca) {
+                $correspondente->comarcas()->where('comarca_id', $data['comarca_id'])->detach();
+            }*/
+
+        }
+
+        return Response::json(true);
     }
 
     /**

@@ -83,4 +83,32 @@
         });
     }
 
+    function removerComarcaCorrespondente(correspondente_id, comarca_id) {
+
+        console.log(correspondente_id);
+        console.log(comarca_id);
+        // Get the info
+        $.ajax({
+            url: '{{ route('correspondentes.comarcaRemove') }}',
+            type: "POST",
+            data: {
+                correspondente_id: correspondente_id,
+                comarca_id: comarca_id,
+                _token: '{{ csrf_token() }}',
+            }
+        }).done(function(data) {
+
+            if (data)
+                location.reload();
+
+        }).complete(function(xhr, textStatus, data) {
+
+            if (xhr.status == 422) {
+                $('#error_msg').html( xhr.responseJSON.name);
+                $('#error_panel').show();
+                alert('Some error ocurred.');
+            }
+
+        });
+    }
 </script>

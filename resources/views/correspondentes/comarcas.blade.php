@@ -92,6 +92,8 @@
                                                                 <td colspan="3">
                                                                     <button class="btn btn-default" type="submit">
                                                                         <i class="fa fa-save"></i> Salvar</button>
+                                                                    <button class="btn btn-danger remover-comarca" type="button" id="" data-ref="{{ $comarca->id }}">
+                                                                        <i class="fa fa-trash-o"></i> Remover</button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -194,6 +196,17 @@
 
         $('#comarcas-select').change(function(){
             $('.servicos-form').show();
+        });
+
+        $('.remover-comarca').click(function(){
+
+            if (confirm('Confirma remover esta comarca deste correspondente?')) {
+
+                var correspondente_id = '{{ $correspondente->id }}';
+                var comarca_id = $(this).data('ref');
+
+                removerComarcaCorrespondente(correspondente_id, comarca_id);
+            }
         });
 
     </script>

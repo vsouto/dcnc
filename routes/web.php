@@ -61,6 +61,7 @@ Route::get('pages/setup',['as' => 'pages.setup', 'uses' => 'PagesController@setu
 Route::get('correspondentes/comarcas/{id}',['as' => 'correspondentes.comarcas', 'uses' => 'CorrespondentesController@comarcas']);
 Route::post('correspondentes/comarcas',['as' => 'correspondentes.comarcasStore', 'uses' => 'CorrespondentesController@comarcasStore']);
 Route::post('correspondentes/comarcasUpdate',['as' => 'correspondentes.comarcasUpdate', 'uses' => 'CorrespondentesController@comarcasUpdate']);
+Route::post('correspondentes/comarcaRemove',['as' => 'correspondentes.comarcaRemove', 'uses' => 'CorrespondentesController@comarcaRemove']);
 
 // Porta de entrada do correspondente na plataforma
 Route::get('correspondentes/entrar/{token}',['as' => 'correspondentes.entrar', 'uses' => 'CorrespondentesController@entrar']);
