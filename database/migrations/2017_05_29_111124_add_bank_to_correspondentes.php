@@ -16,7 +16,7 @@ class AddBankToCorrespondentes extends Migration
         //
         Schema::table('correspondentes', function (Blueprint $table) {
 
-            $table->smallInteger('bank')->nullable();
+            $table->string('bank')->nullable();
             $table->string('tipo_conta')->nullable();
             $table->string('ag')->nullable();
             $table->string('conta')->nullable();
