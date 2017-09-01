@@ -367,6 +367,7 @@ class ComposerStaticInit7e7b5a2625f29c79d7fba33c1927b383
     );
 
     public static $classMap = array (
+        'AddAtivoToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_09_01_130311_add_ativo_to_users.php',
         'AddAtrasosToClientes' => __DIR__ . '/../..' . '/database/migrations/2017_07_07_164630_add_atrasos_to_clientes.php',
         'AddAudienciaToDiligencias' => __DIR__ . '/../..' . '/database/migrations/2017_08_02_163105_add_audiencia_to_diligencias.php',
         'AddBankToCorrespondentes' => __DIR__ . '/../..' . '/database/migrations/2017_05_29_111124_add_bank_to_correspondentes.php',

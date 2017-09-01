@@ -46,5 +46,11 @@
             location.href = '{{ route('users.create') }}';
         });
 
+        $('.edit-entity').click(function(){
+
+            location.href = $(this).data('ref');
+        });
+
+
     </script>
 @endsection

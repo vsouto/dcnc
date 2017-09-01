@@ -360,6 +360,9 @@ class DiligenciasController extends Controller
      */
     public function create()
     {
+        if (!Auth::user()->ativo)
+            abort('503','Este usuário não está ativo!');
+
         $advogados = User::getAdvogadosList();
 
         $estados = Comarca::getEstadosList()->prepend('Selecione uma opção', '0');
@@ -583,6 +586,9 @@ exit;*/
      */
     public function edit($id)
     {
+        if (!Auth::user()->ativo)
+            abort('503','Este usuário não está ativo!');
+
         //
         $diligencia = Diligencia::where('id',$id)
             ->with('files')

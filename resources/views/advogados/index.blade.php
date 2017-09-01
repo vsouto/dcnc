@@ -44,5 +44,11 @@
         $('#new').click(function(){
             location.href = '{{ route('advogados.create') }}';
         });
+
+        $('.edit-entity').click(function(){
+
+            location.href = $(this).data('ref');
+        });
+
     </script>
 @endsection

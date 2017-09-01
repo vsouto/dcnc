@@ -57,6 +57,22 @@ class AdvogadosController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button1 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('advogados.edit', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
+                                .' <i class="fa fa-pencil"></i></span></div> ';
+
+                            return '<div style="min-width: 120px">' . $button1 .  '</div>';
+                        })
+                    ,
                     new IdFieldConfig(),
                     (new FieldConfig())
                         ->setName('nome')
@@ -92,6 +108,21 @@ class AdvogadosController extends Controller
                         ->setName('phone')
                         ->setLabel('Telefone')
                         ->setSortable(true)
+                    ,
+                    (new FieldConfig)
+                        ->setName('ativo')
+                        ->setLabel('Ativo')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            if ($val)
+                                $span = '<span class="text text-success">Sim</span>';
+                            else
+                                $span = '<span class="text text-danger">Não</span>';
+
+                            return $span;
+
+                        })
                     ,
                 ])
                 # Setup additional grid components
@@ -225,6 +256,12 @@ class AdvogadosController extends Controller
     public function edit($id)
     {
         //
+        $advogado = User::where('id',$id)->first();
+
+        // Clients
+        $clientes = Cliente::pluck('nome','id')->prepend('-- Please Select-- ',0);
+
+        return view('advogados.edit', compact('advogado','clientes'));
     }
 
     /**
@@ -237,6 +274,46 @@ class AdvogadosController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+        ]);
+
+        $data = Input::only('nome','email','senha','phone','endereco','cliente_id','ativo');
+
+        $ativo = isset($data['ativo']) && $data['ativo'] == '1'? '1' : '0';
+
+        if (isset($data['senha']) && !empty($data['senha'])) {
+
+            $user = User::where('id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['senha']),
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'cliente_id' => $data['cliente_id'],
+                'ativo' => $ativo
+            ]);
+        }
+        else {
+            $user = User::where('id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'cliente_id' => $data['cliente_id'],
+                'ativo' => $ativo,
+            ]);
+        }
+
+
+        if ($user)
+            $message = 'Sucesso';
+        else
+            $message = 'Fail!';
+
+        return redirect()->action('AdvogadosController@index')
+            ->with('message',$message);
     }
 
     /**

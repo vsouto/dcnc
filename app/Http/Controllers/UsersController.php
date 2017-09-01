@@ -45,7 +45,7 @@ class UsersController extends Controller
             (new GridConfig())
                 # Grids name used as html id, caching key, filtering GET params prefix, etc
                 # If not specified, unique value based on file name & line of code will be generated
-                ->setName('my_report')
+                ->setName('Users')
                 # See all supported data providers in sources
                 ->setDataProvider(new EloquentDataProvider($query))
                 # Setup caching, value in minutes, turned off in debug mode
@@ -53,6 +53,22 @@ class UsersController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button1 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('users.edit', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
+                                .' <i class="fa fa-pencil"></i></span></div> ';
+
+                            return '<div style="min-width: 120px">' . $button1 .  '</div>';
+                        })
+                    ,
                     new IdFieldConfig(),
                     (new FieldConfig())
                         ->setName('nome')
@@ -164,13 +180,7 @@ class UsersController extends Controller
     public function create()
     {
         //
-        $levels = [
-            '3' => 'Operador',
-            '4' => 'Negociador',
-            '5' => 'Coordenador',
-            '6' => 'Financeiro',
-            '9' => 'Admin',
-        ];
+        $levels = User::$levels;
 
         return view('users.create',compact('levels'));
     }
@@ -221,7 +231,12 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
+        $levels = User::$levels;
+
         //
+        $user = User::where('id',$id)->first();
+
+        return view('users.edit',compact('user','levels'));
     }
 
     /**
@@ -234,6 +249,39 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+        ]);
+
+        $data = Input::only('nome','email','senha','endereco','phone','level');
+
+        if (isset($data['senha']) && !empty($data['senha'])) {
+
+            $user = User::where('id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['senha']),
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'level' => $data['level']
+            ]);
+        }
+        else {
+            $user = User::where('id',$id)->update([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'endereco' => $data['endereco'],
+                'level' => $data['level']
+            ]);
+        }
+
+        if ($user)
+            return redirect()->action('UsersController@index');
+        else
+            abort(403,'erro');
+
     }
 
     /**

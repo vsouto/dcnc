@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nome', 'email', 'password', 'level', 'phone','correspondente_id','endereco','avatar','cliente_id','token'
+        'nome', 'email', 'password', 'level', 'phone','correspondente_id','endereco','avatar','cliente_id','token','ativo'
     ];
 
     /**
@@ -28,6 +28,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public static $levels = [
+        '3' => 'Operador',
+        '4' => 'Negociador',
+        '5' => 'Coordenador',
+        '6' => 'Financeiro',
+        '9' => 'Admin',
+    ];
 
     /**
      * Get the entity
