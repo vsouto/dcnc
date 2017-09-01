@@ -41,7 +41,6 @@ class AdvogadosController extends Controller
         $query = (new User())
             ->whereNotNull('cliente_id')
             ->with('cliente')
-            ->has('cliente')
             ->newQuery();
 
         # Instantiate & Configure Grid
