@@ -76,6 +76,7 @@ class User extends Authenticatable
         $advogados = User::advogado()
             ->join('clientes', 'clientes.id', '=', 'users.cliente_id')
             ->select('users.id','clientes.nome as empresa','users.nome as nome')
+            ->where('users.ativo','1')
             ->get();
 
         $list = [];
