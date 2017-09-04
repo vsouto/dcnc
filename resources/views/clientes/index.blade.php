@@ -44,5 +44,10 @@
         $('#new').click(function(){
             location.href = '{{ route('clientes.create') }}';
         });
+
+        $('.edit-entity').click(function(){
+
+            location.href = $(this).data('ref');
+        });
     </script>
 @endsection

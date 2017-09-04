@@ -54,6 +54,22 @@ class ClientesController extends Controller
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data
+                    (new FieldConfig)
+                        ->setName('actions')
+                        ->setLabel('Ações')
+                        ->setSortable(true)
+                        ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
+                            $button1 = $button2 = $button3 = '';
+
+                            $button1 = ' <div style="float: left">'.
+                                '<span data-ref="'.route('clientes.edit', ['id' => $row->getSrc()->id])
+                                .'" class="btn btn-sm btn-info btn-transparent btn-rounded edit-entity">'
+                                .' <i class="fa fa-pencil"></i></span></div> ';
+
+                            return '<div style="min-width: 120px">' . $button1 .  '</div>';
+                        })
+                    ,
                     new IdFieldConfig(),
                     (new FieldConfig())
                         ->setName('nome')
@@ -232,6 +248,12 @@ class ClientesController extends Controller
     public function edit($id)
     {
         //
+
+        $users = User::where('level', '2')->pluck('nome','id');
+
+        $cliente = Cliente::where('id',$id)->first();
+
+        return view('clientes.edit', compact('users','cliente'));
     }
 
     /**
@@ -244,6 +266,37 @@ class ClientesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'user_id' => 'required',
+            'nome' => 'required|min:3',
+            'email' => 'required|email',
+            'endereco' => 'required|min:4',
+            'phone' => 'required|min:4',
+        ]);
+
+        $data = Input::all();
+
+        $cliente = Cliente::where('id',$id)->update([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'endereco' => $data['endereco'],
+            'phone' => $data['phone'],
+            'user_id' => $data['user_id'],
+        ]);
+
+        if (isset($data['senha']) && !empty($data['senha'])) {
+
+            $cliente = Cliente::where('id',$id)
+                    ->with('admin')
+                    ->first();
+
+            $user = $cliente->admin()->update([
+                'password' => Hash::make($data['senha'])
+            ]);
+        }
+
+        return redirect()->action('ClientesController@index')
+            ->with('message','Sucesso!');
     }
 
     /**
