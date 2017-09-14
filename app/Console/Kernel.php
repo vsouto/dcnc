@@ -31,10 +31,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('check:criticas')
-            ->everyThirtyMinutes();
+            ->everyMinute();
 
         $schedule->command('check:altas')
-            ->everyThirtyMinutes();
+            ->everyFiveMinutes();
 
         $schedule->command('check:atrasos')
             ->everyThirtyMinutes();
