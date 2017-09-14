@@ -61,7 +61,7 @@
             </div>
         </div>
     </div>
-@elseif ($diligencia->status_id == 4)
+@elseif ($diligencia->status_id == 4 || $diligencia->status_id == 7)
     <!-- Aguardando Conclusão -->
     <h4>Aguardando Conclusão</h4>
     <div class="alert alert-info alert-white rounded">
