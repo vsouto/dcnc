@@ -58,7 +58,7 @@ class CorrespondentesController extends Controller
                 # See all supported data providers in sources
                 ->setDataProvider(new EloquentDataProvider($query))
                 # Setup caching, value in minutes, turned off in debug mode
-                ->setCachingTime(0)
+                //->setCachingTime(0)
                 # Setup table columns
                 ->setColumns([
                     # simple results numbering, not related to table PK or any obtained data

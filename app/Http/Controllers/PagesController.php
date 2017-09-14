@@ -173,11 +173,17 @@ class PagesController extends Controller
                     (new FieldConfig)
                         ->setName('urgencia')
                         ->setLabel('Urgência')
+                        ->addFilter(
+                            (new \Nayjest\Grids\SelectFilterConfig())
+                                ->setMultipleMode(true)
+                                ->setOptions($this->getUrgenciaList())
+                        )
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
                             if (!$val)
                                 return '';
 
-                            return "<span class='label label-info'>Normal</span>";
+                            return getUrgenciaClass($val);
                         })
                         ->setSortable(true)
                     ,
@@ -470,11 +476,17 @@ class PagesController extends Controller
                     (new FieldConfig)
                         ->setName('urgencia')
                         ->setLabel('Urgência')
+                        ->addFilter(
+                            (new \Nayjest\Grids\SelectFilterConfig())
+                                ->setMultipleMode(true)
+                                ->setOptions($this->getUrgenciaList())
+                        )
                         ->setCallback(function ($val, \Nayjest\Grids\EloquentDataRow $row) {
+
                             if (!$val)
                                 return '';
 
-                            return "<span class='label label-info'>Normal</span>";
+                            return getUrgenciaClass($val);
                         })
                         ->setSortable(true)
                     ,
@@ -667,6 +679,17 @@ class PagesController extends Controller
         $configs = Configuracoes::get();
 
         return view('pages.setup', compact('servicos','configs'));
+    }
+
+    public function getUrgenciaList()
+    {
+        return [
+            'Crítica' => 'Crítica',
+            'Urgente' => 'Urgente',
+            'Alta' => 'Alta',
+            'Média' => 'Média',
+            'Normal' => 'Normal'
+        ];
     }
 
 }
